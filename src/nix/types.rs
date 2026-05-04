@@ -33,16 +33,16 @@ pub struct Submodule {
     options: Vec<NixOption>,
 }
 
-pub enum NixEntry {
+pub enum NixValue {
     Submodule(Submodule),
     Opt(NixOption),
 }
 
-impl Display for NixEntry {
+impl Display for NixValue {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            NixEntry::Submodule(submodule) => submodule.fmt(f),
-            NixEntry::Opt(nix_option) => nix_option.fmt(f),
+            NixValue::Submodule(submodule) => submodule.fmt(f),
+            NixValue::Opt(nix_option) => nix_option.fmt(f),
         }
     }
 }
@@ -146,7 +146,7 @@ fn item_to_submodules(
     root: &Item,
     structs: &ItemMap,
     visited: &mut HashSet<String>,
-) -> anyhow::Result<Vec<NixEntry>> {
+) -> anyhow::Result<Vec<NixValue>> {
     match root {
         Item::Enum(item_enum) => enum_to_option(item_enum, visited),
         Item::Struct(item_struct) => struct_to_submodules(item_struct, structs, visited),
@@ -154,7 +154,7 @@ fn item_to_submodules(
     }
 }
 
-fn enum_to_option(root: &ItemEnum, visited: &mut HashSet<String>) -> anyhow::Result<Vec<NixEntry>> {
+fn enum_to_option(root: &ItemEnum, visited: &mut HashSet<String>) -> anyhow::Result<Vec<NixValue>> {
     let enum_name = root.ident.to_string();
     if visited.contains(&enum_name) {
         return Ok(vec![]);
@@ -162,14 +162,14 @@ fn enum_to_option(root: &ItemEnum, visited: &mut HashSet<String>) -> anyhow::Res
     visited.insert(enum_name);
 
     // TODO: figure out how to handle wrapped values
-    // root.variants.iter().for_each(|ele| {
-    //     assert!(
-    //         ele.fields.is_empty(),
-    //         "\"{}\" enum contains fields in \"{}\" variant",
-    //         root.ident,
-    //         ele.ident
-    //     )
-    // });
+    root.variants.iter().for_each(|ele| {
+        if !ele.fields.is_empty() {
+            eprintln!(
+                "[WARN] \"{}\" enum contains field in \"{}\" variant",
+                root.ident, ele.ident
+            )
+        }
+    });
 
     let variants = root
         .variants
@@ -177,7 +177,7 @@ fn enum_to_option(root: &ItemEnum, visited: &mut HashSet<String>) -> anyhow::Res
         .map(|var| var.ident.to_string().to_lowercase())
         .collect();
 
-    let op = NixEntry::Opt(NixOption::new(
+    let op = NixValue::Opt(NixOption::new(
         root.ident.to_string(),
         NixType::Enum(variants),
     ));
@@ -189,8 +189,8 @@ fn struct_to_submodules(
     root: &ItemStruct,
     structs: &ItemMap,
     visited: &mut HashSet<String>,
-) -> anyhow::Result<Vec<NixEntry>> {
-    let mut submodules = Vec::new();
+) -> anyhow::Result<Vec<NixValue>> {
+    let mut nix_values = Vec::new();
 
     let mut submodule = Submodule {
         name: root.ident.to_string(),
@@ -213,13 +213,13 @@ fn struct_to_submodules(
 
         let field_ident = field.ident.as_ref().unwrap_or(&root.ident).to_string();
         let option = if let Some(submodule) = structs.get(&type_ident.to_string()) {
-            submodules.extend(item_to_submodules(submodule, structs, visited)?);
+            nix_values.extend(item_to_submodules(submodule, structs, visited)?);
             NixOption::new(field_ident, NixType::Submodule(type_ident.to_string()))
         } else {
             let (ty, deps) = primitive_to_nix(&field.ty);
             for dep in deps {
                 if let Some(submodule) = structs.get(&dep) {
-                    submodules.extend(item_to_submodules(submodule, structs, visited)?);
+                    nix_values.extend(item_to_submodules(submodule, structs, visited)?);
                 } else {
                     eprintln!("[WARN] unhandled dep {dep} for {field_ident}");
                 }
@@ -229,9 +229,9 @@ fn struct_to_submodules(
         submodule.options.push(option);
     }
 
-    submodules.push(NixEntry::Submodule(submodule));
+    nix_values.push(NixValue::Submodule(submodule));
 
-    Ok(submodules)
+    Ok(nix_values)
 }
 
 fn primitive_to_nix(ty: &Type) -> (NixType, Vec<String>) {
@@ -251,7 +251,7 @@ fn primitive_to_nix(ty: &Type) -> (NixType, Vec<String>) {
         "String" | "PathBuf" | "Regex" => NixType::String,
         "i32" => NixType::I32,
         "i16" => NixType::I16,
-        "u32" => NixType::U32,
+        "u32" | "Duration" => NixType::U32,
         "u16" => NixType::U16,
         "u8" => NixType::U8,
         "bool" => NixType::Bool,

@@ -8,7 +8,7 @@ const NIRI_REPO_URL: &str = "https://github.com/niri-wm/niri.git";
 mod crawler;
 mod nix;
 
-const CRAWLER_PATHS: [&str; 2] = ["niri/niri-config", "niri/niri-ipc/src/lib.rs"];
+const CRAWLER_PATHS: [&str; 2] = ["niri/niri-ipc/src/lib.rs", "niri/niri-config"];
 
 fn main() -> anyhow::Result<()> {
     let repo_dir = temp_dir();

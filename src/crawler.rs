@@ -26,6 +26,8 @@ pub fn crawl(path: &Path) -> anyhow::Result<ItemMap> {
 }
 
 fn parse_file(path: &Path) -> anyhow::Result<ItemMap> {
+    eprintln!("Crawling file {}...", path.display());
+
     let content = read_to_string(path)?;
     let ast = syn::parse_file(&content)?;
 
@@ -33,11 +35,12 @@ fn parse_file(path: &Path) -> anyhow::Result<ItemMap> {
     for item in ast.items {
         match item {
             Item::Enum(ref item_enum) => {
-                structs.insert(item_enum.ident.to_string(), item);
+                structs.entry(item_enum.ident.to_string()).or_insert(item);
             }
             Item::Struct(ref item_struct) => {
-                if !SKIPPED_STRUCTS.contains(&item_struct.ident.to_string().as_str()) {
-                    structs.insert(item_struct.ident.to_string(), item);
+                let ident = item_struct.ident.to_string();
+                if !SKIPPED_STRUCTS.contains(&ident.as_str()) {
+                    structs.entry(ident).or_insert(item);
                 }
             }
             _ => {}

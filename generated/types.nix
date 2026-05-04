@@ -329,6 +329,9 @@ in rec {
       };
     };
   };
+  Transform = mkOption {
+    type = lib.types.enum ["normal _90 _180 _270 flipped flipped90 flipped180 flipped270"];
+  };
   Position = {
     options = {
       x = mkOption {
@@ -336,6 +339,19 @@ in rec {
       };
       y = mkOption {
         type = lib.types.ints.s32;
+      };
+    };
+  };
+  ConfiguredMode = {
+    options = {
+      width = mkOption {
+        type = lib.types.ints.u16;
+      };
+      height = mkOption {
+        type = lib.types.ints.u16;
+      };
+      refresh = mkOption {
+        type = lib.types.nullOr lib.types.float;
       };
     };
   };
@@ -632,6 +648,9 @@ in rec {
   };
   CenterFocusedColumn = mkOption {
     type = lib.types.enum ["never always onoverflow"];
+  };
+  ColumnDisplay = mkOption {
+    type = lib.types.enum ["normal tabbed"];
   };
   Struts = {
     options = {
@@ -1546,7 +1565,7 @@ in rec {
         type = lib.types.bool;
       };
       cooldown = mkOption {
-        type = lib.types.nullOr Duration;
+        type = lib.types.nullOr lib.types.ints.u32;
       };
       allow_when_locked = mkOption {
         type = lib.types.bool;
