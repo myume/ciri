@@ -2,7 +2,7 @@ use anyhow::{Context, anyhow};
 use env_logger::Env;
 use std::{collections::HashMap, env::temp_dir, fs::File, io::Write, process::Command};
 
-use crate::nix::types::generate_config_type;
+use crate::nix::types::NixTypeParser;
 
 const NIRI_REPO_URL: &str = "https://github.com/niri-wm/niri.git";
 
@@ -35,7 +35,7 @@ fn main() -> anyhow::Result<()> {
         structs.extend(crawler::crawl(&repo_dir.join(path))?);
     }
 
-    let nix_config_type = generate_config_type(&structs)?;
+    let nix_config_type = NixTypeParser::new(structs).generate_config_type()?;
 
     let type_path = "generated/types.nix";
     let mut type_file = File::create(type_path)?;
