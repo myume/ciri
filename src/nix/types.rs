@@ -24,6 +24,7 @@ pub enum NixType {
     I32,
     I16,
     Submodule(String),
+    Reference(String),
 }
 
 #[derive(Debug, Clone)]
@@ -85,6 +86,7 @@ impl Display for NixType {
                 NixType::I32 => "ints.s32".to_string(),
                 NixType::I16 => "ints.s16".to_string(),
                 NixType::Submodule(s) => s.to_string(),
+                NixType::Reference(_) => unreachable!("should be handled by option"),
             }
         )
     }
@@ -92,13 +94,10 @@ impl Display for NixType {
 
 impl Display for NixOption {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "{} = mkOption {{
-type = {};
-}};",
-            self.name, self.ty
-        )
+        match &self.ty {
+            NixType::Reference(s) => write!(f, "{} = {s};", self.name),
+            ty => write!(f, "{} = mkOption {{ type = {}; }};", self.name, ty),
+        }
     }
 }
 
@@ -106,11 +105,7 @@ impl Display for Submodule {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(
             f,
-            "{} = submodule {{
-options = {{
-    {}
-}};
-}};",
+            "{} = submodule {{ options = {{ {} }}; }};",
             self.name,
             self.options
                 .iter()
@@ -154,12 +149,12 @@ impl NixTypeParser {
 
         Ok(format!(
             "{{lib, ...}}:
-let
-inherit (lib.options) mkOption;
-in
-with lib.types; rec {{
-{}
-}}",
+            let
+                inherit (lib.options) mkOption;
+            in
+            with lib.types; rec {{
+                {}
+            }}",
             submodules
                 .iter()
                 .map(|module| module.to_string())
@@ -236,8 +231,15 @@ with lib.types; rec {{
             let field_ident = field.ident.as_ref().unwrap_or(&root.ident).to_string();
 
             let option = if let Some(submodule) = self.structs.get(&type_ident.to_string()) {
-                nix_values.extend(self.item_to_submodules(&submodule.clone())?);
-                NixOption::new(field_ident, NixType::Submodule(type_ident.to_string()))
+                let sub = submodule.clone();
+                nix_values.extend(self.item_to_submodules(&sub)?);
+                let name = type_ident.to_string();
+                let ty = if matches!(&sub, Item::Enum(_)) {
+                    NixType::Reference(name)
+                } else {
+                    NixType::Submodule(name)
+                };
+                NixOption::new(field_ident, ty)
             } else {
                 let (ty, deps) = self.primitive_to_nix(&field.ty);
                 for dep in deps {
