@@ -79,7 +79,14 @@ impl Display for NixType {
                     };
                     format!("nullOr {}", ty)
                 }
-                NixType::Enum(variants) => format!("enum [{:?}]", variants.join(" ")),
+                NixType::Enum(variants) => format!(
+                    "enum [{}]",
+                    variants
+                        .iter()
+                        .map(|var| format!("\"{var}\""))
+                        .collect::<Vec<String>>()
+                        .join("\n")
+                ),
                 NixType::U8 => "ints.u8".to_string(),
                 NixType::U16 => "ints.u16".to_string(),
                 NixType::U32 => "ints.u32".to_string(),
@@ -116,15 +123,18 @@ impl Display for Submodule {
 }
 
 impl NixOption {
-    pub fn new(name: String, ty: NixType) -> NixOption {
-        NixOption { name, ty }
+    pub fn new(name: &str, ty: NixType) -> NixOption {
+        NixOption {
+            name: name.to_owned(),
+            ty,
+        }
     }
 }
 
 pub struct NixTypeParser {
     structs: ItemMap,
     visited: HashSet<String>,
-    overrides: HashMap<String, NixValue>,
+    overrides: HashMap<String, NixType>,
 }
 
 impl NixTypeParser {
@@ -132,7 +142,18 @@ impl NixTypeParser {
         NixTypeParser {
             structs,
             visited: HashSet::new(),
-            overrides: HashMap::from([]),
+            overrides: HashMap::from([(
+                "Modifiers".into(),
+                NixType::Enum(vec![
+                    "ctrl".into(),
+                    "shift".into(),
+                    "alt".into(),
+                    "super".into(),
+                    "mod".into(),
+                    "iso_level3_shift".into(),
+                    "iso_level5_shift".into(),
+                ]),
+            )]),
         }
     }
 
@@ -178,14 +199,14 @@ impl NixTypeParser {
         self.visited.insert(enum_name);
 
         // TODO: figure out how to handle wrapped values
-        root.variants.iter().for_each(|ele| {
-            if !ele.fields.is_empty() {
-                warn!(
-                    "\"{}\" enum contains field in \"{}\" variant",
-                    root.ident, ele.ident
-                )
-            }
-        });
+        // root.variants.iter().for_each(|ele| {
+        //     if !ele.fields.is_empty() {
+        //         warn!(
+        //             "\"{}\" enum contains field in \"{}\" variant",
+        //             root.ident, ele.ident
+        //         )
+        //     }
+        // });
 
         let variants = root
             .variants
@@ -194,7 +215,7 @@ impl NixTypeParser {
             .collect();
 
         let op = NixValue::Opt(NixOption::new(
-            root.ident.to_string(),
+            &root.ident.to_string(),
             NixType::Enum(variants),
         ));
 
@@ -215,20 +236,15 @@ impl NixTypeParser {
 
         self.visited.insert(submodule.name.clone());
 
-        if let Some(val) = self.overrides.get(&root.ident.to_string()) {
-            debug!("applying overrides for {}", &root.ident);
-            return Ok(vec![val.clone()]);
-        }
-
         for field in &root.fields {
+            let field_ident = field.ident.as_ref().unwrap_or(&root.ident).to_string();
+
             let syn::Type::Path(type_path) = &field.ty else {
                 unreachable!("should only have type paths");
             };
 
             let segments = &type_path.path.segments;
             let type_ident = &segments.first().unwrap().ident;
-
-            let field_ident = field.ident.as_ref().unwrap_or(&root.ident).to_string();
 
             let option = if let Some(submodule) = self.structs.get(&type_ident.to_string()) {
                 let sub = submodule.clone();
@@ -239,7 +255,7 @@ impl NixTypeParser {
                 } else {
                     NixType::Submodule(name)
                 };
-                NixOption::new(field_ident, ty)
+                NixOption::new(&field_ident, ty)
             } else {
                 let (ty, deps) = self.primitive_to_nix(&field.ty);
                 for dep in deps {
@@ -249,7 +265,7 @@ impl NixTypeParser {
                         warn!("unhandled dep {dep} for {field_ident}");
                     }
                 }
-                NixOption::new(field_ident, ty)
+                NixOption::new(&field_ident, ty)
             };
             submodule.options.push(option);
         }
@@ -272,6 +288,12 @@ impl NixTypeParser {
             .expect("missing head of path");
 
         let ty_ident = head.ident.to_string();
+
+        if let Some(val) = self.overrides.get(&ty_ident) {
+            debug!("applying overrides for {}", &ty_ident);
+            return (val.clone(), deps);
+        }
+
         let ty = match ty_ident.as_str() {
             "String" | "PathBuf" | "Regex" => NixType::String,
             "i32" => NixType::I32,

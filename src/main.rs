@@ -1,5 +1,6 @@
 use anyhow::{Context, anyhow};
 use env_logger::Env;
+use log::info;
 use std::{collections::HashMap, env::temp_dir, fs::File, io::Write, process::Command};
 
 use crate::nix::types::NixTypeParser;
@@ -37,11 +38,11 @@ fn main() -> anyhow::Result<()> {
 
     let nix_config_type = NixTypeParser::new(structs).generate_config_type()?;
 
+    info!("Outputting types...");
     let type_path = "generated/types.nix";
     let mut type_file = File::create(type_path)?;
     let (status, nix_config_type) =
         alejandra::format::in_memory(type_path.to_string(), nix_config_type);
-
     type_file.write_all(nix_config_type.as_bytes())?;
 
     if let alejandra::format::Status::Error(err) = status {

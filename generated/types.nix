@@ -12,7 +12,12 @@ in
         file = mkOption {type = nullOr str;};
       };
     };
-    TrackLayout = mkOption {type = enum ["global window"];};
+    TrackLayout = mkOption {
+      type = enum [
+        "global"
+        "window"
+      ];
+    };
     Keyboard = submodule {
       options = {
         xkb = mkOption {type = Xkb;};
@@ -22,10 +27,32 @@ in
         numlock = mkOption {type = bool;};
       };
     };
-    ClickMethod = mkOption {type = enum ["clickfinger buttonareas"];};
-    AccelProfile = mkOption {type = enum ["adaptive flat"];};
-    ScrollMethod = mkOption {type = enum ["noscroll twofinger edge onbuttondown"];};
-    TapButtonMap = mkOption {type = enum ["leftrightmiddle leftmiddleright"];};
+    ClickMethod = mkOption {
+      type = enum [
+        "clickfinger"
+        "buttonareas"
+      ];
+    };
+    AccelProfile = mkOption {
+      type = enum [
+        "adaptive"
+        "flat"
+      ];
+    };
+    ScrollMethod = mkOption {
+      type = enum [
+        "noscroll"
+        "twofinger"
+        "edge"
+        "onbuttondown"
+      ];
+    };
+    TapButtonMap = mkOption {
+      type = enum [
+        "leftrightmiddle"
+        "leftmiddleright"
+      ];
+    };
     ScrollFactor = submodule {
       options = {
         base = mkOption {type = nullOr float;};
@@ -112,11 +139,25 @@ in
         map_to_output = mkOption {type = nullOr str;};
       };
     };
-    WarpMouseToFocusMode = mkOption {type = enum ["centerxy centerxyalways"];};
+    WarpMouseToFocusMode = mkOption {
+      type = enum [
+        "centerxy"
+        "centerxyalways"
+      ];
+    };
     WarpMouseToFocus = submodule {options = {mode = mkOption {type = nullOr WarpMouseToFocusMode;};};};
     Percent = submodule {options = {Percent = mkOption {type = float;};};};
     FocusFollowsMouse = submodule {options = {max_scroll_amount = mkOption {type = nullOr Percent;};};};
-    ModKey = mkOption {type = enum ["ctrl shift alt super isolevel3shift isolevel5shift"];};
+    ModKey = mkOption {
+      type = enum [
+        "ctrl"
+        "shift"
+        "alt"
+        "super"
+        "isolevel3shift"
+        "isolevel5shift"
+      ];
+    };
     Input = submodule {
       options = {
         keyboard = mkOption {type = Keyboard;};
@@ -134,7 +175,18 @@ in
         mod_key_nested = mkOption {type = nullOr ModKey;};
       };
     };
-    Transform = mkOption {type = enum ["normal _90 _180 _270 flipped flipped90 flipped180 flipped270"];};
+    Transform = mkOption {
+      type = enum [
+        "normal"
+        "_90"
+        "_180"
+        "_270"
+        "flipped"
+        "flipped90"
+        "flipped180"
+        "flipped270"
+      ];
+    };
     Position = submodule {
       options = {
         x = mkOption {type = ints.s32;};
@@ -187,9 +239,28 @@ in
         bottom_right = mkOption {type = bool;};
       };
     };
-    GradientRelativeTo = mkOption {type = enum ["window workspaceview"];};
-    GradientColorSpace = mkOption {type = enum ["srgb srgblinear oklab oklch"];};
-    HueInterpolation = mkOption {type = enum ["shorter longer increasing decreasing"];};
+    GradientRelativeTo = mkOption {
+      type = enum [
+        "window"
+        "workspaceview"
+      ];
+    };
+    GradientColorSpace = mkOption {
+      type = enum [
+        "srgb"
+        "srgblinear"
+        "oklab"
+        "oklch"
+      ];
+    };
+    HueInterpolation = mkOption {
+      type = enum [
+        "shorter"
+        "longer"
+        "increasing"
+        "decreasing"
+      ];
+    };
     GradientInterpolation = submodule {
       options = {
         color_space = GradientColorSpace;
@@ -238,7 +309,14 @@ in
     };
     Flag = submodule {options = {Flag = mkOption {type = bool;};};};
     TabIndicatorLength = submodule {options = {total_proportion = mkOption {type = nullOr float;};};};
-    TabIndicatorPosition = mkOption {type = enum ["left right top bottom"];};
+    TabIndicatorPosition = mkOption {
+      type = enum [
+        "left"
+        "right"
+        "top"
+        "bottom"
+      ];
+    };
     TabIndicatorPart = submodule {
       options = {
         off = mkOption {type = bool;};
@@ -267,10 +345,26 @@ in
         gradient = mkOption {type = nullOr Gradient;};
       };
     };
-    PresetSize = mkOption {type = enum ["proportion fixed"];};
+    PresetSize = mkOption {
+      type = enum [
+        "proportion"
+        "fixed"
+      ];
+    };
     DefaultPresetSize = submodule {options = {DefaultPresetSize = mkOption {type = nullOr PresetSize;};};};
-    CenterFocusedColumn = mkOption {type = enum ["never always onoverflow"];};
-    ColumnDisplay = mkOption {type = enum ["normal tabbed"];};
+    CenterFocusedColumn = mkOption {
+      type = enum [
+        "never"
+        "always"
+        "onoverflow"
+      ];
+    };
+    ColumnDisplay = mkOption {
+      type = enum [
+        "normal"
+        "tabbed"
+      ];
+    };
     Struts = submodule {
       options = {
         left = mkOption {type = float;};
@@ -415,7 +509,12 @@ in
       };
     };
     ConfigNotification = submodule {options = {disable_failed = mkOption {type = bool;};};};
-    Kind = mkOption {type = enum ["easing spring"];};
+    Kind = mkOption {
+      type = enum [
+        "easing"
+        "spring"
+      ];
+    };
     Animation = submodule {
       options = {
         off = mkOption {type = bool;};
@@ -556,8 +655,24 @@ in
         bottom_left = mkOption {type = float;};
       };
     };
-    BlockOutFrom = mkOption {type = enum ["screencast screencapture"];};
-    RelativeTo = mkOption {type = enum ["topleft topright bottomleft bottomright top bottom left right"];};
+    BlockOutFrom = mkOption {
+      type = enum [
+        "screencast"
+        "screencapture"
+      ];
+    };
+    RelativeTo = mkOption {
+      type = enum [
+        "topleft"
+        "topright"
+        "bottomleft"
+        "bottomright"
+        "top"
+        "bottom"
+        "left"
+        "right"
+      ];
+    };
     FloatingPosition = submodule {
       options = {
         x = mkOption {type = float;};
@@ -630,14 +745,228 @@ in
         popups = mkOption {type = PopupsRule;};
       };
     };
-    Trigger = mkOption {type = enum ["keysym mouseleft mouseright mousemiddle mouseback mouseforward wheelscrolldown wheelscrollup wheelscrollleft wheelscrollright touchpadscrolldown touchpadscrollup touchpadscrollleft touchpadscrollright"];};
+    Trigger = mkOption {
+      type = enum [
+        "keysym"
+        "mouseleft"
+        "mouseright"
+        "mousemiddle"
+        "mouseback"
+        "mouseforward"
+        "wheelscrolldown"
+        "wheelscrollup"
+        "wheelscrollleft"
+        "wheelscrollright"
+        "touchpadscrolldown"
+        "touchpadscrollup"
+        "touchpadscrollleft"
+        "touchpadscrollright"
+      ];
+    };
     Key = submodule {
       options = {
         trigger = Trigger;
-        modifiers = mkOption {type = Modifiers;};
+        modifiers = mkOption {
+          type = enum [
+            "ctrl"
+            "shift"
+            "alt"
+            "super"
+            "mod"
+            "iso_level3_shift"
+            "iso_level5_shift"
+          ];
+        };
       };
     };
-    Action = mkOption {type = enum ["quit changevt suspend poweroffmonitors poweronmonitors toggledebugtint debugtoggleopaqueregions debugtoggledamage spawn spawnsh doscreentransition confirmscreenshot cancelscreenshot screenshottogglepointer screenshot screenshotscreen screenshotwindow screenshotwindowbyid togglekeyboardshortcutsinhibit closewindow closewindowbyid fullscreenwindow fullscreenwindowbyid togglewindowedfullscreen togglewindowedfullscreenbyid focuswindow focuswindowincolumn focuswindowprevious focuscolumnleft focuscolumnleftundermouse focuscolumnright focuscolumnrightundermouse focuscolumnfirst focuscolumnlast focuscolumnrightorfirst focuscolumnleftorlast focuscolumn focuswindowormonitorup focuswindowormonitordown focuscolumnormonitorleft focuscolumnormonitorright focuswindowdown focuswindowup focuswindowdownorcolumnleft focuswindowdownorcolumnright focuswindowuporcolumnleft focuswindowuporcolumnright focuswindoworworkspacedown focuswindoworworkspaceup focuswindowtop focuswindowbottom focuswindowdownortop focuswindowuporbottom movecolumnleft movecolumnright movecolumntofirst movecolumntolast movecolumnleftortomonitorleft movecolumnrightortomonitorright movecolumntoindex movewindowdown movewindowup movewindowdownortoworkspacedown movewindowuportoworkspaceup consumeorexpelwindowleft consumeorexpelwindowleftbyid consumeorexpelwindowright consumeorexpelwindowrightbyid consumewindowintocolumn expelwindowfromcolumn swapwindowleft swapwindowright togglecolumntabbeddisplay setcolumndisplay centercolumn centerwindow centerwindowbyid centervisiblecolumns focusworkspacedown focusworkspacedownundermouse focusworkspaceup focusworkspaceupundermouse focusworkspace focusworkspaceprevious movewindowtoworkspacedown movewindowtoworkspaceup movewindowtoworkspace movewindowtoworkspacebyid movecolumntoworkspacedown movecolumntoworkspaceup movecolumntoworkspace moveworkspacedown moveworkspaceup moveworkspacetoindex moveworkspacetoindexbyref moveworkspacetomonitorbyref moveworkspacetomonitor setworkspacename setworkspacenamebyref unsetworkspacename unsetworkspacenamebyref focusmonitorleft focusmonitorright focusmonitordown focusmonitorup focusmonitorprevious focusmonitornext focusmonitor movewindowtomonitorleft movewindowtomonitorright movewindowtomonitordown movewindowtomonitorup movewindowtomonitorprevious movewindowtomonitornext movewindowtomonitor movewindowtomonitorbyid movecolumntomonitorleft movecolumntomonitorright movecolumntomonitordown movecolumntomonitorup movecolumntomonitorprevious movecolumntomonitornext movecolumntomonitor setwindowwidth setwindowwidthbyid setwindowheight setwindowheightbyid resetwindowheight resetwindowheightbyid switchpresetcolumnwidth switchpresetcolumnwidthback switchpresetwindowwidth switchpresetwindowwidthback switchpresetwindowwidthbyid switchpresetwindowwidthbackbyid switchpresetwindowheight switchpresetwindowheightback switchpresetwindowheightbyid switchpresetwindowheightbackbyid maximizecolumn maximizewindowtoedges maximizewindowtoedgesbyid setcolumnwidth expandcolumntoavailablewidth switchlayout showhotkeyoverlay moveworkspacetomonitorleft moveworkspacetomonitorright moveworkspacetomonitordown moveworkspacetomonitorup moveworkspacetomonitorprevious moveworkspacetomonitornext togglewindowfloating togglewindowfloatingbyid movewindowtofloating movewindowtofloatingbyid movewindowtotiling movewindowtotilingbyid focusfloating focustiling switchfocusbetweenfloatingandtiling movefloatingwindowbyid togglewindowruleopacity togglewindowruleopacitybyid setdynamiccastwindow setdynamiccastwindowbyid setdynamiccastmonitor cleardynamiccasttarget stopcast toggleoverview openoverview closeoverview togglewindowurgent setwindowurgent unsetwindowurgent loadconfigfile mruadvance mruconfirm mrucancel mruclosecurrentwindow mrufirst mrulast mrusetscope mrucyclescope"];};
+    Action = mkOption {
+      type = enum [
+        "quit"
+        "changevt"
+        "suspend"
+        "poweroffmonitors"
+        "poweronmonitors"
+        "toggledebugtint"
+        "debugtoggleopaqueregions"
+        "debugtoggledamage"
+        "spawn"
+        "spawnsh"
+        "doscreentransition"
+        "confirmscreenshot"
+        "cancelscreenshot"
+        "screenshottogglepointer"
+        "screenshot"
+        "screenshotscreen"
+        "screenshotwindow"
+        "screenshotwindowbyid"
+        "togglekeyboardshortcutsinhibit"
+        "closewindow"
+        "closewindowbyid"
+        "fullscreenwindow"
+        "fullscreenwindowbyid"
+        "togglewindowedfullscreen"
+        "togglewindowedfullscreenbyid"
+        "focuswindow"
+        "focuswindowincolumn"
+        "focuswindowprevious"
+        "focuscolumnleft"
+        "focuscolumnleftundermouse"
+        "focuscolumnright"
+        "focuscolumnrightundermouse"
+        "focuscolumnfirst"
+        "focuscolumnlast"
+        "focuscolumnrightorfirst"
+        "focuscolumnleftorlast"
+        "focuscolumn"
+        "focuswindowormonitorup"
+        "focuswindowormonitordown"
+        "focuscolumnormonitorleft"
+        "focuscolumnormonitorright"
+        "focuswindowdown"
+        "focuswindowup"
+        "focuswindowdownorcolumnleft"
+        "focuswindowdownorcolumnright"
+        "focuswindowuporcolumnleft"
+        "focuswindowuporcolumnright"
+        "focuswindoworworkspacedown"
+        "focuswindoworworkspaceup"
+        "focuswindowtop"
+        "focuswindowbottom"
+        "focuswindowdownortop"
+        "focuswindowuporbottom"
+        "movecolumnleft"
+        "movecolumnright"
+        "movecolumntofirst"
+        "movecolumntolast"
+        "movecolumnleftortomonitorleft"
+        "movecolumnrightortomonitorright"
+        "movecolumntoindex"
+        "movewindowdown"
+        "movewindowup"
+        "movewindowdownortoworkspacedown"
+        "movewindowuportoworkspaceup"
+        "consumeorexpelwindowleft"
+        "consumeorexpelwindowleftbyid"
+        "consumeorexpelwindowright"
+        "consumeorexpelwindowrightbyid"
+        "consumewindowintocolumn"
+        "expelwindowfromcolumn"
+        "swapwindowleft"
+        "swapwindowright"
+        "togglecolumntabbeddisplay"
+        "setcolumndisplay"
+        "centercolumn"
+        "centerwindow"
+        "centerwindowbyid"
+        "centervisiblecolumns"
+        "focusworkspacedown"
+        "focusworkspacedownundermouse"
+        "focusworkspaceup"
+        "focusworkspaceupundermouse"
+        "focusworkspace"
+        "focusworkspaceprevious"
+        "movewindowtoworkspacedown"
+        "movewindowtoworkspaceup"
+        "movewindowtoworkspace"
+        "movewindowtoworkspacebyid"
+        "movecolumntoworkspacedown"
+        "movecolumntoworkspaceup"
+        "movecolumntoworkspace"
+        "moveworkspacedown"
+        "moveworkspaceup"
+        "moveworkspacetoindex"
+        "moveworkspacetoindexbyref"
+        "moveworkspacetomonitorbyref"
+        "moveworkspacetomonitor"
+        "setworkspacename"
+        "setworkspacenamebyref"
+        "unsetworkspacename"
+        "unsetworkspacenamebyref"
+        "focusmonitorleft"
+        "focusmonitorright"
+        "focusmonitordown"
+        "focusmonitorup"
+        "focusmonitorprevious"
+        "focusmonitornext"
+        "focusmonitor"
+        "movewindowtomonitorleft"
+        "movewindowtomonitorright"
+        "movewindowtomonitordown"
+        "movewindowtomonitorup"
+        "movewindowtomonitorprevious"
+        "movewindowtomonitornext"
+        "movewindowtomonitor"
+        "movewindowtomonitorbyid"
+        "movecolumntomonitorleft"
+        "movecolumntomonitorright"
+        "movecolumntomonitordown"
+        "movecolumntomonitorup"
+        "movecolumntomonitorprevious"
+        "movecolumntomonitornext"
+        "movecolumntomonitor"
+        "setwindowwidth"
+        "setwindowwidthbyid"
+        "setwindowheight"
+        "setwindowheightbyid"
+        "resetwindowheight"
+        "resetwindowheightbyid"
+        "switchpresetcolumnwidth"
+        "switchpresetcolumnwidthback"
+        "switchpresetwindowwidth"
+        "switchpresetwindowwidthback"
+        "switchpresetwindowwidthbyid"
+        "switchpresetwindowwidthbackbyid"
+        "switchpresetwindowheight"
+        "switchpresetwindowheightback"
+        "switchpresetwindowheightbyid"
+        "switchpresetwindowheightbackbyid"
+        "maximizecolumn"
+        "maximizewindowtoedges"
+        "maximizewindowtoedgesbyid"
+        "setcolumnwidth"
+        "expandcolumntoavailablewidth"
+        "switchlayout"
+        "showhotkeyoverlay"
+        "moveworkspacetomonitorleft"
+        "moveworkspacetomonitorright"
+        "moveworkspacetomonitordown"
+        "moveworkspacetomonitorup"
+        "moveworkspacetomonitorprevious"
+        "moveworkspacetomonitornext"
+        "togglewindowfloating"
+        "togglewindowfloatingbyid"
+        "movewindowtofloating"
+        "movewindowtofloatingbyid"
+        "movewindowtotiling"
+        "movewindowtotilingbyid"
+        "focusfloating"
+        "focustiling"
+        "switchfocusbetweenfloatingandtiling"
+        "movefloatingwindowbyid"
+        "togglewindowruleopacity"
+        "togglewindowruleopacitybyid"
+        "setdynamiccastwindow"
+        "setdynamiccastwindowbyid"
+        "setdynamiccastmonitor"
+        "cleardynamiccasttarget"
+        "stopcast"
+        "toggleoverview"
+        "openoverview"
+        "closeoverview"
+        "togglewindowurgent"
+        "setwindowurgent"
+        "unsetwindowurgent"
+        "loadconfigfile"
+        "mruadvance"
+        "mruconfirm"
+        "mrucancel"
+        "mruclosecurrentwindow"
+        "mrufirst"
+        "mrulast"
+        "mrusetscope"
+        "mrucyclescope"
+      ];
+    };
     Bind = submodule {
       options = {
         key = mkOption {type = Key;};
@@ -659,7 +988,12 @@ in
         tablet_mode_off = mkOption {type = nullOr SwitchAction;};
       };
     };
-    PreviewRender = mkOption {type = enum ["screencast screencapture"];};
+    PreviewRender = mkOption {
+      type = enum [
+        "screencast"
+        "screencapture"
+      ];
+    };
     Debug = submodule {
       options = {
         preview_render = mkOption {type = nullOr PreviewRender;};
