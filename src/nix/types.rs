@@ -1,7 +1,11 @@
-use std::{collections::HashSet, fmt::Display, vec};
+use std::{
+    collections::{HashMap, HashSet},
+    fmt::Display,
+    vec,
+};
 
 use anyhow::Context;
-use log::warn;
+use log::{debug, warn};
 use syn::{GenericArgument, Item, ItemEnum, ItemStruct, PathArguments, Type};
 
 use crate::crawler::ItemMap;
@@ -34,6 +38,7 @@ pub struct Submodule {
     options: Vec<NixOption>,
 }
 
+#[derive(Debug, Clone)]
 pub enum NixValue {
     Submodule(Submodule),
     Opt(NixOption),
@@ -52,7 +57,7 @@ impl Display for NixType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
-            "lib.types.{}",
+            "{}",
             match self {
                 NixType::String => "str".to_string(),
                 NixType::Bool => "bool".to_string(),
@@ -79,7 +84,7 @@ impl Display for NixType {
                 NixType::U32 => "ints.u32".to_string(),
                 NixType::I32 => "ints.s32".to_string(),
                 NixType::I16 => "ints.s16".to_string(),
-                NixType::Submodule(s) => format!("submodule {s}"),
+                NixType::Submodule(s) => s.to_string(),
             }
         )
     }
@@ -101,7 +106,7 @@ impl Display for Submodule {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(
             f,
-            "{} = {{
+            "{} = submodule {{
 options = {{
     {}
 }};
@@ -124,6 +129,7 @@ impl NixOption {
 pub struct NixTypeParser {
     structs: ItemMap,
     visited: HashSet<String>,
+    overrides: HashMap<String, NixValue>,
 }
 
 impl NixTypeParser {
@@ -131,6 +137,7 @@ impl NixTypeParser {
         NixTypeParser {
             structs,
             visited: HashSet::new(),
+            overrides: HashMap::from([]),
         }
     }
 
@@ -150,7 +157,7 @@ impl NixTypeParser {
 let
 inherit (lib.options) mkOption;
 in
-rec {{
+with lib.types; rec {{
 {}
 }}",
             submodules
@@ -213,6 +220,11 @@ rec {{
 
         self.visited.insert(submodule.name.clone());
 
+        if let Some(val) = self.overrides.get(&root.ident.to_string()) {
+            debug!("applying overrides for {}", &root.ident);
+            return Ok(vec![val.clone()]);
+        }
+
         for field in &root.fields {
             let syn::Type::Path(type_path) = &field.ty else {
                 unreachable!("should only have type paths");
@@ -222,6 +234,7 @@ rec {{
             let type_ident = &segments.first().unwrap().ident;
 
             let field_ident = field.ident.as_ref().unwrap_or(&root.ident).to_string();
+
             let option = if let Some(submodule) = self.structs.get(&type_ident.to_string()) {
                 nix_values.extend(self.item_to_submodules(&submodule.clone())?);
                 NixOption::new(field_ident, NixType::Submodule(type_ident.to_string()))
