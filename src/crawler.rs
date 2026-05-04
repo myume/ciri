@@ -4,6 +4,7 @@ use std::{
     path::Path,
 };
 
+use log::info;
 use syn::Item;
 
 const SKIPPED_STRUCTS: [&str; 1] = ["FloatOrInt"];
@@ -26,7 +27,7 @@ pub fn crawl(path: &Path) -> anyhow::Result<ItemMap> {
 }
 
 fn parse_file(path: &Path) -> anyhow::Result<ItemMap> {
-    eprintln!("Crawling file {}...", path.display());
+    info!("Crawling file {}...", path.display());
 
     let content = read_to_string(path)?;
     let ast = syn::parse_file(&content)?;

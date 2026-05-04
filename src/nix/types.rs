@@ -1,6 +1,7 @@
 use std::{collections::HashSet, fmt::Display, vec};
 
 use anyhow::Context;
+use log::warn;
 use syn::{GenericArgument, Item, ItemEnum, ItemStruct, PathArguments, Type};
 
 use crate::crawler::ItemMap;
@@ -164,8 +165,8 @@ fn enum_to_option(root: &ItemEnum, visited: &mut HashSet<String>) -> anyhow::Res
     // TODO: figure out how to handle wrapped values
     root.variants.iter().for_each(|ele| {
         if !ele.fields.is_empty() {
-            eprintln!(
-                "[WARN] \"{}\" enum contains field in \"{}\" variant",
+            warn!(
+                "\"{}\" enum contains field in \"{}\" variant",
                 root.ident, ele.ident
             )
         }
@@ -221,7 +222,7 @@ fn struct_to_submodules(
                 if let Some(submodule) = structs.get(&dep) {
                     nix_values.extend(item_to_submodules(submodule, structs, visited)?);
                 } else {
-                    eprintln!("[WARN] unhandled dep {dep} for {field_ident}");
+                    warn!("unhandled dep {dep} for {field_ident}");
                 }
             }
             NixOption::new(field_ident, ty)

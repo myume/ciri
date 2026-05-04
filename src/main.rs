@@ -1,4 +1,5 @@
 use anyhow::{Context, anyhow};
+use env_logger::Env;
 use std::{collections::HashMap, env::temp_dir, fs::File, io::Write, process::Command};
 
 use crate::nix::types::generate_config_type;
@@ -11,6 +12,10 @@ mod nix;
 const CRAWLER_PATHS: [&str; 2] = ["niri/niri-ipc/src/lib.rs", "niri/niri-config"];
 
 fn main() -> anyhow::Result<()> {
+    env_logger::Builder::from_env(Env::default().default_filter_or("info"))
+        .format_timestamp(None)
+        .init();
+
     let repo_dir = temp_dir();
 
     if !repo_dir.join("niri").exists() {
