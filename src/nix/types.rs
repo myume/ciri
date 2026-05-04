@@ -1,7 +1,7 @@
 use std::{collections::HashSet, fmt::Display, vec};
 
 use anyhow::Context;
-use syn::{Ident, Item, ItemStruct};
+use syn::{GenericArgument, Item, ItemEnum, ItemStruct, PathArguments, Type};
 
 use crate::crawler::ItemMap;
 
@@ -9,13 +9,15 @@ use crate::crawler::ItemMap;
 pub enum NixType {
     String,
     Bool,
-    Integer,
     Float,
-    List,
-    NullOr,
-    Enum,
+    List(Box<NixType>),
+    NullOr(Box<NixType>),
+    Enum(Vec<String>),
     U8,
     U16,
+    U32,
+    I32,
+    I16,
     Submodule(String),
 }
 
@@ -31,6 +33,20 @@ pub struct Submodule {
     options: Vec<NixOption>,
 }
 
+pub enum NixEntry {
+    Submodule(Submodule),
+    Opt(NixOption),
+}
+
+impl Display for NixEntry {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            NixEntry::Submodule(submodule) => submodule.fmt(f),
+            NixEntry::Opt(nix_option) => nix_option.fmt(f),
+        }
+    }
+}
+
 impl Display for NixType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
@@ -39,13 +55,29 @@ impl Display for NixType {
             match self {
                 NixType::String => "str".to_string(),
                 NixType::Bool => "bool".to_string(),
-                NixType::Integer => "int".to_string(),
                 NixType::Float => "float".to_string(),
-                NixType::List => "listOf".to_string(),
-                NixType::NullOr => "nullOr".to_string(),
-                NixType::Enum => "enum".to_string(),
+                NixType::List(ty) => {
+                    let ty = if let NixType::Submodule(sub) = ty.as_ref() {
+                        sub.to_string()
+                    } else {
+                        ty.to_string()
+                    };
+                    format!("listOf {}", ty)
+                }
+                NixType::NullOr(ty) => {
+                    let ty = if let NixType::Submodule(sub) = ty.as_ref() {
+                        sub.to_string()
+                    } else {
+                        ty.to_string()
+                    };
+                    format!("nullOr {}", ty)
+                }
+                NixType::Enum(variants) => format!("enum [{:?}]", variants.join(" ")),
                 NixType::U8 => "ints.u8".to_string(),
                 NixType::U16 => "ints.u16".to_string(),
+                NixType::U32 => "ints.u32".to_string(),
+                NixType::I32 => "ints.s32".to_string(),
+                NixType::I16 => "ints.s16".to_string(),
                 NixType::Submodule(s) => format!("submodule {s}"),
             }
         )
@@ -114,19 +146,50 @@ fn item_to_submodules(
     root: &Item,
     structs: &ItemMap,
     visited: &mut HashSet<String>,
-) -> anyhow::Result<Vec<Submodule>> {
+) -> anyhow::Result<Vec<NixEntry>> {
     match root {
-        Item::Enum(item_enum) => Ok(vec![]),
+        Item::Enum(item_enum) => enum_to_option(item_enum, visited),
         Item::Struct(item_struct) => struct_to_submodules(item_struct, structs, visited),
         _ => unreachable!("unhandled item {:#?}", root),
     }
+}
+
+fn enum_to_option(root: &ItemEnum, visited: &mut HashSet<String>) -> anyhow::Result<Vec<NixEntry>> {
+    let enum_name = root.ident.to_string();
+    if visited.contains(&enum_name) {
+        return Ok(vec![]);
+    }
+    visited.insert(enum_name);
+
+    // TODO: figure out how to handle wrapped values
+    // root.variants.iter().for_each(|ele| {
+    //     assert!(
+    //         ele.fields.is_empty(),
+    //         "\"{}\" enum contains fields in \"{}\" variant",
+    //         root.ident,
+    //         ele.ident
+    //     )
+    // });
+
+    let variants = root
+        .variants
+        .iter()
+        .map(|var| var.ident.to_string().to_lowercase())
+        .collect();
+
+    let op = NixEntry::Opt(NixOption::new(
+        root.ident.to_string(),
+        NixType::Enum(variants),
+    ));
+
+    Ok(vec![op])
 }
 
 fn struct_to_submodules(
     root: &ItemStruct,
     structs: &ItemMap,
     visited: &mut HashSet<String>,
-) -> anyhow::Result<Vec<Submodule>> {
+) -> anyhow::Result<Vec<NixEntry>> {
     let mut submodules = Vec::new();
 
     let mut submodule = Submodule {
@@ -146,43 +209,78 @@ fn struct_to_submodules(
         };
 
         let segments = &type_path.path.segments;
-        let type_ident = &segments[0].ident;
+        let type_ident = &segments.first().unwrap().ident;
 
-        let field_ident = field.ident.as_ref().unwrap_or(&root.ident);
+        let field_ident = field.ident.as_ref().unwrap_or(&root.ident).to_string();
         let option = if let Some(submodule) = structs.get(&type_ident.to_string()) {
             submodules.extend(item_to_submodules(submodule, structs, visited)?);
-            NixOption::new(
-                field_ident.to_string(),
-                NixType::Submodule(type_ident.to_string()),
-            )
+            NixOption::new(field_ident, NixType::Submodule(type_ident.to_string()))
         } else {
-            primitive_to_nix(field_ident, type_ident)
+            let (ty, deps) = primitive_to_nix(&field.ty);
+            for dep in deps {
+                if let Some(submodule) = structs.get(&dep) {
+                    submodules.extend(item_to_submodules(submodule, structs, visited)?);
+                } else {
+                    eprintln!("[WARN] unhandled dep {dep} for {field_ident}");
+                }
+            }
+            NixOption::new(field_ident, ty)
         };
         submodule.options.push(option);
     }
 
-    submodules.push(submodule);
+    submodules.push(NixEntry::Submodule(submodule));
 
     Ok(submodules)
 }
 
-fn primitive_to_nix(field_ident: &Ident, type_ident: &Ident) -> NixOption {
-    let ty = match type_ident.to_string().as_str() {
-        "String" => NixType::String,
-        "Option" => NixType::NullOr,
+fn primitive_to_nix(ty: &Type) -> (NixType, Vec<String>) {
+    let mut deps = Vec::new();
+    let Type::Path(path_type) = ty else {
+        unreachable!("unhandled type {:#?}", ty);
+    };
+
+    let head = path_type
+        .path
+        .segments
+        .first()
+        .expect("missing head of path");
+
+    let ty_ident = head.ident.to_string();
+    let ty = match ty_ident.as_str() {
+        "String" | "PathBuf" | "Regex" => NixType::String,
+        "i32" => NixType::I32,
+        "i16" => NixType::I16,
+        "u32" => NixType::U32,
         "u16" => NixType::U16,
         "u8" => NixType::U8,
         "bool" => NixType::Bool,
         "f32" => NixType::Float,
         "f64" => NixType::Float,
         "FloatOrInt" => NixType::Float,
-        "Vec" => NixType::List,
-        ty => unreachable!(
-            "unhandled item type \"{}\" for {}",
-            ty,
-            field_ident.to_string()
-        ),
+        "Option" | "Vec" => {
+            if let PathArguments::AngleBracketed(ref arg) = head.arguments
+                && let GenericArgument::Type(inner_ty) =
+                    arg.args.first().expect("missing type in vec")
+            {
+                let (ty, inner_deps) = primitive_to_nix(inner_ty);
+                deps.extend(inner_deps);
+                let inner_nix = Box::new(ty);
+                if ty_ident == "Option" {
+                    NixType::NullOr(inner_nix)
+                } else {
+                    NixType::List(inner_nix)
+                }
+            } else {
+                unreachable!("unhandled field type {:?}", ty);
+            }
+        }
+
+        ty => {
+            deps.push(ty.into());
+            NixType::Submodule(ty.into())
+        }
     };
 
-    NixOption::new(field_ident.to_string(), ty)
+    (ty, deps)
 }

@@ -32,16 +32,16 @@ fn main() -> anyhow::Result<()> {
 
     let nix_config_type = generate_config_type(&structs)?;
 
-    let type_path = "types.nix";
+    let type_path = "generated/types.nix";
     let mut type_file = File::create(type_path)?;
     let (status, nix_config_type) =
         alejandra::format::in_memory(type_path.to_string(), nix_config_type);
 
+    type_file.write_all(nix_config_type.as_bytes())?;
+
     if let alejandra::format::Status::Error(err) = status {
         return Err(anyhow!("Failed to format {}: {}", type_path, err));
     }
-
-    type_file.write_all(nix_config_type.as_bytes())?;
 
     Ok(())
 }
