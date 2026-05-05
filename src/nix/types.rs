@@ -31,6 +31,7 @@ pub enum NixType {
 pub struct NixOption {
     name: String,
     ty: NixType,
+    default: Option<String>,
 }
 
 #[derive(Debug, Clone)]
@@ -103,7 +104,17 @@ impl Display for NixOption {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match &self.ty {
             NixType::Reference(s) => write!(f, "{} = {s};", self.name),
-            ty => write!(f, "{} = mkOption {{ type = {}; }};", self.name, ty),
+            ty => write!(
+                f,
+                "{} = mkOption {{ type = {}; {}}};",
+                self.name,
+                ty,
+                if let Some(default) = self.default.clone() {
+                    format!("default = {};", default)
+                } else {
+                    "".into()
+                }
+            ),
         }
     }
 }
@@ -112,12 +123,12 @@ impl Display for Submodule {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(
             f,
-            "{} = submodule {{ options = {{ {} }}; }};",
+            "{} = submodule {{ options = {{ {} }};}};",
             self.name,
             self.options
                 .iter()
                 .map(|op| op.to_string())
-                .collect::<String>()
+                .collect::<String>(),
         )
     }
 }
@@ -126,6 +137,11 @@ impl NixOption {
     pub fn new(name: &str, ty: NixType) -> NixOption {
         NixOption {
             name: name.to_owned(),
+            default: match ty {
+                NixType::List(_) => Some("[]".into()),
+                NixType::Submodule(_) => Some("{}".into()),
+                _ => None,
+            },
             ty,
         }
     }
@@ -270,7 +286,14 @@ impl NixTypeParser {
             submodule.options.push(option);
         }
 
-        nix_values.push(NixValue::Submodule(submodule));
+        if submodule.options.len() == 1 {
+            nix_values.push(NixValue::Opt(NixOption::new(
+                &submodule.name,
+                submodule.options.first().unwrap().ty.clone(),
+            )));
+        } else {
+            nix_values.push(NixValue::Submodule(submodule));
+        }
 
         Ok(nix_values)
     }
