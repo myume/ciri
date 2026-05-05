@@ -142,6 +142,8 @@ impl NixOption {
     }
 }
 
+type NixDeclarations = BTreeMap<String, NixValue>;
+
 pub struct NixTypeParser {
     structs: ItemMap,
     visited: HashSet<String>,
@@ -194,7 +196,7 @@ impl NixTypeParser {
         ))
     }
 
-    fn item_to_submodules(&mut self, root: &Item) -> anyhow::Result<BTreeMap<String, NixValue>> {
+    fn item_to_submodules(&mut self, root: &Item) -> anyhow::Result<NixDeclarations> {
         match root {
             Item::Enum(item_enum) => self.enum_to_option(item_enum),
             Item::Struct(item_struct) => self.struct_to_submodules(item_struct),
@@ -202,7 +204,7 @@ impl NixTypeParser {
         }
     }
 
-    fn enum_to_option(&mut self, root: &ItemEnum) -> anyhow::Result<BTreeMap<String, NixValue>> {
+    fn enum_to_option(&mut self, root: &ItemEnum) -> anyhow::Result<NixDeclarations> {
         let enum_name = root.ident.to_string();
         if self.visited.contains(&enum_name) {
             return Ok(BTreeMap::new());
@@ -225,15 +227,13 @@ impl NixTypeParser {
             .map(|var| var.ident.to_string().to_lowercase())
             .collect();
 
-        let op = NixValue::Opt(NixOption::new(NixType::Enum(variants)));
-
-        Ok(BTreeMap::from([(root.ident.to_string(), op)]))
+        Ok(BTreeMap::from([(
+            root.ident.to_string(),
+            NixValue::Opt(NixOption::new(NixType::Enum(variants))),
+        )]))
     }
 
-    fn struct_to_submodules(
-        &mut self,
-        root: &ItemStruct,
-    ) -> anyhow::Result<BTreeMap<String, NixValue>> {
+    fn struct_to_submodules(&mut self, root: &ItemStruct) -> anyhow::Result<NixDeclarations> {
         let mut nix_values = BTreeMap::new();
 
         let mut submodule = Submodule {
