@@ -92,7 +92,7 @@ impl Display for NixType {
                 NixType::I32 => "ints.s32".to_string(),
                 NixType::I16 => "ints.s16".to_string(),
                 NixType::Submodule(s) => s.to_string(),
-                NixType::Reference(_) => unreachable!("should be handled by option"),
+                NixType::Reference(_) => unreachable!("should be handled in option"),
             }
         )
     }
@@ -104,7 +104,10 @@ impl Display for NixOption {
             NixType::Reference(s) => write!(f, "{s}"),
             ty => write!(
                 f,
-                "mkOption {{ type = {}; {}}}",
+                "mkOption {{
+                    type = {}; 
+                    {}
+                }}",
                 ty,
                 if let Some(default) = self.default.clone() {
                     format!("default = {};", default)
@@ -120,7 +123,11 @@ impl Display for Submodule {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(
             f,
-            "submodule {{ options = {{ {} }};}}",
+            "submodule {{
+                options = {{
+                    {}
+                }};
+            }}",
             self.options
                 .iter()
                 .map(|(name, opt)| format!("{} = {};", name, opt))
@@ -181,7 +188,7 @@ impl NixTypeParser {
                 .clone(),
         )?;
 
-        let transformations = [|decl| self.collapse_wrapped_types(decl)];
+        let transformations = [NixTypeParser::collapse_wrapped_types];
         for transform in transformations {
             submodules = transform(submodules);
         }
@@ -201,7 +208,7 @@ impl NixTypeParser {
         ))
     }
 
-    pub fn collapse_wrapped_types(&self, input: NixDeclarations) -> NixDeclarations {
+    pub fn collapse_wrapped_types(input: NixDeclarations) -> NixDeclarations {
         let mut collapsed_types = HashSet::new();
         input
             .into_iter()
@@ -249,15 +256,7 @@ impl NixTypeParser {
         }
         self.visited.insert(enum_name);
 
-        // TODO: figure out how to handle wrapped values
-        root.variants.iter().for_each(|ele| {
-            if !ele.fields.is_empty() {
-                warn!(
-                    "\"{}\" enum contains field in \"{}\" variant",
-                    root.ident, ele.ident
-                )
-            }
-        });
+        let is_data_enum = root.variants.iter().any(|ele| !ele.fields.is_empty());
 
         let variants = root
             .variants

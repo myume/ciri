@@ -199,7 +199,9 @@ in
     Animation = submodule {
       options = {
         kind = Kind;
-        off = mkOption {type = bool;};
+        off = mkOption {
+          type = bool;
+        };
       };
     };
     Animations = submodule {
@@ -207,11 +209,15 @@ in
         config_notification_open_close = ConfigNotificationOpenCloseAnim;
         exit_confirmation_open_close = ExitConfirmationOpenCloseAnim;
         horizontal_view_movement = HorizontalViewMovementAnim;
-        off = mkOption {type = bool;};
+        off = mkOption {
+          type = bool;
+        };
         overview_open_close = OverviewOpenCloseAnim;
         recent_windows_close = RecentWindowsCloseAnim;
         screenshot_ui_open = ScreenshotUiOpenAnim;
-        slowdown = mkOption {type = float;};
+        slowdown = mkOption {
+          type = float;
+        };
         window_close = mkOption {
           type = WindowCloseAnim;
           default = {};
@@ -230,24 +236,42 @@ in
     };
     BackgroundEffectRule = submodule {
       options = {
-        blur = mkOption {type = nullOr bool;};
-        noise = mkOption {type = nullOr float;};
-        saturation = mkOption {type = nullOr float;};
-        xray = mkOption {type = nullOr bool;};
+        blur = mkOption {
+          type = nullOr bool;
+        };
+        noise = mkOption {
+          type = nullOr float;
+        };
+        saturation = mkOption {
+          type = nullOr float;
+        };
+        xray = mkOption {
+          type = nullOr bool;
+        };
       };
     };
     Bind = submodule {
       options = {
         action = Action;
-        allow_inhibiting = mkOption {type = bool;};
-        allow_when_locked = mkOption {type = bool;};
-        cooldown = mkOption {type = nullOr ints.u32;};
-        hotkey_overlay_title = mkOption {type = nullOr nullOr str;};
+        allow_inhibiting = mkOption {
+          type = bool;
+        };
+        allow_when_locked = mkOption {
+          type = bool;
+        };
+        cooldown = mkOption {
+          type = nullOr ints.u32;
+        };
+        hotkey_overlay_title = mkOption {
+          type = nullOr nullOr str;
+        };
         key = mkOption {
           type = Key;
           default = {};
         };
-        repeat = mkOption {type = bool;};
+        repeat = mkOption {
+          type = bool;
+        };
       };
     };
     Binds = mkOption {
@@ -262,11 +286,21 @@ in
     };
     Blur = submodule {
       options = {
-        noise = mkOption {type = float;};
-        off = mkOption {type = bool;};
-        offset = mkOption {type = float;};
-        passes = mkOption {type = ints.u8;};
-        saturation = mkOption {type = float;};
+        noise = mkOption {
+          type = float;
+        };
+        off = mkOption {
+          type = bool;
+        };
+        offset = mkOption {
+          type = float;
+        };
+        passes = mkOption {
+          type = ints.u8;
+        };
+        saturation = mkOption {
+          type = float;
+        };
       };
     };
     Border = submodule {
@@ -275,32 +309,60 @@ in
           type = Color;
           default = {};
         };
-        active_gradient = mkOption {type = nullOr Gradient;};
+        active_gradient = mkOption {
+          type = nullOr Gradient;
+        };
         inactive_color = mkOption {
           type = Color;
           default = {};
         };
-        inactive_gradient = mkOption {type = nullOr Gradient;};
-        off = mkOption {type = bool;};
+        inactive_gradient = mkOption {
+          type = nullOr Gradient;
+        };
+        off = mkOption {
+          type = bool;
+        };
         urgent_color = mkOption {
           type = Color;
           default = {};
         };
-        urgent_gradient = mkOption {type = nullOr Gradient;};
-        width = mkOption {type = float;};
+        urgent_gradient = mkOption {
+          type = nullOr Gradient;
+        };
+        width = mkOption {
+          type = float;
+        };
       };
     };
     BorderRule = submodule {
       options = {
-        active_color = mkOption {type = nullOr Color;};
-        active_gradient = mkOption {type = nullOr Gradient;};
-        inactive_color = mkOption {type = nullOr Color;};
-        inactive_gradient = mkOption {type = nullOr Gradient;};
-        off = mkOption {type = bool;};
-        on = mkOption {type = bool;};
-        urgent_color = mkOption {type = nullOr Color;};
-        urgent_gradient = mkOption {type = nullOr Gradient;};
-        width = mkOption {type = nullOr float;};
+        active_color = mkOption {
+          type = nullOr Color;
+        };
+        active_gradient = mkOption {
+          type = nullOr Gradient;
+        };
+        inactive_color = mkOption {
+          type = nullOr Color;
+        };
+        inactive_gradient = mkOption {
+          type = nullOr Gradient;
+        };
+        off = mkOption {
+          type = bool;
+        };
+        on = mkOption {
+          type = bool;
+        };
+        urgent_color = mkOption {
+          type = nullOr Color;
+        };
+        urgent_gradient = mkOption {
+          type = nullOr Gradient;
+        };
+        width = mkOption {
+          type = nullOr float;
+        };
       };
     };
     CenterFocusedColumn = mkOption {
@@ -316,14 +378,27 @@ in
         "buttonareas"
       ];
     };
-    Clipboard =
-      submodule {options = {disable_primary = mkOption {type = bool;};};};
+    Clipboard = submodule {
+      options = {
+        disable_primary = mkOption {
+          type = bool;
+        };
+      };
+    };
     Color = submodule {
       options = {
-        a = mkOption {type = float;};
-        b = mkOption {type = float;};
-        g = mkOption {type = float;};
-        r = mkOption {type = float;};
+        a = mkOption {
+          type = float;
+        };
+        b = mkOption {
+          type = float;
+        };
+        g = mkOption {
+          type = float;
+        };
+        r = mkOption {
+          type = float;
+        };
       };
     };
     ColumnDisplay = mkOption {
@@ -385,7 +460,9 @@ in
           type = Overview;
           default = {};
         };
-        prefer_no_csd = mkOption {type = bool;};
+        prefer_no_csd = mkOption {
+          type = bool;
+        };
         recent_windows = mkOption {
           type = RecentWindows;
           default = {};
@@ -417,76 +494,157 @@ in
         };
       };
     };
-    ConfigNotification =
-      submodule {options = {disable_failed = mkOption {type = bool;};};};
+    ConfigNotification = submodule {
+      options = {
+        disable_failed = mkOption {
+          type = bool;
+        };
+      };
+    };
     ConfigNotificationOpenCloseAnim = mkOption {
       type = Animation;
       default = {};
     };
     ConfiguredMode = submodule {
       options = {
-        height = mkOption {type = ints.u16;};
-        refresh = mkOption {type = nullOr float;};
-        width = mkOption {type = ints.u16;};
+        height = mkOption {
+          type = ints.u16;
+        };
+        refresh = mkOption {
+          type = nullOr float;
+        };
+        width = mkOption {
+          type = ints.u16;
+        };
       };
     };
     CornerRadius = submodule {
       options = {
-        bottom_left = mkOption {type = float;};
-        bottom_right = mkOption {type = float;};
-        top_left = mkOption {type = float;};
-        top_right = mkOption {type = float;};
+        bottom_left = mkOption {
+          type = float;
+        };
+        bottom_right = mkOption {
+          type = float;
+        };
+        top_left = mkOption {
+          type = float;
+        };
+        top_right = mkOption {
+          type = float;
+        };
       };
     };
     Cursor = submodule {
       options = {
-        hide_after_inactive_ms = mkOption {type = nullOr ints.u32;};
-        hide_when_typing = mkOption {type = bool;};
-        xcursor_size = mkOption {type = ints.u8;};
-        xcursor_theme = mkOption {type = str;};
+        hide_after_inactive_ms = mkOption {
+          type = nullOr ints.u32;
+        };
+        hide_when_typing = mkOption {
+          type = bool;
+        };
+        xcursor_size = mkOption {
+          type = ints.u8;
+        };
+        xcursor_theme = mkOption {
+          type = str;
+        };
       };
     };
     Debug = submodule {
       options = {
-        dbus_interfaces_in_non_session_instances = mkOption {type = bool;};
-        deactivate_unfocused_windows = mkOption {type = bool;};
-        disable_cursor_plane = mkOption {type = bool;};
-        disable_direct_scanout = mkOption {type = bool;};
-        disable_monitor_names = mkOption {type = bool;};
-        disable_resize_throttling = mkOption {type = bool;};
-        disable_transactions = mkOption {type = bool;};
-        emulate_zero_presentation_time = mkOption {type = bool;};
-        enable_overlay_planes = mkOption {type = bool;};
-        force_disable_connectors_on_resume = mkOption {type = bool;};
-        force_pipewire_invalid_modifier = mkOption {type = bool;};
-        honor_xdg_activation_with_invalid_serial = mkOption {type = bool;};
+        dbus_interfaces_in_non_session_instances = mkOption {
+          type = bool;
+        };
+        deactivate_unfocused_windows = mkOption {
+          type = bool;
+        };
+        disable_cursor_plane = mkOption {
+          type = bool;
+        };
+        disable_direct_scanout = mkOption {
+          type = bool;
+        };
+        disable_monitor_names = mkOption {
+          type = bool;
+        };
+        disable_resize_throttling = mkOption {
+          type = bool;
+        };
+        disable_transactions = mkOption {
+          type = bool;
+        };
+        emulate_zero_presentation_time = mkOption {
+          type = bool;
+        };
+        enable_overlay_planes = mkOption {
+          type = bool;
+        };
+        force_disable_connectors_on_resume = mkOption {
+          type = bool;
+        };
+        force_pipewire_invalid_modifier = mkOption {
+          type = bool;
+        };
+        honor_xdg_activation_with_invalid_serial = mkOption {
+          type = bool;
+        };
         ignored_drm_devices = mkOption {
           type = listOf str;
           default = [];
         };
-        keep_laptop_panel_on_when_lid_is_closed = mkOption {type = bool;};
-        keep_max_bpc_unchanged = mkOption {type = bool;};
-        preview_render = mkOption {type = nullOr PreviewRender;};
-        render_drm_device = mkOption {type = nullOr str;};
-        restrict_primary_scanout_to_matching_format = mkOption {type = bool;};
-        skip_cursor_only_updates_during_vrr = mkOption {type = bool;};
-        strict_new_window_focus_policy = mkOption {type = bool;};
-        wait_for_frame_completion_before_queueing = mkOption {type = bool;};
+        keep_laptop_panel_on_when_lid_is_closed = mkOption {
+          type = bool;
+        };
+        keep_max_bpc_unchanged = mkOption {
+          type = bool;
+        };
+        preview_render = mkOption {
+          type = nullOr PreviewRender;
+        };
+        render_drm_device = mkOption {
+          type = nullOr str;
+        };
+        restrict_primary_scanout_to_matching_format = mkOption {
+          type = bool;
+        };
+        skip_cursor_only_updates_during_vrr = mkOption {
+          type = bool;
+        };
+        strict_new_window_focus_policy = mkOption {
+          type = bool;
+        };
+        wait_for_frame_completion_before_queueing = mkOption {
+          type = bool;
+        };
       };
     };
-    DefaultPresetSize = mkOption {type = nullOr PresetSize;};
+    DefaultPresetSize = mkOption {
+      type = nullOr PresetSize;
+    };
     DndEdgeViewScroll = submodule {
       options = {
-        delay_ms = mkOption {type = ints.u16;};
-        max_speed = mkOption {type = float;};
-        trigger_width = mkOption {type = float;};
+        delay_ms = mkOption {
+          type = ints.u16;
+        };
+        max_speed = mkOption {
+          type = float;
+        };
+        trigger_width = mkOption {
+          type = float;
+        };
       };
     };
     DndEdgeWorkspaceSwitch = submodule {
       options = {
-        delay_ms = mkOption {type = ints.u16;};
-        max_speed = mkOption {type = float;};
-        trigger_height = mkOption {type = float;};
+        delay_ms = mkOption {
+          type = ints.u16;
+        };
+        max_speed = mkOption {
+          type = float;
+        };
+        trigger_height = mkOption {
+          type = float;
+        };
       };
     };
     Environment = mkOption {
@@ -495,43 +653,68 @@ in
     };
     EnvironmentVariable = submodule {
       options = {
-        name = mkOption {type = str;};
-        value = mkOption {type = nullOr str;};
+        name = mkOption {
+          type = str;
+        };
+        value = mkOption {
+          type = nullOr str;
+        };
       };
     };
     ExitConfirmationOpenCloseAnim = mkOption {
       type = Animation;
       default = {};
     };
-    Flag = mkOption {type = bool;};
+    Flag = mkOption {
+      type = bool;
+    };
     FloatingPosition = submodule {
       options = {
         relative_to = RelativeTo;
-        x = mkOption {type = float;};
-        y = mkOption {type = float;};
+        x = mkOption {
+          type = float;
+        };
+        y = mkOption {
+          type = float;
+        };
       };
     };
-    FocusFollowsMouse =
-      submodule {options = {max_scroll_amount = mkOption {type = nullOr Percent;};};};
+    FocusFollowsMouse = submodule {
+      options = {
+        max_scroll_amount = mkOption {
+          type = nullOr Percent;
+        };
+      };
+    };
     FocusRing = submodule {
       options = {
         active_color = mkOption {
           type = Color;
           default = {};
         };
-        active_gradient = mkOption {type = nullOr Gradient;};
+        active_gradient = mkOption {
+          type = nullOr Gradient;
+        };
         inactive_color = mkOption {
           type = Color;
           default = {};
         };
-        inactive_gradient = mkOption {type = nullOr Gradient;};
-        off = mkOption {type = bool;};
+        inactive_gradient = mkOption {
+          type = nullOr Gradient;
+        };
+        off = mkOption {
+          type = bool;
+        };
         urgent_color = mkOption {
           type = Color;
           default = {};
         };
-        urgent_gradient = mkOption {type = nullOr Gradient;};
-        width = mkOption {type = float;};
+        urgent_gradient = mkOption {
+          type = nullOr Gradient;
+        };
+        width = mkOption {
+          type = float;
+        };
       };
     };
     Gestures = submodule {
@@ -552,7 +735,9 @@ in
     };
     Gradient = submodule {
       options = {
-        angle = mkOption {type = ints.s16;};
+        angle = mkOption {
+          type = ints.s16;
+        };
         from = mkOption {
           type = Color;
           default = {};
@@ -600,17 +785,31 @@ in
     };
     HotCorners = submodule {
       options = {
-        bottom_left = mkOption {type = bool;};
-        bottom_right = mkOption {type = bool;};
-        off = mkOption {type = bool;};
-        top_left = mkOption {type = bool;};
-        top_right = mkOption {type = bool;};
+        bottom_left = mkOption {
+          type = bool;
+        };
+        bottom_right = mkOption {
+          type = bool;
+        };
+        off = mkOption {
+          type = bool;
+        };
+        top_left = mkOption {
+          type = bool;
+        };
+        top_right = mkOption {
+          type = bool;
+        };
       };
     };
     HotkeyOverlay = submodule {
       options = {
-        hide_not_bound = mkOption {type = bool;};
-        skip_at_startup = mkOption {type = bool;};
+        hide_not_bound = mkOption {
+          type = bool;
+        };
+        skip_at_startup = mkOption {
+          type = bool;
+        };
       };
     };
     HueInterpolation = mkOption {
@@ -623,14 +822,22 @@ in
     };
     Input = submodule {
       options = {
-        disable_power_key_handling = mkOption {type = bool;};
-        focus_follows_mouse = mkOption {type = nullOr FocusFollowsMouse;};
+        disable_power_key_handling = mkOption {
+          type = bool;
+        };
+        focus_follows_mouse = mkOption {
+          type = nullOr FocusFollowsMouse;
+        };
         keyboard = mkOption {
           type = Keyboard;
           default = {};
         };
-        mod_key = mkOption {type = nullOr ModKey;};
-        mod_key_nested = mkOption {type = nullOr ModKey;};
+        mod_key = mkOption {
+          type = nullOr ModKey;
+        };
+        mod_key_nested = mkOption {
+          type = nullOr ModKey;
+        };
         mouse = mkOption {
           type = Mouse;
           default = {};
@@ -655,8 +862,12 @@ in
           type = Trackpoint;
           default = {};
         };
-        warp_mouse_to_focus = mkOption {type = nullOr WarpMouseToFocus;};
-        workspace_auto_back_and_forth = mkOption {type = bool;};
+        warp_mouse_to_focus = mkOption {
+          type = nullOr WarpMouseToFocus;
+        };
+        workspace_auto_back_and_forth = mkOption {
+          type = bool;
+        };
       };
     };
     InsertHint = submodule {
@@ -665,16 +876,28 @@ in
           type = Color;
           default = {};
         };
-        gradient = mkOption {type = nullOr Gradient;};
-        off = mkOption {type = bool;};
+        gradient = mkOption {
+          type = nullOr Gradient;
+        };
+        off = mkOption {
+          type = bool;
+        };
       };
     };
     InsertHintPart = submodule {
       options = {
-        color = mkOption {type = nullOr Color;};
-        gradient = mkOption {type = nullOr Gradient;};
-        off = mkOption {type = bool;};
-        on = mkOption {type = bool;};
+        color = mkOption {
+          type = nullOr Color;
+        };
+        gradient = mkOption {
+          type = nullOr Gradient;
+        };
+        off = mkOption {
+          type = bool;
+        };
+        on = mkOption {
+          type = bool;
+        };
       };
     };
     Key = submodule {
@@ -695,9 +918,15 @@ in
     };
     Keyboard = submodule {
       options = {
-        numlock = mkOption {type = bool;};
-        repeat_delay = mkOption {type = ints.u16;};
-        repeat_rate = mkOption {type = ints.u8;};
+        numlock = mkOption {
+          type = bool;
+        };
+        repeat_delay = mkOption {
+          type = ints.u16;
+        };
+        repeat_rate = mkOption {
+          type = ints.u8;
+        };
         track_layout = TrackLayout;
         xkb = mkOption {
           type = Xkb;
@@ -713,23 +942,33 @@ in
     };
     LayerRule = submodule {
       options = {
-        baba_is_float = mkOption {type = nullOr bool;};
+        baba_is_float = mkOption {
+          type = nullOr bool;
+        };
         background_effect = mkOption {
           type = BackgroundEffectRule;
           default = {};
         };
-        block_out_from = mkOption {type = nullOr BlockOutFrom;};
+        block_out_from = mkOption {
+          type = nullOr BlockOutFrom;
+        };
         excludes = mkOption {
           type = listOf Match;
           default = [];
         };
-        geometry_corner_radius = mkOption {type = nullOr CornerRadius;};
+        geometry_corner_radius = mkOption {
+          type = nullOr CornerRadius;
+        };
         matches = mkOption {
           type = listOf Match;
           default = [];
         };
-        opacity = mkOption {type = nullOr float;};
-        place_within_backdrop = mkOption {type = nullOr bool;};
+        opacity = mkOption {
+          type = nullOr float;
+        };
+        place_within_backdrop = mkOption {
+          type = nullOr bool;
+        };
         popups = mkOption {
           type = PopupsRule;
           default = {};
@@ -742,7 +981,9 @@ in
     };
     Layout = submodule {
       options = {
-        always_center_single_column = mkOption {type = bool;};
+        always_center_single_column = mkOption {
+          type = bool;
+        };
         background_color = mkOption {
           type = Color;
           default = {};
@@ -753,13 +994,19 @@ in
         };
         center_focused_column = CenterFocusedColumn;
         default_column_display = ColumnDisplay;
-        default_column_width = mkOption {type = nullOr PresetSize;};
-        empty_workspace_above_first = mkOption {type = bool;};
+        default_column_width = mkOption {
+          type = nullOr PresetSize;
+        };
+        empty_workspace_above_first = mkOption {
+          type = bool;
+        };
         focus_ring = mkOption {
           type = FocusRing;
           default = {};
         };
-        gaps = mkOption {type = float;};
+        gaps = mkOption {
+          type = float;
+        };
         insert_hint = mkOption {
           type = InsertHint;
           default = {};
@@ -788,34 +1035,82 @@ in
     };
     LayoutPart = submodule {
       options = {
-        always_center_single_column = mkOption {type = nullOr Flag;};
-        background_color = mkOption {type = nullOr Color;};
-        border = mkOption {type = nullOr BorderRule;};
-        center_focused_column = mkOption {type = nullOr CenterFocusedColumn;};
-        default_column_display = mkOption {type = nullOr ColumnDisplay;};
-        default_column_width = mkOption {type = nullOr DefaultPresetSize;};
-        empty_workspace_above_first = mkOption {type = nullOr Flag;};
-        focus_ring = mkOption {type = nullOr BorderRule;};
-        gaps = mkOption {type = nullOr float;};
-        insert_hint = mkOption {type = nullOr InsertHintPart;};
-        preset_column_widths = mkOption {type = nullOr listOf PresetSize;};
-        preset_window_heights = mkOption {type = nullOr listOf PresetSize;};
-        shadow = mkOption {type = nullOr ShadowRule;};
-        struts = mkOption {type = nullOr Struts;};
-        tab_indicator = mkOption {type = nullOr TabIndicatorPart;};
+        always_center_single_column = mkOption {
+          type = nullOr Flag;
+        };
+        background_color = mkOption {
+          type = nullOr Color;
+        };
+        border = mkOption {
+          type = nullOr BorderRule;
+        };
+        center_focused_column = mkOption {
+          type = nullOr CenterFocusedColumn;
+        };
+        default_column_display = mkOption {
+          type = nullOr ColumnDisplay;
+        };
+        default_column_width = mkOption {
+          type = nullOr DefaultPresetSize;
+        };
+        empty_workspace_above_first = mkOption {
+          type = nullOr Flag;
+        };
+        focus_ring = mkOption {
+          type = nullOr BorderRule;
+        };
+        gaps = mkOption {
+          type = nullOr float;
+        };
+        insert_hint = mkOption {
+          type = nullOr InsertHintPart;
+        };
+        preset_column_widths = mkOption {
+          type = nullOr listOf PresetSize;
+        };
+        preset_window_heights = mkOption {
+          type = nullOr listOf PresetSize;
+        };
+        shadow = mkOption {
+          type = nullOr ShadowRule;
+        };
+        struts = mkOption {
+          type = nullOr Struts;
+        };
+        tab_indicator = mkOption {
+          type = nullOr TabIndicatorPart;
+        };
       };
     };
     Match = submodule {
       options = {
-        app_id = mkOption {type = nullOr RegexEq;};
-        at_startup = mkOption {type = nullOr bool;};
-        is_active = mkOption {type = nullOr bool;};
-        is_active_in_column = mkOption {type = nullOr bool;};
-        is_floating = mkOption {type = nullOr bool;};
-        is_focused = mkOption {type = nullOr bool;};
-        is_urgent = mkOption {type = nullOr bool;};
-        is_window_cast_target = mkOption {type = nullOr bool;};
-        title = mkOption {type = nullOr RegexEq;};
+        app_id = mkOption {
+          type = nullOr RegexEq;
+        };
+        at_startup = mkOption {
+          type = nullOr bool;
+        };
+        is_active = mkOption {
+          type = nullOr bool;
+        };
+        is_active_in_column = mkOption {
+          type = nullOr bool;
+        };
+        is_floating = mkOption {
+          type = nullOr bool;
+        };
+        is_focused = mkOption {
+          type = nullOr bool;
+        };
+        is_urgent = mkOption {
+          type = nullOr bool;
+        };
+        is_window_cast_target = mkOption {
+          type = nullOr bool;
+        };
+        title = mkOption {
+          type = nullOr RegexEq;
+        };
       };
     };
     ModKey = mkOption {
@@ -830,7 +1125,9 @@ in
     };
     Mode = submodule {
       options = {
-        custom = mkOption {type = bool;};
+        custom = mkOption {
+          type = bool;
+        };
         mode = mkOption {
           type = ConfiguredMode;
           default = {};
@@ -839,31 +1136,69 @@ in
     };
     Modeline = submodule {
       options = {
-        clock = mkOption {type = float;};
-        hdisplay = mkOption {type = ints.u16;};
-        hsync_end = mkOption {type = ints.u16;};
+        clock = mkOption {
+          type = float;
+        };
+        hdisplay = mkOption {
+          type = ints.u16;
+        };
+        hsync_end = mkOption {
+          type = ints.u16;
+        };
         hsync_polarity = HSyncPolarity;
-        hsync_start = mkOption {type = ints.u16;};
-        htotal = mkOption {type = ints.u16;};
-        vdisplay = mkOption {type = ints.u16;};
-        vsync_end = mkOption {type = ints.u16;};
+        hsync_start = mkOption {
+          type = ints.u16;
+        };
+        htotal = mkOption {
+          type = ints.u16;
+        };
+        vdisplay = mkOption {
+          type = ints.u16;
+        };
+        vsync_end = mkOption {
+          type = ints.u16;
+        };
         vsync_polarity = VSyncPolarity;
-        vsync_start = mkOption {type = ints.u16;};
-        vtotal = mkOption {type = ints.u16;};
+        vsync_start = mkOption {
+          type = ints.u16;
+        };
+        vtotal = mkOption {
+          type = ints.u16;
+        };
       };
     };
     Mouse = submodule {
       options = {
-        accel_profile = mkOption {type = nullOr AccelProfile;};
-        accel_speed = mkOption {type = float;};
-        left_handed = mkOption {type = bool;};
-        middle_emulation = mkOption {type = bool;};
-        natural_scroll = mkOption {type = bool;};
-        off = mkOption {type = bool;};
-        scroll_button = mkOption {type = nullOr ints.u32;};
-        scroll_button_lock = mkOption {type = bool;};
-        scroll_factor = mkOption {type = nullOr ScrollFactor;};
-        scroll_method = mkOption {type = nullOr ScrollMethod;};
+        accel_profile = mkOption {
+          type = nullOr AccelProfile;
+        };
+        accel_speed = mkOption {
+          type = float;
+        };
+        left_handed = mkOption {
+          type = bool;
+        };
+        middle_emulation = mkOption {
+          type = bool;
+        };
+        natural_scroll = mkOption {
+          type = bool;
+        };
+        off = mkOption {
+          type = bool;
+        };
+        scroll_button = mkOption {
+          type = nullOr ints.u32;
+        };
+        scroll_button_lock = mkOption {
+          type = bool;
+        };
+        scroll_factor = mkOption {
+          type = nullOr ScrollFactor;
+        };
+        scroll_method = mkOption {
+          type = nullOr ScrollMethod;
+        };
       };
     };
     MruHighlight = submodule {
@@ -872,8 +1207,12 @@ in
           type = Color;
           default = {};
         };
-        corner_radius = mkOption {type = float;};
-        padding = mkOption {type = float;};
+        corner_radius = mkOption {
+          type = float;
+        };
+        padding = mkOption {
+          type = float;
+        };
         urgent_color = mkOption {
           type = Color;
           default = {};
@@ -882,25 +1221,53 @@ in
     };
     MruPreviews = submodule {
       options = {
-        max_height = mkOption {type = float;};
-        max_scale = mkOption {type = float;};
+        max_height = mkOption {
+          type = float;
+        };
+        max_scale = mkOption {
+          type = float;
+        };
       };
     };
     Output = submodule {
       options = {
-        backdrop_color = mkOption {type = nullOr Color;};
-        background_color = mkOption {type = nullOr Color;};
-        focus_at_startup = mkOption {type = bool;};
-        hot_corners = mkOption {type = nullOr HotCorners;};
-        layout = mkOption {type = nullOr LayoutPart;};
-        mode = mkOption {type = nullOr Mode;};
-        modeline = mkOption {type = nullOr Modeline;};
-        name = mkOption {type = str;};
-        off = mkOption {type = bool;};
-        position = mkOption {type = nullOr Position;};
-        scale = mkOption {type = nullOr float;};
+        backdrop_color = mkOption {
+          type = nullOr Color;
+        };
+        background_color = mkOption {
+          type = nullOr Color;
+        };
+        focus_at_startup = mkOption {
+          type = bool;
+        };
+        hot_corners = mkOption {
+          type = nullOr HotCorners;
+        };
+        layout = mkOption {
+          type = nullOr LayoutPart;
+        };
+        mode = mkOption {
+          type = nullOr Mode;
+        };
+        modeline = mkOption {
+          type = nullOr Modeline;
+        };
+        name = mkOption {
+          type = str;
+        };
+        off = mkOption {
+          type = bool;
+        };
+        position = mkOption {
+          type = nullOr Position;
+        };
+        scale = mkOption {
+          type = nullOr float;
+        };
         transform = Transform;
-        variable_refresh_rate = mkOption {type = nullOr Vrr;};
+        variable_refresh_rate = mkOption {
+          type = nullOr Vrr;
+        };
       };
     };
     Outputs = mkOption {
@@ -917,28 +1284,40 @@ in
           type = WorkspaceShadow;
           default = {};
         };
-        zoom = mkOption {type = float;};
+        zoom = mkOption {
+          type = float;
+        };
       };
     };
     OverviewOpenCloseAnim = mkOption {
       type = Animation;
       default = {};
     };
-    Percent = mkOption {type = float;};
+    Percent = mkOption {
+      type = float;
+    };
     PopupsRule = submodule {
       options = {
         background_effect = mkOption {
           type = BackgroundEffectRule;
           default = {};
         };
-        geometry_corner_radius = mkOption {type = nullOr CornerRadius;};
-        opacity = mkOption {type = nullOr float;};
+        geometry_corner_radius = mkOption {
+          type = nullOr CornerRadius;
+        };
+        opacity = mkOption {
+          type = nullOr float;
+        };
       };
     };
     Position = submodule {
       options = {
-        x = mkOption {type = ints.s32;};
-        y = mkOption {type = ints.s32;};
+        x = mkOption {
+          type = ints.s32;
+        };
+        y = mkOption {
+          type = ints.s32;
+        };
       };
     };
     PresetSize = mkOption {
@@ -959,13 +1338,19 @@ in
           type = listOf Bind;
           default = [];
         };
-        debounce_ms = mkOption {type = ints.u16;};
+        debounce_ms = mkOption {
+          type = ints.u16;
+        };
         highlight = mkOption {
           type = MruHighlight;
           default = {};
         };
-        on = mkOption {type = bool;};
-        open_delay_ms = mkOption {type = ints.u16;};
+        on = mkOption {
+          type = bool;
+        };
+        open_delay_ms = mkOption {
+          type = ints.u16;
+        };
         previews = mkOption {
           type = MruPreviews;
           default = {};
@@ -976,7 +1361,9 @@ in
       type = Animation;
       default = {};
     };
-    RegexEq = mkOption {type = str;};
+    RegexEq = mkOption {
+      type = str;
+    };
     RelativeTo = mkOption {
       type = enum [
         "topleft"
@@ -989,16 +1376,24 @@ in
         "right"
       ];
     };
-    ScreenshotPath = mkOption {type = nullOr str;};
+    ScreenshotPath = mkOption {
+      type = nullOr str;
+    };
     ScreenshotUiOpenAnim = mkOption {
       type = Animation;
       default = {};
     };
     ScrollFactor = submodule {
       options = {
-        base = mkOption {type = nullOr float;};
-        horizontal = mkOption {type = nullOr float;};
-        vertical = mkOption {type = nullOr float;};
+        base = mkOption {
+          type = nullOr float;
+        };
+        horizontal = mkOption {
+          type = nullOr float;
+        };
+        vertical = mkOption {
+          type = nullOr float;
+        };
       };
     };
     ScrollMethod = mkOption {
@@ -1015,33 +1410,63 @@ in
           type = Color;
           default = {};
         };
-        draw_behind_window = mkOption {type = bool;};
-        inactive_color = mkOption {type = nullOr Color;};
+        draw_behind_window = mkOption {
+          type = bool;
+        };
+        inactive_color = mkOption {
+          type = nullOr Color;
+        };
         offset = mkOption {
           type = ShadowOffset;
           default = {};
         };
-        on = mkOption {type = bool;};
-        softness = mkOption {type = float;};
-        spread = mkOption {type = float;};
+        on = mkOption {
+          type = bool;
+        };
+        softness = mkOption {
+          type = float;
+        };
+        spread = mkOption {
+          type = float;
+        };
       };
     };
     ShadowOffset = submodule {
       options = {
-        x = mkOption {type = float;};
-        y = mkOption {type = float;};
+        x = mkOption {
+          type = float;
+        };
+        y = mkOption {
+          type = float;
+        };
       };
     };
     ShadowRule = submodule {
       options = {
-        color = mkOption {type = nullOr Color;};
-        draw_behind_window = mkOption {type = nullOr bool;};
-        inactive_color = mkOption {type = nullOr Color;};
-        off = mkOption {type = bool;};
-        offset = mkOption {type = nullOr ShadowOffset;};
-        on = mkOption {type = bool;};
-        softness = mkOption {type = nullOr float;};
-        spread = mkOption {type = nullOr float;};
+        color = mkOption {
+          type = nullOr Color;
+        };
+        draw_behind_window = mkOption {
+          type = nullOr bool;
+        };
+        inactive_color = mkOption {
+          type = nullOr Color;
+        };
+        off = mkOption {
+          type = bool;
+        };
+        offset = mkOption {
+          type = nullOr ShadowOffset;
+        };
+        on = mkOption {
+          type = bool;
+        };
+        softness = mkOption {
+          type = nullOr float;
+        };
+        spread = mkOption {
+          type = nullOr float;
+        };
       };
     };
     SpawnAtStartup = submodule {
@@ -1052,14 +1477,27 @@ in
         };
       };
     };
-    SpawnShAtStartup =
-      submodule {options = {command = mkOption {type = str;};};};
+    SpawnShAtStartup = submodule {
+      options = {
+        command = mkOption {
+          type = str;
+        };
+      };
+    };
     Struts = submodule {
       options = {
-        bottom = mkOption {type = float;};
-        left = mkOption {type = float;};
-        right = mkOption {type = float;};
-        top = mkOption {type = float;};
+        bottom = mkOption {
+          type = float;
+        };
+        left = mkOption {
+          type = float;
+        };
+        right = mkOption {
+          type = float;
+        };
+        top = mkOption {
+          type = float;
+        };
       };
     };
     SwitchAction = submodule {
@@ -1072,54 +1510,125 @@ in
     };
     SwitchBinds = submodule {
       options = {
-        lid_close = mkOption {type = nullOr SwitchAction;};
-        lid_open = mkOption {type = nullOr SwitchAction;};
-        tablet_mode_off = mkOption {type = nullOr SwitchAction;};
-        tablet_mode_on = mkOption {type = nullOr SwitchAction;};
+        lid_close = mkOption {
+          type = nullOr SwitchAction;
+        };
+        lid_open = mkOption {
+          type = nullOr SwitchAction;
+        };
+        tablet_mode_off = mkOption {
+          type = nullOr SwitchAction;
+        };
+        tablet_mode_on = mkOption {
+          type = nullOr SwitchAction;
+        };
       };
     };
     TabIndicator = submodule {
       options = {
-        active_color = mkOption {type = nullOr Color;};
-        active_gradient = mkOption {type = nullOr Gradient;};
-        corner_radius = mkOption {type = float;};
-        gap = mkOption {type = float;};
-        gaps_between_tabs = mkOption {type = float;};
-        hide_when_single_tab = mkOption {type = bool;};
-        inactive_color = mkOption {type = nullOr Color;};
-        inactive_gradient = mkOption {type = nullOr Gradient;};
+        active_color = mkOption {
+          type = nullOr Color;
+        };
+        active_gradient = mkOption {
+          type = nullOr Gradient;
+        };
+        corner_radius = mkOption {
+          type = float;
+        };
+        gap = mkOption {
+          type = float;
+        };
+        gaps_between_tabs = mkOption {
+          type = float;
+        };
+        hide_when_single_tab = mkOption {
+          type = bool;
+        };
+        inactive_color = mkOption {
+          type = nullOr Color;
+        };
+        inactive_gradient = mkOption {
+          type = nullOr Gradient;
+        };
         length = mkOption {
           type = TabIndicatorLength;
           default = {};
         };
-        off = mkOption {type = bool;};
-        place_within_column = mkOption {type = bool;};
+        off = mkOption {
+          type = bool;
+        };
+        place_within_column = mkOption {
+          type = bool;
+        };
         position = TabIndicatorPosition;
-        urgent_color = mkOption {type = nullOr Color;};
-        urgent_gradient = mkOption {type = nullOr Gradient;};
-        width = mkOption {type = float;};
+        urgent_color = mkOption {
+          type = nullOr Color;
+        };
+        urgent_gradient = mkOption {
+          type = nullOr Gradient;
+        };
+        width = mkOption {
+          type = float;
+        };
       };
     };
-    TabIndicatorLength =
-      submodule {options = {total_proportion = mkOption {type = nullOr float;};};};
+    TabIndicatorLength = submodule {
+      options = {
+        total_proportion = mkOption {
+          type = nullOr float;
+        };
+      };
+    };
     TabIndicatorPart = submodule {
       options = {
-        active_color = mkOption {type = nullOr Color;};
-        active_gradient = mkOption {type = nullOr Gradient;};
-        corner_radius = mkOption {type = nullOr float;};
-        gap = mkOption {type = nullOr float;};
-        gaps_between_tabs = mkOption {type = nullOr float;};
-        hide_when_single_tab = mkOption {type = nullOr Flag;};
-        inactive_color = mkOption {type = nullOr Color;};
-        inactive_gradient = mkOption {type = nullOr Gradient;};
-        length = mkOption {type = nullOr TabIndicatorLength;};
-        off = mkOption {type = bool;};
-        on = mkOption {type = bool;};
-        place_within_column = mkOption {type = nullOr Flag;};
-        position = mkOption {type = nullOr TabIndicatorPosition;};
-        urgent_color = mkOption {type = nullOr Color;};
-        urgent_gradient = mkOption {type = nullOr Gradient;};
-        width = mkOption {type = nullOr float;};
+        active_color = mkOption {
+          type = nullOr Color;
+        };
+        active_gradient = mkOption {
+          type = nullOr Gradient;
+        };
+        corner_radius = mkOption {
+          type = nullOr float;
+        };
+        gap = mkOption {
+          type = nullOr float;
+        };
+        gaps_between_tabs = mkOption {
+          type = nullOr float;
+        };
+        hide_when_single_tab = mkOption {
+          type = nullOr Flag;
+        };
+        inactive_color = mkOption {
+          type = nullOr Color;
+        };
+        inactive_gradient = mkOption {
+          type = nullOr Gradient;
+        };
+        length = mkOption {
+          type = nullOr TabIndicatorLength;
+        };
+        off = mkOption {
+          type = bool;
+        };
+        on = mkOption {
+          type = bool;
+        };
+        place_within_column = mkOption {
+          type = nullOr Flag;
+        };
+        position = mkOption {
+          type = nullOr TabIndicatorPosition;
+        };
+        urgent_color = mkOption {
+          type = nullOr Color;
+        };
+        urgent_gradient = mkOption {
+          type = nullOr Gradient;
+        };
+        width = mkOption {
+          type = nullOr float;
+        };
       };
     };
     TabIndicatorPosition = mkOption {
@@ -1132,22 +1641,46 @@ in
     };
     TabIndicatorRule = submodule {
       options = {
-        active_color = mkOption {type = nullOr Color;};
-        active_gradient = mkOption {type = nullOr Gradient;};
-        inactive_color = mkOption {type = nullOr Color;};
-        inactive_gradient = mkOption {type = nullOr Gradient;};
-        urgent_color = mkOption {type = nullOr Color;};
-        urgent_gradient = mkOption {type = nullOr Gradient;};
+        active_color = mkOption {
+          type = nullOr Color;
+        };
+        active_gradient = mkOption {
+          type = nullOr Gradient;
+        };
+        inactive_color = mkOption {
+          type = nullOr Color;
+        };
+        inactive_gradient = mkOption {
+          type = nullOr Gradient;
+        };
+        urgent_color = mkOption {
+          type = nullOr Color;
+        };
+        urgent_gradient = mkOption {
+          type = nullOr Gradient;
+        };
       };
     };
     Tablet = submodule {
       options = {
-        calibration_matrix = mkOption {type = nullOr listOf float;};
-        left_handed = mkOption {type = bool;};
-        map_to_focused_output = mkOption {type = bool;};
-        map_to_focused_window = mkOption {type = bool;};
-        map_to_output = mkOption {type = nullOr str;};
-        off = mkOption {type = bool;};
+        calibration_matrix = mkOption {
+          type = nullOr listOf float;
+        };
+        left_handed = mkOption {
+          type = bool;
+        };
+        map_to_focused_output = mkOption {
+          type = bool;
+        };
+        map_to_focused_window = mkOption {
+          type = bool;
+        };
+        map_to_output = mkOption {
+          type = nullOr str;
+        };
+        off = mkOption {
+          type = bool;
+        };
       };
     };
     TapButtonMap = mkOption {
@@ -1158,31 +1691,73 @@ in
     };
     Touch = submodule {
       options = {
-        calibration_matrix = mkOption {type = nullOr listOf float;};
-        map_to_output = mkOption {type = nullOr str;};
-        off = mkOption {type = bool;};
+        calibration_matrix = mkOption {
+          type = nullOr listOf float;
+        };
+        map_to_output = mkOption {
+          type = nullOr str;
+        };
+        off = mkOption {
+          type = bool;
+        };
       };
     };
     Touchpad = submodule {
       options = {
-        accel_profile = mkOption {type = nullOr AccelProfile;};
-        accel_speed = mkOption {type = float;};
-        click_method = mkOption {type = nullOr ClickMethod;};
-        disabled_on_external_mouse = mkOption {type = bool;};
-        drag = mkOption {type = nullOr bool;};
-        drag_lock = mkOption {type = bool;};
-        dwt = mkOption {type = bool;};
-        dwtp = mkOption {type = bool;};
-        left_handed = mkOption {type = bool;};
-        middle_emulation = mkOption {type = bool;};
-        natural_scroll = mkOption {type = bool;};
-        off = mkOption {type = bool;};
-        scroll_button = mkOption {type = nullOr ints.u32;};
-        scroll_button_lock = mkOption {type = bool;};
-        scroll_factor = mkOption {type = nullOr ScrollFactor;};
-        scroll_method = mkOption {type = nullOr ScrollMethod;};
-        tap = mkOption {type = bool;};
-        tap_button_map = mkOption {type = nullOr TapButtonMap;};
+        accel_profile = mkOption {
+          type = nullOr AccelProfile;
+        };
+        accel_speed = mkOption {
+          type = float;
+        };
+        click_method = mkOption {
+          type = nullOr ClickMethod;
+        };
+        disabled_on_external_mouse = mkOption {
+          type = bool;
+        };
+        drag = mkOption {
+          type = nullOr bool;
+        };
+        drag_lock = mkOption {
+          type = bool;
+        };
+        dwt = mkOption {
+          type = bool;
+        };
+        dwtp = mkOption {
+          type = bool;
+        };
+        left_handed = mkOption {
+          type = bool;
+        };
+        middle_emulation = mkOption {
+          type = bool;
+        };
+        natural_scroll = mkOption {
+          type = bool;
+        };
+        off = mkOption {
+          type = bool;
+        };
+        scroll_button = mkOption {
+          type = nullOr ints.u32;
+        };
+        scroll_button_lock = mkOption {
+          type = bool;
+        };
+        scroll_factor = mkOption {
+          type = nullOr ScrollFactor;
+        };
+        scroll_method = mkOption {
+          type = nullOr ScrollMethod;
+        };
+        tap = mkOption {
+          type = bool;
+        };
+        tap_button_map = mkOption {
+          type = nullOr TapButtonMap;
+        };
       };
     };
     TrackLayout = mkOption {
@@ -1193,28 +1768,64 @@ in
     };
     Trackball = submodule {
       options = {
-        accel_profile = mkOption {type = nullOr AccelProfile;};
-        accel_speed = mkOption {type = float;};
-        left_handed = mkOption {type = bool;};
-        middle_emulation = mkOption {type = bool;};
-        natural_scroll = mkOption {type = bool;};
-        off = mkOption {type = bool;};
-        scroll_button = mkOption {type = nullOr ints.u32;};
-        scroll_button_lock = mkOption {type = bool;};
-        scroll_method = mkOption {type = nullOr ScrollMethod;};
+        accel_profile = mkOption {
+          type = nullOr AccelProfile;
+        };
+        accel_speed = mkOption {
+          type = float;
+        };
+        left_handed = mkOption {
+          type = bool;
+        };
+        middle_emulation = mkOption {
+          type = bool;
+        };
+        natural_scroll = mkOption {
+          type = bool;
+        };
+        off = mkOption {
+          type = bool;
+        };
+        scroll_button = mkOption {
+          type = nullOr ints.u32;
+        };
+        scroll_button_lock = mkOption {
+          type = bool;
+        };
+        scroll_method = mkOption {
+          type = nullOr ScrollMethod;
+        };
       };
     };
     Trackpoint = submodule {
       options = {
-        accel_profile = mkOption {type = nullOr AccelProfile;};
-        accel_speed = mkOption {type = float;};
-        left_handed = mkOption {type = bool;};
-        middle_emulation = mkOption {type = bool;};
-        natural_scroll = mkOption {type = bool;};
-        off = mkOption {type = bool;};
-        scroll_button = mkOption {type = nullOr ints.u32;};
-        scroll_button_lock = mkOption {type = bool;};
-        scroll_method = mkOption {type = nullOr ScrollMethod;};
+        accel_profile = mkOption {
+          type = nullOr AccelProfile;
+        };
+        accel_speed = mkOption {
+          type = float;
+        };
+        left_handed = mkOption {
+          type = bool;
+        };
+        middle_emulation = mkOption {
+          type = bool;
+        };
+        natural_scroll = mkOption {
+          type = bool;
+        };
+        off = mkOption {
+          type = bool;
+        };
+        scroll_button = mkOption {
+          type = nullOr ints.u32;
+        };
+        scroll_button_lock = mkOption {
+          type = bool;
+        };
+        scroll_method = mkOption {
+          type = nullOr ScrollMethod;
+        };
       };
     };
     Transform = mkOption {
@@ -1253,10 +1864,20 @@ in
         "nvsync"
       ];
     };
-    Vrr =
-      submodule {options = {on_demand = mkOption {type = bool;};};};
-    WarpMouseToFocus =
-      submodule {options = {mode = mkOption {type = nullOr WarpMouseToFocusMode;};};};
+    Vrr = submodule {
+      options = {
+        on_demand = mkOption {
+          type = bool;
+        };
+      };
+    };
+    WarpMouseToFocus = submodule {
+      options = {
+        mode = mkOption {
+          type = nullOr WarpMouseToFocusMode;
+        };
+      };
+    };
     WarpMouseToFocusMode = mkOption {
       type = enum [
         "centerxy"
@@ -1269,7 +1890,9 @@ in
           type = Animation;
           default = {};
         };
-        custom_shader = mkOption {type = nullOr str;};
+        custom_shader = mkOption {
+          type = nullOr str;
+        };
       };
     };
     WindowMovementAnim = mkOption {
@@ -1282,7 +1905,9 @@ in
           type = Animation;
           default = {};
         };
-        custom_shader = mkOption {type = nullOr str;};
+        custom_shader = mkOption {
+          type = nullOr str;
+        };
       };
     };
     WindowResizeAnim = submodule {
@@ -1291,27 +1916,45 @@ in
           type = Animation;
           default = {};
         };
-        custom_shader = mkOption {type = nullOr str;};
+        custom_shader = mkOption {
+          type = nullOr str;
+        };
       };
     };
     WindowRule = submodule {
       options = {
-        baba_is_float = mkOption {type = nullOr bool;};
+        baba_is_float = mkOption {
+          type = nullOr bool;
+        };
         background_effect = mkOption {
           type = BackgroundEffectRule;
           default = {};
         };
-        block_out_from = mkOption {type = nullOr BlockOutFrom;};
+        block_out_from = mkOption {
+          type = nullOr BlockOutFrom;
+        };
         border = mkOption {
           type = BorderRule;
           default = {};
         };
-        clip_to_geometry = mkOption {type = nullOr bool;};
-        default_column_display = mkOption {type = nullOr ColumnDisplay;};
-        default_column_width = mkOption {type = nullOr DefaultPresetSize;};
-        default_floating_position = mkOption {type = nullOr FloatingPosition;};
-        default_window_height = mkOption {type = nullOr DefaultPresetSize;};
-        draw_border_with_background = mkOption {type = nullOr bool;};
+        clip_to_geometry = mkOption {
+          type = nullOr bool;
+        };
+        default_column_display = mkOption {
+          type = nullOr ColumnDisplay;
+        };
+        default_column_width = mkOption {
+          type = nullOr DefaultPresetSize;
+        };
+        default_floating_position = mkOption {
+          type = nullOr FloatingPosition;
+        };
+        default_window_height = mkOption {
+          type = nullOr DefaultPresetSize;
+        };
+        draw_border_with_background = mkOption {
+          type = nullOr bool;
+        };
         excludes = mkOption {
           type = listOf Match;
           default = [];
@@ -1320,28 +1963,56 @@ in
           type = BorderRule;
           default = {};
         };
-        geometry_corner_radius = mkOption {type = nullOr CornerRadius;};
+        geometry_corner_radius = mkOption {
+          type = nullOr CornerRadius;
+        };
         matches = mkOption {
           type = listOf Match;
           default = [];
         };
-        max_height = mkOption {type = nullOr ints.u16;};
-        max_width = mkOption {type = nullOr ints.u16;};
-        min_height = mkOption {type = nullOr ints.u16;};
-        min_width = mkOption {type = nullOr ints.u16;};
-        opacity = mkOption {type = nullOr float;};
-        open_floating = mkOption {type = nullOr bool;};
-        open_focused = mkOption {type = nullOr bool;};
-        open_fullscreen = mkOption {type = nullOr bool;};
-        open_maximized = mkOption {type = nullOr bool;};
-        open_maximized_to_edges = mkOption {type = nullOr bool;};
-        open_on_output = mkOption {type = nullOr str;};
-        open_on_workspace = mkOption {type = nullOr str;};
+        max_height = mkOption {
+          type = nullOr ints.u16;
+        };
+        max_width = mkOption {
+          type = nullOr ints.u16;
+        };
+        min_height = mkOption {
+          type = nullOr ints.u16;
+        };
+        min_width = mkOption {
+          type = nullOr ints.u16;
+        };
+        opacity = mkOption {
+          type = nullOr float;
+        };
+        open_floating = mkOption {
+          type = nullOr bool;
+        };
+        open_focused = mkOption {
+          type = nullOr bool;
+        };
+        open_fullscreen = mkOption {
+          type = nullOr bool;
+        };
+        open_maximized = mkOption {
+          type = nullOr bool;
+        };
+        open_maximized_to_edges = mkOption {
+          type = nullOr bool;
+        };
+        open_on_output = mkOption {
+          type = nullOr str;
+        };
+        open_on_workspace = mkOption {
+          type = nullOr str;
+        };
         popups = mkOption {
           type = PopupsRule;
           default = {};
         };
-        scroll_factor = mkOption {type = nullOr float;};
+        scroll_factor = mkOption {
+          type = nullOr float;
+        };
         shadow = mkOption {
           type = ShadowRule;
           default = {};
@@ -1350,35 +2021,51 @@ in
           type = TabIndicatorRule;
           default = {};
         };
-        tiled_state = mkOption {type = nullOr bool;};
-        variable_refresh_rate = mkOption {type = nullOr bool;};
+        tiled_state = mkOption {
+          type = nullOr bool;
+        };
+        variable_refresh_rate = mkOption {
+          type = nullOr bool;
+        };
       };
     };
     Workspace = submodule {
       options = {
-        layout = mkOption {type = nullOr WorkspaceLayoutPart;};
+        layout = mkOption {
+          type = nullOr WorkspaceLayoutPart;
+        };
         name = WorkspaceName;
-        open_on_output = mkOption {type = nullOr str;};
+        open_on_output = mkOption {
+          type = nullOr str;
+        };
       };
     };
     WorkspaceLayoutPart = mkOption {
       type = LayoutPart;
       default = {};
     };
-    WorkspaceName = mkOption {type = str;};
+    WorkspaceName = mkOption {
+      type = str;
+    };
     WorkspaceShadow = submodule {
       options = {
         color = mkOption {
           type = Color;
           default = {};
         };
-        off = mkOption {type = bool;};
+        off = mkOption {
+          type = bool;
+        };
         offset = mkOption {
           type = ShadowOffset;
           default = {};
         };
-        softness = mkOption {type = float;};
-        spread = mkOption {type = float;};
+        softness = mkOption {
+          type = float;
+        };
+        spread = mkOption {
+          type = float;
+        };
       };
     };
     WorkspaceSwitchAnim = mkOption {
@@ -1387,18 +2074,34 @@ in
     };
     Xkb = submodule {
       options = {
-        file = mkOption {type = nullOr str;};
-        layout = mkOption {type = str;};
-        model = mkOption {type = str;};
-        options = mkOption {type = nullOr str;};
-        rules = mkOption {type = str;};
-        variant = mkOption {type = str;};
+        file = mkOption {
+          type = nullOr str;
+        };
+        layout = mkOption {
+          type = str;
+        };
+        model = mkOption {
+          type = str;
+        };
+        options = mkOption {
+          type = nullOr str;
+        };
+        rules = mkOption {
+          type = str;
+        };
+        variant = mkOption {
+          type = str;
+        };
       };
     };
     XwaylandSatellite = submodule {
       options = {
-        off = mkOption {type = bool;};
-        path = mkOption {type = str;};
+        off = mkOption {
+          type = bool;
+        };
+        path = mkOption {
+          type = str;
+        };
       };
     };
   }
