@@ -1,7 +1,6 @@
 use std::{
     collections::{BTreeMap, HashSet},
     fmt::Display,
-    vec,
 };
 
 use anyhow::Context;
@@ -176,18 +175,7 @@ impl NixTypeParser {
         NixTypeParser {
             structs,
             visited: HashSet::new(),
-            overrides: BTreeMap::from([(
-                "Modifiers".into(),
-                NixType::Enum(vec![
-                    "ctrl".into(),
-                    "shift".into(),
-                    "alt".into(),
-                    "super".into(),
-                    "mod".into(),
-                    "iso_level3_shift".into(),
-                    "iso_level5_shift".into(),
-                ]),
-            )]),
+            overrides: BTreeMap::from([("Key".into(), NixType::String)]),
         }
     }
 
@@ -287,7 +275,6 @@ impl NixTypeParser {
 
         let is_data_enum = root.variants.iter().any(|ele| !ele.fields.is_empty());
         let opt = if is_data_enum {
-            warn!("field in {} contained data", root.ident);
             let mut options = BTreeMap::new();
             for var in root.variants.iter() {
                 for field in var.fields.iter() {

@@ -666,8 +666,7 @@ in
           type = nullOr nullOr str;
         };
         key = mkOption {
-          type = Key;
-          default = {};
+          type = str;
         };
         repeat = mkOption {
           type = bool;
@@ -1325,22 +1324,6 @@ in
         on = mkOption {
           type = bool;
         };
-      };
-    };
-    Key = submodule {
-      options = {
-        modifiers = mkOption {
-          type = enum [
-            "ctrl"
-            "shift"
-            "alt"
-            "super"
-            "mod"
-            "iso_level3_shift"
-            "iso_level5_shift"
-          ];
-        };
-        trigger = Trigger;
       };
     };
     Keyboard = submodule {
@@ -2353,53 +2336,6 @@ in
         "flipped180"
         "flipped270"
       ];
-    };
-    Trigger = mkOption {
-      type = attrsTag {
-        Keysym = mkOption {
-          type = Keysym;
-          default = {};
-        };
-        MouseBack = mkOption {
-          type = bool;
-        };
-        MouseForward = mkOption {
-          type = bool;
-        };
-        MouseLeft = mkOption {
-          type = bool;
-        };
-        MouseMiddle = mkOption {
-          type = bool;
-        };
-        MouseRight = mkOption {
-          type = bool;
-        };
-        TouchpadScrollDown = mkOption {
-          type = bool;
-        };
-        TouchpadScrollLeft = mkOption {
-          type = bool;
-        };
-        TouchpadScrollRight = mkOption {
-          type = bool;
-        };
-        TouchpadScrollUp = mkOption {
-          type = bool;
-        };
-        WheelScrollDown = mkOption {
-          type = bool;
-        };
-        WheelScrollLeft = mkOption {
-          type = bool;
-        };
-        WheelScrollRight = mkOption {
-          type = bool;
-        };
-        WheelScrollUp = mkOption {
-          type = bool;
-        };
-      };
     };
     VSyncPolarity = mkOption {
       type = enum [

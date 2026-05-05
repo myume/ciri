@@ -7,7 +7,7 @@ use std::{
 use log::info;
 use syn::Item;
 
-const SKIPPED_STRUCTS: [&str; 1] = ["FloatOrInt"];
+const SKIPPED_STRUCTS: [&str; 2] = ["FloatOrInt", "Key"];
 
 pub type ItemMap = HashMap<String, Item>;
 
