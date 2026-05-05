@@ -204,40 +204,19 @@ in
     };
     Animations = submodule {
       options = {
-        config_notification_open_close = mkOption {
-          type = ConfigNotificationOpenCloseAnim;
-          default = {};
-        };
-        exit_confirmation_open_close = mkOption {
-          type = ExitConfirmationOpenCloseAnim;
-          default = {};
-        };
-        horizontal_view_movement = mkOption {
-          type = HorizontalViewMovementAnim;
-          default = {};
-        };
+        config_notification_open_close = ConfigNotificationOpenCloseAnim;
+        exit_confirmation_open_close = ExitConfirmationOpenCloseAnim;
+        horizontal_view_movement = HorizontalViewMovementAnim;
         off = mkOption {type = bool;};
-        overview_open_close = mkOption {
-          type = OverviewOpenCloseAnim;
-          default = {};
-        };
-        recent_windows_close = mkOption {
-          type = RecentWindowsCloseAnim;
-          default = {};
-        };
-        screenshot_ui_open = mkOption {
-          type = ScreenshotUiOpenAnim;
-          default = {};
-        };
+        overview_open_close = OverviewOpenCloseAnim;
+        recent_windows_close = RecentWindowsCloseAnim;
+        screenshot_ui_open = ScreenshotUiOpenAnim;
         slowdown = mkOption {type = float;};
         window_close = mkOption {
           type = WindowCloseAnim;
           default = {};
         };
-        window_movement = mkOption {
-          type = WindowMovementAnim;
-          default = {};
-        };
+        window_movement = WindowMovementAnim;
         window_open = mkOption {
           type = WindowOpenAnim;
           default = {};
@@ -246,10 +225,7 @@ in
           type = WindowResizeAnim;
           default = {};
         };
-        workspace_switch = mkOption {
-          type = WorkspaceSwitchAnim;
-          default = {};
-        };
+        workspace_switch = WorkspaceSwitchAnim;
       };
     };
     BackgroundEffectRule = submodule {
@@ -274,13 +250,9 @@ in
         repeat = mkOption {type = bool;};
       };
     };
-    Binds = submodule {
-      options = {
-        Binds = mkOption {
-          type = listOf Bind;
-          default = [];
-        };
-      };
+    Binds = mkOption {
+      type = listOf Bind;
+      default = [];
     };
     BlockOutFrom = mkOption {
       type = enum [
@@ -366,10 +338,7 @@ in
           type = Animations;
           default = {};
         };
-        binds = mkOption {
-          type = Binds;
-          default = {};
-        };
+        binds = Binds;
         blur = mkOption {
           type = Blur;
           default = {};
@@ -390,10 +359,7 @@ in
           type = Debug;
           default = {};
         };
-        environment = mkOption {
-          type = Environment;
-          default = {};
-        };
+        environment = Environment;
         gestures = mkOption {
           type = Gestures;
           default = {};
@@ -414,10 +380,7 @@ in
           type = Layout;
           default = {};
         };
-        outputs = mkOption {
-          type = Outputs;
-          default = {};
-        };
+        outputs = Outputs;
         overview = mkOption {
           type = Overview;
           default = {};
@@ -427,10 +390,7 @@ in
           type = RecentWindows;
           default = {};
         };
-        screenshot_path = mkOption {
-          type = ScreenshotPath;
-          default = {};
-        };
+        screenshot_path = ScreenshotPath;
         spawn_at_startup = mkOption {
           type = listOf SpawnAtStartup;
           default = [];
@@ -459,13 +419,9 @@ in
     };
     ConfigNotification =
       submodule {options = {disable_failed = mkOption {type = bool;};};};
-    ConfigNotificationOpenCloseAnim = submodule {
-      options = {
-        ConfigNotificationOpenCloseAnim = mkOption {
-          type = Animation;
-          default = {};
-        };
-      };
+    ConfigNotificationOpenCloseAnim = mkOption {
+      type = Animation;
+      default = {};
     };
     ConfiguredMode = submodule {
       options = {
@@ -518,8 +474,7 @@ in
         wait_for_frame_completion_before_queueing = mkOption {type = bool;};
       };
     };
-    DefaultPresetSize =
-      submodule {options = {DefaultPresetSize = mkOption {type = nullOr PresetSize;};};};
+    DefaultPresetSize = mkOption {type = nullOr PresetSize;};
     DndEdgeViewScroll = submodule {
       options = {
         delay_ms = mkOption {type = ints.u16;};
@@ -534,13 +489,9 @@ in
         trigger_height = mkOption {type = float;};
       };
     };
-    Environment = submodule {
-      options = {
-        Environment = mkOption {
-          type = listOf EnvironmentVariable;
-          default = [];
-        };
-      };
+    Environment = mkOption {
+      type = listOf EnvironmentVariable;
+      default = [];
     };
     EnvironmentVariable = submodule {
       options = {
@@ -548,16 +499,11 @@ in
         value = mkOption {type = nullOr str;};
       };
     };
-    ExitConfirmationOpenCloseAnim = submodule {
-      options = {
-        ExitConfirmationOpenCloseAnim = mkOption {
-          type = Animation;
-          default = {};
-        };
-      };
+    ExitConfirmationOpenCloseAnim = mkOption {
+      type = Animation;
+      default = {};
     };
-    Flag =
-      submodule {options = {Flag = mkOption {type = bool;};};};
+    Flag = mkOption {type = bool;};
     FloatingPosition = submodule {
       options = {
         relative_to = RelativeTo;
@@ -648,13 +594,9 @@ in
         "nhsync"
       ];
     };
-    HorizontalViewMovementAnim = submodule {
-      options = {
-        HorizontalViewMovementAnim = mkOption {
-          type = Animation;
-          default = {};
-        };
-      };
+    HorizontalViewMovementAnim = mkOption {
+      type = Animation;
+      default = {};
     };
     HotCorners = submodule {
       options = {
@@ -961,13 +903,9 @@ in
         variable_refresh_rate = mkOption {type = nullOr Vrr;};
       };
     };
-    Outputs = submodule {
-      options = {
-        Outputs = mkOption {
-          type = listOf Output;
-          default = [];
-        };
-      };
+    Outputs = mkOption {
+      type = listOf Output;
+      default = [];
     };
     Overview = submodule {
       options = {
@@ -982,16 +920,11 @@ in
         zoom = mkOption {type = float;};
       };
     };
-    OverviewOpenCloseAnim = submodule {
-      options = {
-        OverviewOpenCloseAnim = mkOption {
-          type = Animation;
-          default = {};
-        };
-      };
+    OverviewOpenCloseAnim = mkOption {
+      type = Animation;
+      default = {};
     };
-    Percent =
-      submodule {options = {Percent = mkOption {type = float;};};};
+    Percent = mkOption {type = float;};
     PopupsRule = submodule {
       options = {
         background_effect = mkOption {
@@ -1039,16 +972,11 @@ in
         };
       };
     };
-    RecentWindowsCloseAnim = submodule {
-      options = {
-        RecentWindowsCloseAnim = mkOption {
-          type = Animation;
-          default = {};
-        };
-      };
+    RecentWindowsCloseAnim = mkOption {
+      type = Animation;
+      default = {};
     };
-    RegexEq =
-      submodule {options = {RegexEq = mkOption {type = str;};};};
+    RegexEq = mkOption {type = str;};
     RelativeTo = mkOption {
       type = enum [
         "topleft"
@@ -1061,15 +989,10 @@ in
         "right"
       ];
     };
-    ScreenshotPath =
-      submodule {options = {ScreenshotPath = mkOption {type = nullOr str;};};};
-    ScreenshotUiOpenAnim = submodule {
-      options = {
-        ScreenshotUiOpenAnim = mkOption {
-          type = Animation;
-          default = {};
-        };
-      };
+    ScreenshotPath = mkOption {type = nullOr str;};
+    ScreenshotUiOpenAnim = mkOption {
+      type = Animation;
+      default = {};
     };
     ScrollFactor = submodule {
       options = {
@@ -1349,13 +1272,9 @@ in
         custom_shader = mkOption {type = nullOr str;};
       };
     };
-    WindowMovementAnim = submodule {
-      options = {
-        WindowMovementAnim = mkOption {
-          type = Animation;
-          default = {};
-        };
-      };
+    WindowMovementAnim = mkOption {
+      type = Animation;
+      default = {};
     };
     WindowOpenAnim = submodule {
       options = {
@@ -1438,23 +1357,15 @@ in
     Workspace = submodule {
       options = {
         layout = mkOption {type = nullOr WorkspaceLayoutPart;};
-        name = mkOption {
-          type = WorkspaceName;
-          default = {};
-        };
+        name = WorkspaceName;
         open_on_output = mkOption {type = nullOr str;};
       };
     };
-    WorkspaceLayoutPart = submodule {
-      options = {
-        WorkspaceLayoutPart = mkOption {
-          type = LayoutPart;
-          default = {};
-        };
-      };
+    WorkspaceLayoutPart = mkOption {
+      type = LayoutPart;
+      default = {};
     };
-    WorkspaceName =
-      submodule {options = {WorkspaceName = mkOption {type = str;};};};
+    WorkspaceName = mkOption {type = str;};
     WorkspaceShadow = submodule {
       options = {
         color = mkOption {
@@ -1470,13 +1381,9 @@ in
         spread = mkOption {type = float;};
       };
     };
-    WorkspaceSwitchAnim = submodule {
-      options = {
-        WorkspaceSwitchAnim = mkOption {
-          type = Animation;
-          default = {};
-        };
-      };
+    WorkspaceSwitchAnim = mkOption {
+      type = Animation;
+      default = {};
     };
     Xkb = submodule {
       options = {

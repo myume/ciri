@@ -173,13 +173,18 @@ impl NixTypeParser {
     pub fn generate_config_type(&mut self) -> anyhow::Result<String> {
         self.visited.clear();
 
-        let submodules = self.item_to_submodules(
+        let mut submodules = self.item_to_submodules(
             &self
                 .structs
                 .get("Config")
                 .context("missing root config struct")?
                 .clone(),
         )?;
+
+        let transformations = [|decl| self.collapse_wrapped_types(decl)];
+        for transform in transformations {
+            submodules = transform(submodules);
+        }
 
         Ok(format!(
             "{{lib, ...}}:
@@ -194,6 +199,39 @@ impl NixTypeParser {
                 .map(|(name, module)| format!("{} = {};\n", name, module))
                 .collect::<String>()
         ))
+    }
+
+    pub fn collapse_wrapped_types(&self, input: NixDeclarations) -> NixDeclarations {
+        let mut collapsed_types = HashSet::new();
+        input
+            .into_iter()
+            .map(|(k, v)| {
+                if let NixValue::Submodule(ref sub) = v
+                    && sub.options.len() == 1
+                    && sub.options.contains_key(&k)
+                {
+                    let opt = sub.options.get(&k).expect("opt to exist").clone();
+                    collapsed_types.insert(k.clone());
+                    (k, NixValue::Opt(opt))
+                } else {
+                    (k, v)
+                }
+            })
+            .collect::<NixDeclarations>()
+            .into_iter()
+            .map(|(k, mut v)| {
+                if let NixValue::Submodule(ref mut sub) = v {
+                    for opt in sub.options.values_mut() {
+                        if let NixType::Submodule(ref inner) = opt.ty
+                            && collapsed_types.contains(inner)
+                        {
+                            opt.ty = NixType::Reference(inner.clone());
+                        }
+                    }
+                }
+                (k, v)
+            })
+            .collect()
     }
 
     fn item_to_submodules(&mut self, root: &Item) -> anyhow::Result<NixDeclarations> {
@@ -212,14 +250,14 @@ impl NixTypeParser {
         self.visited.insert(enum_name);
 
         // TODO: figure out how to handle wrapped values
-        // root.variants.iter().for_each(|ele| {
-        //     if !ele.fields.is_empty() {
-        //         warn!(
-        //             "\"{}\" enum contains field in \"{}\" variant",
-        //             root.ident, ele.ident
-        //         )
-        //     }
-        // });
+        root.variants.iter().for_each(|ele| {
+            if !ele.fields.is_empty() {
+                warn!(
+                    "\"{}\" enum contains field in \"{}\" variant",
+                    root.ident, ele.ident
+                )
+            }
+        });
 
         let variants = root
             .variants
