@@ -1,5 +1,5 @@
 use std::{
-    collections::{HashMap, HashSet},
+    collections::{BTreeMap, HashSet},
     fmt::Display,
     vec,
 };
@@ -29,15 +29,13 @@ pub enum NixType {
 
 #[derive(Debug, Clone)]
 pub struct NixOption {
-    name: String,
     ty: NixType,
     default: Option<String>,
 }
 
 #[derive(Debug, Clone)]
 pub struct Submodule {
-    name: String,
-    options: Vec<NixOption>,
+    options: BTreeMap<String, NixOption>,
 }
 
 #[derive(Debug, Clone)]
@@ -103,11 +101,10 @@ impl Display for NixType {
 impl Display for NixOption {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match &self.ty {
-            NixType::Reference(s) => write!(f, "{} = {s};", self.name),
+            NixType::Reference(s) => write!(f, "{s}"),
             ty => write!(
                 f,
-                "{} = mkOption {{ type = {}; {}}};",
-                self.name,
+                "mkOption {{ type = {}; {}}}",
                 ty,
                 if let Some(default) = self.default.clone() {
                     format!("default = {};", default)
@@ -123,20 +120,18 @@ impl Display for Submodule {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(
             f,
-            "{} = submodule {{ options = {{ {} }};}};",
-            self.name,
+            "submodule {{ options = {{ {} }};}}",
             self.options
                 .iter()
-                .map(|op| op.to_string())
+                .map(|(name, opt)| format!("{} = {};", name, opt))
                 .collect::<String>(),
         )
     }
 }
 
 impl NixOption {
-    pub fn new(name: &str, ty: NixType) -> NixOption {
+    pub fn new(ty: NixType) -> NixOption {
         NixOption {
-            name: name.to_owned(),
             default: match ty {
                 NixType::List(_) => Some("[]".into()),
                 NixType::Submodule(_) => Some("{}".into()),
@@ -150,7 +145,7 @@ impl NixOption {
 pub struct NixTypeParser {
     structs: ItemMap,
     visited: HashSet<String>,
-    overrides: HashMap<String, NixType>,
+    overrides: BTreeMap<String, NixType>,
 }
 
 impl NixTypeParser {
@@ -158,7 +153,7 @@ impl NixTypeParser {
         NixTypeParser {
             structs,
             visited: HashSet::new(),
-            overrides: HashMap::from([(
+            overrides: BTreeMap::from([(
                 "Modifiers".into(),
                 NixType::Enum(vec![
                     "ctrl".into(),
@@ -194,12 +189,12 @@ impl NixTypeParser {
             }}",
             submodules
                 .iter()
-                .map(|module| module.to_string())
+                .map(|(name, module)| format!("{} = {};\n", name, module))
                 .collect::<String>()
         ))
     }
 
-    fn item_to_submodules(&mut self, root: &Item) -> anyhow::Result<Vec<NixValue>> {
+    fn item_to_submodules(&mut self, root: &Item) -> anyhow::Result<BTreeMap<String, NixValue>> {
         match root {
             Item::Enum(item_enum) => self.enum_to_option(item_enum),
             Item::Struct(item_struct) => self.struct_to_submodules(item_struct),
@@ -207,10 +202,10 @@ impl NixTypeParser {
         }
     }
 
-    fn enum_to_option(&mut self, root: &ItemEnum) -> anyhow::Result<Vec<NixValue>> {
+    fn enum_to_option(&mut self, root: &ItemEnum) -> anyhow::Result<BTreeMap<String, NixValue>> {
         let enum_name = root.ident.to_string();
         if self.visited.contains(&enum_name) {
-            return Ok(vec![]);
+            return Ok(BTreeMap::new());
         }
         self.visited.insert(enum_name);
 
@@ -230,37 +225,36 @@ impl NixTypeParser {
             .map(|var| var.ident.to_string().to_lowercase())
             .collect();
 
-        let op = NixValue::Opt(NixOption::new(
-            &root.ident.to_string(),
-            NixType::Enum(variants),
-        ));
+        let op = NixValue::Opt(NixOption::new(NixType::Enum(variants)));
 
-        Ok(vec![op])
+        Ok(BTreeMap::from([(root.ident.to_string(), op)]))
     }
 
-    fn struct_to_submodules(&mut self, root: &ItemStruct) -> anyhow::Result<Vec<NixValue>> {
-        let mut nix_values = Vec::new();
+    fn struct_to_submodules(
+        &mut self,
+        root: &ItemStruct,
+    ) -> anyhow::Result<BTreeMap<String, NixValue>> {
+        let mut nix_values = BTreeMap::new();
 
         let mut submodule = Submodule {
-            name: root.ident.to_string(),
-            options: Vec::new(),
+            options: BTreeMap::new(),
         };
 
-        if self.visited.contains(&submodule.name) {
-            return Ok(vec![]);
+        let submodule_name = root.ident.to_string();
+        if self.visited.contains(&submodule_name) {
+            return Ok(nix_values);
         }
 
-        self.visited.insert(submodule.name.clone());
+        self.visited.insert(submodule_name.clone());
 
         for field in &root.fields {
-            let field_ident = field.ident.as_ref().unwrap_or(&root.ident).to_string();
-
             let syn::Type::Path(type_path) = &field.ty else {
                 unreachable!("should only have type paths");
             };
 
             let segments = &type_path.path.segments;
             let type_ident = &segments.first().unwrap().ident;
+            let field_ident = field.ident.as_ref().unwrap_or(&root.ident).to_string();
 
             let option = if let Some(submodule) = self.structs.get(&type_ident.to_string()) {
                 let sub = submodule.clone();
@@ -271,7 +265,7 @@ impl NixTypeParser {
                 } else {
                     NixType::Submodule(name)
                 };
-                NixOption::new(&field_ident, ty)
+                NixOption::new(ty)
             } else {
                 let (ty, deps) = self.primitive_to_nix(&field.ty);
                 for dep in deps {
@@ -281,19 +275,11 @@ impl NixTypeParser {
                         warn!("unhandled dep {dep} for {field_ident}");
                     }
                 }
-                NixOption::new(&field_ident, ty)
+                NixOption::new(ty)
             };
-            submodule.options.push(option);
+            submodule.options.insert(field_ident.to_string(), option);
         }
-
-        if submodule.options.len() == 1 {
-            nix_values.push(NixValue::Opt(NixOption::new(
-                &submodule.name,
-                submodule.options.first().unwrap().ty.clone(),
-            )));
-        } else {
-            nix_values.push(NixValue::Submodule(submodule));
-        }
+        nix_values.insert(submodule_name, NixValue::Submodule(submodule));
 
         Ok(nix_values)
     }
