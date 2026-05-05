@@ -253,7 +253,7 @@ impl NixTypeParser {
             };
 
             let segments = &type_path.path.segments;
-            let type_ident = &segments.first().unwrap().ident;
+            let type_ident = &segments.last().unwrap().ident;
             let field_ident = field.ident.as_ref().unwrap_or(&root.ident).to_string();
 
             let option = if let Some(submodule) = self.structs.get(&type_ident.to_string()) {

@@ -642,6 +642,12 @@ in
         "workspaceview"
       ];
     };
+    HSyncPolarity = mkOption {
+      type = enum [
+        "phsync"
+        "nhsync"
+      ];
+    };
     HorizontalViewMovementAnim = submodule {
       options = {
         HorizontalViewMovementAnim = mkOption {
@@ -894,18 +900,12 @@ in
         clock = mkOption {type = float;};
         hdisplay = mkOption {type = ints.u16;};
         hsync_end = mkOption {type = ints.u16;};
-        hsync_polarity = mkOption {
-          type = niri_ipc;
-          default = {};
-        };
+        hsync_polarity = HSyncPolarity;
         hsync_start = mkOption {type = ints.u16;};
         htotal = mkOption {type = ints.u16;};
         vdisplay = mkOption {type = ints.u16;};
         vsync_end = mkOption {type = ints.u16;};
-        vsync_polarity = mkOption {
-          type = niri_ipc;
-          default = {};
-        };
+        vsync_polarity = VSyncPolarity;
         vsync_start = mkOption {type = ints.u16;};
         vtotal = mkOption {type = ints.u16;};
       };
@@ -1322,6 +1322,12 @@ in
         "touchpadscrollup"
         "touchpadscrollleft"
         "touchpadscrollright"
+      ];
+    };
+    VSyncPolarity = mkOption {
+      type = enum [
+        "pvsync"
+        "nvsync"
       ];
     };
     Vrr =
