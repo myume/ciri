@@ -21,8 +21,10 @@ pub enum NixType {
     U8,
     U16,
     U32,
+    Unsigned,
     I32,
     I16,
+    AttrTag(BTreeMap<String, NixOption>),
     Submodule(String),
     Reference(String),
 }
@@ -93,6 +95,18 @@ impl Display for NixType {
                 NixType::I16 => "ints.s16".to_string(),
                 NixType::Submodule(s) => s.to_string(),
                 NixType::Reference(_) => unreachable!("should be handled in option"),
+                NixType::AttrTag(options) => {
+                    format!(
+                        "attrsTag {{
+                            {}
+                        }}",
+                        options
+                            .iter()
+                            .map(|(k, v)| format!("{} = {};", k, v))
+                            .collect::<String>()
+                    )
+                }
+                NixType::Unsigned => "ints.unsigned".to_string(),
             }
         )
     }
@@ -242,36 +256,78 @@ impl NixTypeParser {
     }
 
     fn item_to_submodules(&mut self, root: &Item) -> anyhow::Result<NixDeclarations> {
-        match root {
+        let (mut decl, deps) = match root {
             Item::Enum(item_enum) => self.enum_to_option(item_enum),
             Item::Struct(item_struct) => self.struct_to_submodules(item_struct),
             _ => unreachable!("unhandled item {:#?}", root),
+        }?;
+
+        for dep in deps {
+            if let Some(submodule) = self.structs.get(&dep) {
+                decl.extend(self.item_to_submodules(&submodule.clone())?);
+            } else {
+                warn!("unhandled dependency {dep}");
+            }
         }
+
+        Ok(decl)
     }
 
-    fn enum_to_option(&mut self, root: &ItemEnum) -> anyhow::Result<NixDeclarations> {
+    fn enum_to_option(
+        &mut self,
+        root: &ItemEnum,
+    ) -> anyhow::Result<(NixDeclarations, Vec<String>)> {
+        let mut decl = BTreeMap::new();
+        let mut deps = Vec::new();
         let enum_name = root.ident.to_string();
         if self.visited.contains(&enum_name) {
-            return Ok(BTreeMap::new());
+            return Ok((decl, deps));
         }
         self.visited.insert(enum_name);
 
         let is_data_enum = root.variants.iter().any(|ele| !ele.fields.is_empty());
+        let opt = if is_data_enum {
+            warn!("field in {} contained data", root.ident);
+            let mut options = BTreeMap::new();
+            for var in root.variants.iter() {
+                for field in var.fields.iter() {
+                    let (ty, ty_deps) = self.primitive_to_nix(&field.ty);
+                    deps.extend(ty_deps);
+                    options.insert(
+                        field
+                            .ident
+                            .clone()
+                            .map(|ident| ident.to_string())
+                            .unwrap_or(var.ident.to_string()),
+                        NixOption::new(ty),
+                    );
+                }
 
-        let variants = root
-            .variants
-            .iter()
-            .map(|var| var.ident.to_string().to_lowercase())
-            .collect();
+                if var.fields.is_empty() {
+                    options.insert(var.ident.to_string(), NixOption::new(NixType::Bool));
+                }
+            }
+            NixOption::new(NixType::AttrTag(options))
+        } else {
+            let variants = root
+                .variants
+                .iter()
+                .map(|var| var.ident.to_string().to_lowercase())
+                .collect();
+            NixOption::new(NixType::Enum(variants))
+        };
 
-        Ok(BTreeMap::from([(
-            root.ident.to_string(),
-            NixValue::Opt(NixOption::new(NixType::Enum(variants))),
-        )]))
+        decl.insert(root.ident.to_string(), NixValue::Opt(opt));
+
+        Ok((decl, deps))
     }
 
-    fn struct_to_submodules(&mut self, root: &ItemStruct) -> anyhow::Result<NixDeclarations> {
+    fn struct_to_submodules(
+        &mut self,
+        root: &ItemStruct,
+    ) -> anyhow::Result<(NixDeclarations, Vec<String>)> {
         let mut nix_values = BTreeMap::new();
+        let mut deps = Vec::new();
 
         let mut submodule = Submodule {
             options: BTreeMap::new(),
@@ -279,7 +335,7 @@ impl NixTypeParser {
 
         let submodule_name = root.ident.to_string();
         if self.visited.contains(&submodule_name) {
-            return Ok(nix_values);
+            return Ok((nix_values, deps));
         }
 
         self.visited.insert(submodule_name.clone());
@@ -304,21 +360,16 @@ impl NixTypeParser {
                 };
                 NixOption::new(ty)
             } else {
-                let (ty, deps) = self.primitive_to_nix(&field.ty);
-                for dep in deps {
-                    if let Some(submodule) = self.structs.get(&dep) {
-                        nix_values.extend(self.item_to_submodules(&submodule.clone())?);
-                    } else {
-                        warn!("unhandled dep {dep} for {field_ident}");
-                    }
-                }
+                let (ty, ty_deps) = self.primitive_to_nix(&field.ty);
+                deps.extend(ty_deps);
+
                 NixOption::new(ty)
             };
             submodule.options.insert(field_ident.to_string(), option);
         }
         nix_values.insert(submodule_name, NixValue::Submodule(submodule));
 
-        Ok(nix_values)
+        Ok((nix_values, deps))
     }
 
     fn primitive_to_nix(&self, ty: &Type) -> (NixType, Vec<String>) {
@@ -344,6 +395,7 @@ impl NixTypeParser {
             "String" | "PathBuf" | "Regex" => NixType::String,
             "i32" => NixType::I32,
             "i16" => NixType::I16,
+            "u64" | "usize" => NixType::Unsigned,
             "u32" | "Duration" => NixType::U32,
             "u16" => NixType::U16,
             "u8" => NixType::U8,
