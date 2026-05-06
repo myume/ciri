@@ -1,9 +1,10 @@
 use std::{
-    collections::{BTreeMap, HashMap, HashSet},
+    collections::{HashMap, HashSet},
     fmt::Display,
 };
 
 use anyhow::Context;
+use indexmap::IndexMap;
 use log::{debug, warn};
 use syn::{GenericArgument, Item, ItemEnum, ItemStruct, PathArguments, Type};
 
@@ -25,7 +26,7 @@ pub enum NixType {
     I32,
     I16,
     Int,
-    AttrTag(BTreeMap<String, NixOption>),
+    AttrTag(IndexMap<String, NixOption>),
     TypeReference(String),
 }
 
@@ -37,7 +38,7 @@ pub struct NixOption {
 
 #[derive(Debug, Clone)]
 pub struct Submodule {
-    options: BTreeMap<String, NixOption>,
+    options: IndexMap<String, NixOption>,
 }
 
 #[derive(Debug, Clone)]
@@ -155,7 +156,7 @@ impl NixOption {
     }
 }
 
-type NixDeclarations = BTreeMap<String, NixValue>;
+type NixDeclarations = IndexMap<String, NixValue>;
 type NixTransformPass<'a> = Box<dyn Fn(NixDeclarations) -> NixDeclarations + 'a>;
 
 enum Filter {
@@ -323,7 +324,7 @@ impl NixTypeParser {
         &mut self,
         root: &ItemEnum,
     ) -> anyhow::Result<(NixDeclarations, Vec<String>)> {
-        let mut decl = BTreeMap::new();
+        let mut decl = IndexMap::new();
         let mut deps = Vec::new();
         let enum_name = root.ident.to_string();
         if self.visited.contains(&enum_name) {
@@ -333,7 +334,7 @@ impl NixTypeParser {
 
         let is_data_enum = root.variants.iter().any(|ele| !ele.fields.is_empty());
         let ty = if is_data_enum {
-            let mut options = BTreeMap::new();
+            let mut options = IndexMap::new();
             for var in root.variants.iter() {
                 for field in var.fields.iter() {
                     let (ty, ty_deps) = self.primitive_to_nix(&field.ty);
@@ -371,11 +372,11 @@ impl NixTypeParser {
         &mut self,
         root: &ItemStruct,
     ) -> anyhow::Result<(NixDeclarations, Vec<String>)> {
-        let mut nix_values = BTreeMap::new();
+        let mut nix_values = IndexMap::new();
         let mut deps = Vec::new();
 
         let mut submodule = Submodule {
-            options: BTreeMap::new(),
+            options: IndexMap::new(),
         };
 
         let submodule_name = root.ident.to_string();
@@ -394,13 +395,11 @@ impl NixTypeParser {
             let type_ident = &segments.last().unwrap().ident;
             let field_ident = field.ident.as_ref().unwrap_or(&root.ident).to_string();
 
-            let ty = if let Some(submodule) = self.structs.get(&type_ident.to_string())
+            let ty = if self.structs.contains_key(&type_ident.to_string())
                 && !self.type_overrides.contains_key(&type_ident.to_string())
             {
-                let sub = submodule.clone();
-                nix_values.extend(self.item_to_submodules(&sub)?);
-                let name = type_ident.to_string();
-                NixType::TypeReference(name)
+                deps.push(type_ident.to_string());
+                NixType::TypeReference(type_ident.to_string())
             } else {
                 let (ty, ty_deps) = self.primitive_to_nix(&field.ty);
                 deps.extend(ty_deps);
