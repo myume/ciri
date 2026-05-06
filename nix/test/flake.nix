@@ -23,9 +23,8 @@
             settings = {
               binds = [
                 {
-                  action = {
-                    FullscreenWindow = true;
-                  };
+                  key = "Mod+K";
+                  action.FullscreenWindow = true;
                 }
               ];
             };

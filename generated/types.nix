@@ -59,7 +59,7 @@ in
         type = bool;
       };
       DoScreenTransition = mkOption {
-        type = nullOr ints.u16;
+        type = nullOr (ints.u16);
       };
       ExpandColumnToAvailableWidth = mkOption {
         type = bool;
@@ -540,7 +540,7 @@ in
         type = bool;
       };
       id = mkOption {
-        type = nullOr ints.unsigned;
+        type = nullOr (ints.unsigned);
       };
       name = mkOption {
         type = str;
@@ -660,10 +660,10 @@ in
           type = nullOr bool;
         };
         cooldown = mkOption {
-          type = nullOr ints.u32;
+          type = nullOr (ints.u32);
         };
         hotkey_overlay_title = mkOption {
-          type = nullOr nullOr str;
+          type = nullOr (nullOr str);
         };
         key = mkOption {
           type = str;
@@ -690,7 +690,7 @@ in
           type = nullOr float;
         };
         passes = mkOption {
-          type = nullOr ints.u8;
+          type = nullOr (ints.u8);
         };
         saturation = mkOption {
           type = nullOr float;
@@ -913,13 +913,13 @@ in
     Cursor = submodule {
       options = {
         hide_after_inactive_ms = mkOption {
-          type = nullOr ints.u32;
+          type = nullOr (ints.u32);
         };
         hide_when_typing = mkOption {
           type = nullOr bool;
         };
         xcursor_size = mkOption {
-          type = nullOr ints.u8;
+          type = nullOr (ints.u8);
         };
         xcursor_theme = mkOption {
           type = nullOr str;
@@ -1015,7 +1015,7 @@ in
     DndEdgeViewScroll = submodule {
       options = {
         delay_ms = mkOption {
-          type = nullOr ints.u16;
+          type = nullOr (ints.u16);
         };
         max_speed = mkOption {
           type = nullOr float;
@@ -1028,7 +1028,7 @@ in
     DndEdgeWorkspaceSwitch = submodule {
       options = {
         delay_ms = mkOption {
-          type = nullOr ints.u16;
+          type = nullOr (ints.u16);
         };
         max_speed = mkOption {
           type = nullOr float;
@@ -1279,10 +1279,10 @@ in
           type = nullOr bool;
         };
         repeat_delay = mkOption {
-          type = nullOr ints.u16;
+          type = nullOr (ints.u16);
         };
         repeat_rate = mkOption {
-          type = nullOr ints.u8;
+          type = nullOr (ints.u8);
         };
         track_layout = mkOption {
           type = nullOr TrackLayout;
@@ -1420,10 +1420,10 @@ in
           type = nullOr InsertHintPart;
         };
         preset_column_widths = mkOption {
-          type = nullOr listOf PresetSize;
+          type = nullOr (listOf PresetSize);
         };
         preset_window_heights = mkOption {
-          type = nullOr listOf PresetSize;
+          type = nullOr (listOf PresetSize);
         };
         shadow = mkOption {
           type = nullOr ShadowRule;
@@ -1554,7 +1554,7 @@ in
           type = nullOr bool;
         };
         scroll_button = mkOption {
-          type = nullOr ints.u32;
+          type = nullOr (ints.u32);
         };
         scroll_button_lock = mkOption {
           type = nullOr bool;
@@ -1721,7 +1721,7 @@ in
           default = [];
         };
         debounce_ms = mkOption {
-          type = nullOr ints.u16;
+          type = nullOr (ints.u16);
         };
         highlight = mkOption {
           type = nullOr MruHighlight;
@@ -1730,7 +1730,7 @@ in
           type = nullOr bool;
         };
         open_delay_ms = mkOption {
-          type = nullOr ints.u16;
+          type = nullOr (ints.u16);
         };
         previews = mkOption {
           type = nullOr MruPreviews;
@@ -2054,7 +2054,7 @@ in
     Tablet = submodule {
       options = {
         calibration_matrix = mkOption {
-          type = nullOr listOf float;
+          type = nullOr (listOf float);
         };
         left_handed = mkOption {
           type = nullOr bool;
@@ -2080,7 +2080,7 @@ in
     Touch = submodule {
       options = {
         calibration_matrix = mkOption {
-          type = nullOr listOf float;
+          type = nullOr (listOf float);
         };
         map_to_output = mkOption {
           type = nullOr str;
@@ -2129,7 +2129,7 @@ in
           type = nullOr bool;
         };
         scroll_button = mkOption {
-          type = nullOr ints.u32;
+          type = nullOr (ints.u32);
         };
         scroll_button_lock = mkOption {
           type = nullOr bool;
@@ -2173,7 +2173,7 @@ in
           type = nullOr bool;
         };
         scroll_button = mkOption {
-          type = nullOr ints.u32;
+          type = nullOr (ints.u32);
         };
         scroll_button_lock = mkOption {
           type = nullOr bool;
@@ -2204,7 +2204,7 @@ in
           type = nullOr bool;
         };
         scroll_button = mkOption {
-          type = nullOr ints.u32;
+          type = nullOr (ints.u32);
         };
         scroll_button_lock = mkOption {
           type = nullOr bool;
@@ -2324,16 +2324,16 @@ in
           default = [];
         };
         max_height = mkOption {
-          type = nullOr ints.u16;
+          type = nullOr (ints.u16);
         };
         max_width = mkOption {
-          type = nullOr ints.u16;
+          type = nullOr (ints.u16);
         };
         min_height = mkOption {
-          type = nullOr ints.u16;
+          type = nullOr (ints.u16);
         };
         min_width = mkOption {
-          type = nullOr ints.u16;
+          type = nullOr (ints.u16);
         };
         opacity = mkOption {
           type = nullOr float;

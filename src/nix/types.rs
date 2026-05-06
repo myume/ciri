@@ -68,10 +68,10 @@ impl Display for NixType {
                     } else {
                         ty.to_string()
                     };
-                    format!("listOf {}", ty)
+                    format!("listOf ({})", ty)
                 }
                 NixType::NullOr(ty) => {
-                    format!("nullOr {}", ty)
+                    format!("nullOr ({})", ty)
                 }
                 NixType::Enum(variants) => format!(
                     "enum [{}]",
@@ -154,7 +154,7 @@ impl NixOption {
 type NixDeclarations = BTreeMap<String, NixValue>;
 type NixTransformPass<'a> = Box<dyn Fn(NixDeclarations) -> NixDeclarations + 'a>;
 
-enum ApplyNullable {
+enum Filter {
     Include(HashSet<String>),
     Exclude(HashSet<String>),
 }
@@ -163,7 +163,7 @@ pub struct NixTypeParser {
     structs: ItemMap,
     defaultable: Defaultable,
     visited: HashSet<String>,
-    null_overrides: HashMap<String, ApplyNullable>,
+    null_overrides: HashMap<String, Filter>,
     type_overrides: HashMap<String, NixType>,
 }
 
@@ -175,7 +175,7 @@ impl NixTypeParser {
             visited: HashSet::new(),
             null_overrides: HashMap::from([(
                 "Bind".into(),
-                ApplyNullable::Exclude(HashSet::from(["key".into(), "action".into()])),
+                Filter::Exclude(HashSet::from(["key".into(), "action".into()])),
             )]),
             type_overrides: HashMap::from([("Key".into(), NixType::String)]),
         }
@@ -239,13 +239,12 @@ impl NixTypeParser {
                 {
                     for (opt_name, opt) in submodule.options.iter_mut() {
                         let names = match nullable {
-                            ApplyNullable::Include(hash_set) => hash_set,
-                            ApplyNullable::Exclude(hash_set) => hash_set,
+                            Filter::Include(hash_set) => hash_set,
+                            Filter::Exclude(hash_set) => hash_set,
                         };
 
-                        if ((matches!(nullable, ApplyNullable::Include(_))
-                            && names.contains(opt_name))
-                            || (matches!(nullable, ApplyNullable::Exclude(_))
+                        if ((matches!(nullable, Filter::Include(_)) && names.contains(opt_name))
+                            || (matches!(nullable, Filter::Exclude(_))
                                 && !names.contains(opt_name)))
                             && can_apply_null(&opt.ty)
                         {

@@ -20,7 +20,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    xdg.configFile."ciri/ciri.json" = {
+    xdg.configFile."ciri/ciri.kdl" = {
       text = lib.toJSON cfg.settings;
     };
   };
