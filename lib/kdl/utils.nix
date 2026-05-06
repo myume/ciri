@@ -26,23 +26,32 @@
     then f nullable
     else null;
 
-  primitiveToKDL = let
+  primitiveToKDL = {
+    overrides ? {},
+    path ? "",
+  }: name: value: let
+    sanitizedName = builtins.replaceStrings ["_"] ["-"] name;
+    currentPath = path + "." + sanitizedName;
     handlers = {
       "string" = name: value: ''${name} "${value}"'';
       "bool" = name: _: "${name}";
       "int" = name: value: "${name} ${toString value}";
       "float" = name: value: "${name} ${toString value}";
-      "set" = name: value: sectionToKDL name [] value;
+      "set" = name: value: sectionToKDL name overrides value currentPath;
     };
+    handler =
+      overrides.${
+        currentPath
+      } or handlers."${lib.typeOf value}" or (_: _: null);
   in
-    name: value: (
-      handlers."${lib.typeOf value}" or (_: _: null)
-      (builtins.replaceStrings ["_"] ["-"] name)
-      value
-    );
+    handler sanitizedName value;
 
-  sectionToKDL = name: extras: cfg: let
-    sections = extras ++ (lib.mapAttrsToList primitiveToKDL cfg);
+  sectionToKDL = name: overrides: cfg: path: let
+    sections =
+      lib.mapAttrsToList (primitiveToKDL {
+        inherit overrides path;
+      })
+      cfg;
   in ''
     ${name} {
     ${sectionsToString (map (mapNull indentSection) sections)}

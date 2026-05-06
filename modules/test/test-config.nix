@@ -45,6 +45,10 @@
       };
       binds = [
         {
+          key = "Mod+A";
+          action.FocusWorkspace = {};
+        }
+        {
           key = "Mod+K";
           action.FullscreenWindow = true;
         }

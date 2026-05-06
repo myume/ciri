@@ -1,11 +1,16 @@
 {lib}: let
   utils = import ./utils.nix {inherit lib;};
+  inherit (utils) primitiveToKDL sectionsToString;
+  overrides = import ./overrides.nix {inherit utils;};
 in {
   configToKDL = config: let
     sections =
-      []
-      ++ (lib.mapAttrsToList utils.primitiveToKDL config);
-  in ''
-    ${utils.sectionsToString sections}
-  '';
+      lib.mapAttrsToList (
+        primitiveToKDL {
+          inherit overrides;
+        }
+      )
+      config;
+  in
+    sectionsToString sections;
 }
