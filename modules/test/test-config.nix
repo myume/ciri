@@ -20,6 +20,7 @@
           map_to_output = "DP-2";
         };
       };
+      prefer_no_csd = true;
       screenshot_path = "~/Pictures";
       binds = [
         {

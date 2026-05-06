@@ -34,5 +34,9 @@
       "float" = name: value: "${name} ${toString value}";
     };
   in
-    name: value: (handlers."${lib.typeOf value}" or (_: _: null) name value);
+    name: value: (
+      handlers."${lib.typeOf value}" or (_: _: null)
+      (builtins.replaceStrings ["_"] ["-"] name)
+      value
+    );
 }
