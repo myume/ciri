@@ -32,6 +32,7 @@
       "bool" = name: _: "${name}";
       "int" = name: value: "${name} ${toString value}";
       "float" = name: value: "${name} ${toString value}";
+      "set" = name: value: sectionToKDL name [] value;
     };
   in
     name: value: (
@@ -39,4 +40,12 @@
       (builtins.replaceStrings ["_"] ["-"] name)
       value
     );
+
+  sectionToKDL = name: extras: cfg: let
+    sections = extras ++ (lib.mapAttrsToList primitiveToKDL cfg);
+  in ''
+    ${name} {
+    ${sectionsToString (map (mapNull indentSection) sections)}
+    }
+  '';
 }

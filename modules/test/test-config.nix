@@ -22,6 +22,9 @@
       };
       prefer_no_csd = true;
       screenshot_path = "~/Pictures";
+      layout = {
+        gaps = 10;
+      };
       binds = [
         {
           key = "Mod+K";
