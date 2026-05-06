@@ -336,23 +336,24 @@ impl NixTypeParser {
             let type_ident = &segments.last().unwrap().ident;
             let field_ident = field.ident.as_ref().unwrap_or(&root.ident).to_string();
 
-            let option = if let Some(submodule) = self.structs.get(&type_ident.to_string()) {
+            let ty = if let Some(submodule) = self.structs.get(&type_ident.to_string()) {
                 let sub = submodule.clone();
                 nix_values.extend(self.item_to_submodules(&sub)?);
                 let name = type_ident.to_string();
-                let ty = if matches!(&sub, Item::Enum(_)) {
+                if matches!(&sub, Item::Enum(_)) {
                     NixType::Reference(name)
                 } else {
                     NixType::Submodule(name)
-                };
-                NixOption::new(ty)
+                }
             } else {
                 let (ty, ty_deps) = self.primitive_to_nix(&field.ty);
                 deps.extend(ty_deps);
-
-                NixOption::new(ty)
+                ty
             };
-            submodule.options.insert(field_ident.to_string(), option);
+
+            submodule
+                .options
+                .insert(field_ident.to_string(), NixOption::new(ty));
         }
         nix_values.insert(submodule_name, NixValue::Submodule(submodule));
 
