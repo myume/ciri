@@ -2,36 +2,37 @@
   lib,
   utils,
 }:
-with utils; rec {
+with utils; let
+  indentSections = map (mapNull indentSection);
+in rec {
   xkbToKDL = xkb: let
-    sections = lib.pipe xkb [
-      (lib.mapAttrsToList
-        (name: utils.mapNull (value: "${name} ${value}")))
-      (map (mapNull indentSection))
-    ];
+    sections =
+      lib.mapAttrsToList primitiveToKDL xkb;
   in ''
     xkb {
-    ${sectionsToString sections}
+    ${sectionsToString (indentSections sections)}
     }
   '';
 
   keyboardToKDL = keyboard: let
-    sections = map (mapNull indentSection) [
-      (mapNull xkbToKDL keyboard.xkb)
-    ];
+    sections =
+      [
+        (mapNull xkbToKDL keyboard.xkb)
+      ]
+      ++ (lib.mapAttrsToList primitiveToKDL keyboard);
   in ''
     keyboard {
-    ${sectionsToString sections}
+    ${sectionsToString (indentSections sections)}
     }
   '';
 
   toKDL = input: let
-    sections = map (mapNull indentSection) [
+    sections = [
       (mapNull keyboardToKDL input.keyboard)
     ];
   in ''
     input {
-    ${sectionsToString sections}
+    ${sectionsToString (indentSections sections)}
     }
   '';
 }

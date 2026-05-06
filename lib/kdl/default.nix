@@ -6,14 +6,11 @@
   };
 in {
   configToKDL = config: let
-    sections = [
-      (utils.mapNull input.toKDL config.input)
-      (
-        utils.mapNull
-        (p: ''screenshot-path "${p}"'')
-        config.screenshot_path
-      )
-    ];
+    sections =
+      [
+        (utils.mapNull input.toKDL config.input)
+      ]
+      ++ (lib.mapAttrsToList utils.primitiveToKDL config);
   in ''
     ${utils.sectionsToString sections}
   '';

@@ -1,4 +1,4 @@
-{lib}: {
+{lib}: rec {
   indentSection = section:
     lib.pipe section [
       (lib.splitString "\n")
@@ -7,9 +7,11 @@
       (builtins.concatStringsSep "")
     ];
 
+  filterNulls = builtins.filter (ele: ele != null);
+
   sectionsToString = sections:
     lib.pipe sections [
-      (builtins.filter (sec: sec != null))
+      filterNulls
       (map (lib.removeSuffix "\n"))
       (builtins.concatStringsSep "\n")
     ];
@@ -23,4 +25,14 @@
     if nullable != null
     then f nullable
     else null;
+
+  primitiveToKDL = let
+    handlers = {
+      "string" = name: value: ''${name} "${value}"'';
+      "bool" = name: _: "${name}";
+      "int" = name: value: "${name} ${toString value}";
+      "float" = name: value: "${name} ${toString value}";
+    };
+  in
+    name: value: (handlers."${lib.typeOf value}" or (_: _: null) name value);
 }
