@@ -20,7 +20,15 @@
 
           ciri = {
             enable = true;
-            settings = {};
+            settings = {
+              binds = [
+                {
+                  action = {
+                    FullscreenWindow = true;
+                  };
+                }
+              ];
+            };
           };
         }
       ];

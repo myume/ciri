@@ -24,7 +24,7 @@ pub enum NixType {
     I32,
     I16,
     AttrTag(BTreeMap<String, NixOption>),
-    Submodule(String),
+    TypeReference(String),
 }
 
 #[derive(Debug, Clone)]
@@ -63,7 +63,7 @@ impl Display for NixType {
                 NixType::Bool => "bool".to_string(),
                 NixType::Float => "float".to_string(),
                 NixType::List(ty) => {
-                    let ty = if let NixType::Submodule(sub) = ty.as_ref() {
+                    let ty = if let NixType::TypeReference(sub) = ty.as_ref() {
                         sub.to_string()
                     } else {
                         ty.to_string()
@@ -86,7 +86,7 @@ impl Display for NixType {
                 NixType::U32 => "ints.u32".to_string(),
                 NixType::I32 => "ints.s32".to_string(),
                 NixType::I16 => "ints.s16".to_string(),
-                NixType::Submodule(s) => s.to_string(),
+                NixType::TypeReference(s) => s.to_string(),
                 NixType::AttrTag(options) => {
                     format!(
                         "attrTag {{
@@ -158,7 +158,7 @@ pub struct NixTypeParser {
     structs: ItemMap,
     defaultable: Defaultable,
     visited: HashSet<String>,
-    overrides: BTreeMap<String, NixType>,
+    type_overrides: BTreeMap<String, NixType>,
 }
 
 impl NixTypeParser {
@@ -167,7 +167,7 @@ impl NixTypeParser {
             structs,
             defaultable,
             visited: HashSet::new(),
-            overrides: BTreeMap::from([("Key".into(), NixType::String)]),
+            type_overrides: BTreeMap::from([("Key".into(), NixType::String)]),
         }
     }
 
@@ -246,10 +246,10 @@ impl NixTypeParser {
             .map(|(k, mut v)| {
                 if let NixValue::Submodule(ref mut sub) = v {
                     for opt in sub.options.values_mut() {
-                        if let NixType::Submodule(ref inner) = opt.ty
+                        if let NixType::TypeReference(ref inner) = opt.ty
                             && collapsed_types.contains(inner)
                         {
-                            opt.ty = NixType::Submodule(inner.clone());
+                            opt.ty = NixType::TypeReference(inner.clone());
                         }
                     }
                 }
@@ -355,7 +355,7 @@ impl NixTypeParser {
                 let sub = submodule.clone();
                 nix_values.extend(self.item_to_submodules(&sub)?);
                 let name = type_ident.to_string();
-                NixType::Submodule(name)
+                NixType::TypeReference(name)
             } else {
                 let (ty, ty_deps) = self.primitive_to_nix(&field.ty);
                 deps.extend(ty_deps);
@@ -385,7 +385,7 @@ impl NixTypeParser {
 
         let ty_ident = head.ident.to_string();
 
-        if let Some(val) = self.overrides.get(&ty_ident) {
+        if let Some(val) = self.type_overrides.get(&ty_ident) {
             debug!("applying overrides for {}", &ty_ident);
             return (val.clone(), deps);
         }
@@ -422,7 +422,7 @@ impl NixTypeParser {
 
             ty => {
                 deps.push(ty.into());
-                NixType::Submodule(ty.into())
+                NixType::TypeReference(ty.into())
             }
         };
 
