@@ -20,6 +20,7 @@
 
           ciri = {
             enable = true;
+            settings = {};
           };
         }
       ];

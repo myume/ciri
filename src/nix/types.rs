@@ -42,14 +42,14 @@ pub struct Submodule {
 #[derive(Debug, Clone)]
 pub enum NixValue {
     Submodule(Submodule),
-    Opt(NixOption),
+    Type(NixType),
 }
 
 impl Display for NixValue {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             NixValue::Submodule(submodule) => submodule.fmt(f),
-            NixValue::Opt(nix_option) => nix_option.fmt(f),
+            NixValue::Type(nix_type) => nix_type.fmt(f),
         }
     }
 }
@@ -218,7 +218,7 @@ impl NixTypeParser {
                 {
                     let opt = sub.options.get(&k).expect("opt to exist").clone();
                     collapsed_types.insert(k.clone());
-                    (k, NixValue::Opt(opt))
+                    (k, NixValue::Type(opt.ty))
                 } else {
                     (k, v)
                 }
@@ -271,7 +271,7 @@ impl NixTypeParser {
         self.visited.insert(enum_name);
 
         let is_data_enum = root.variants.iter().any(|ele| !ele.fields.is_empty());
-        let opt = if is_data_enum {
+        let ty = if is_data_enum {
             let mut options = BTreeMap::new();
             for var in root.variants.iter() {
                 for field in var.fields.iter() {
@@ -291,17 +291,17 @@ impl NixTypeParser {
                     options.insert(var.ident.to_string(), NixOption::new(NixType::Bool));
                 }
             }
-            NixOption::new(NixType::AttrTag(options))
+            NixType::AttrTag(options)
         } else {
             let variants = root
                 .variants
                 .iter()
                 .map(|var| var.ident.to_string().to_lowercase())
                 .collect();
-            NixOption::new(NixType::Enum(variants))
+            NixType::Enum(variants)
         };
 
-        decl.insert(root.ident.to_string(), NixValue::Opt(opt));
+        decl.insert(root.ident.to_string(), NixValue::Type(ty));
 
         Ok((decl, deps))
     }
