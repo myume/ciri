@@ -1,7 +1,13 @@
 use anyhow::{Context, anyhow};
 use env_logger::Env;
 use log::info;
-use std::{collections::HashMap, env::temp_dir, fs::File, io::Write, process::Command};
+use std::{
+    collections::{HashMap, HashSet},
+    env::temp_dir,
+    fs::File,
+    io::Write,
+    process::Command,
+};
 
 use crate::nix::types::NixTypeParser;
 
@@ -32,11 +38,14 @@ fn main() -> anyhow::Result<()> {
     }
 
     let mut structs = HashMap::new();
+    let mut defaultables = HashSet::new();
     for path in CRAWLER_PATHS {
-        structs.extend(crawler::crawl(&repo_dir.join(path))?);
+        let (found_structs, found_defaults) = crawler::crawl(&repo_dir.join(path))?;
+        structs.extend(found_structs);
+        defaultables.extend(found_defaults);
     }
 
-    let nix_config_type = NixTypeParser::new(structs).generate_config_type()?;
+    let nix_config_type = NixTypeParser::new(structs, defaultables).generate_config_type()?;
 
     info!("Outputting types...");
     let type_path = "generated/types.nix";

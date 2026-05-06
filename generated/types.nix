@@ -9,7 +9,7 @@ in
       ];
     };
     Action = mkOption {
-      type = attrsTag {
+      type = attrTag {
         CancelScreenshot = mkOption {
           type = bool;
         };
@@ -606,32 +606,45 @@ in
     };
     Animations = submodule {
       options = {
-        config_notification_open_close = ConfigNotificationOpenCloseAnim;
-        exit_confirmation_open_close = ExitConfirmationOpenCloseAnim;
-        horizontal_view_movement = HorizontalViewMovementAnim;
+        config_notification_open_close = mkOption {
+          type = nullOr ConfigNotificationOpenCloseAnim;
+        };
+        exit_confirmation_open_close = mkOption {
+          type = nullOr ExitConfirmationOpenCloseAnim;
+        };
+        horizontal_view_movement = mkOption {
+          type = nullOr HorizontalViewMovementAnim;
+        };
         off = mkOption {
           type = bool;
         };
-        overview_open_close = OverviewOpenCloseAnim;
-        recent_windows_close = RecentWindowsCloseAnim;
-        screenshot_ui_open = ScreenshotUiOpenAnim;
+        overview_open_close = mkOption {
+          type = nullOr OverviewOpenCloseAnim;
+        };
+        recent_windows_close = mkOption {
+          type = nullOr RecentWindowsCloseAnim;
+        };
+        screenshot_ui_open = mkOption {
+          type = nullOr ScreenshotUiOpenAnim;
+        };
         slowdown = mkOption {
           type = float;
         };
         window_close = mkOption {
-          type = WindowCloseAnim;
-          default = {};
+          type = nullOr WindowCloseAnim;
         };
-        window_movement = WindowMovementAnim;
+        window_movement = mkOption {
+          type = nullOr WindowMovementAnim;
+        };
         window_open = mkOption {
-          type = WindowOpenAnim;
-          default = {};
+          type = nullOr WindowOpenAnim;
         };
         window_resize = mkOption {
-          type = WindowResizeAnim;
-          default = {};
+          type = nullOr WindowResizeAnim;
         };
-        workspace_switch = WorkspaceSwitchAnim;
+        workspace_switch = mkOption {
+          type = nullOr WorkspaceSwitchAnim;
+        };
       };
     };
     BackgroundEffectRule = submodule {
@@ -705,15 +718,13 @@ in
     Border = submodule {
       options = {
         active_color = mkOption {
-          type = Color;
-          default = {};
+          type = nullOr Color;
         };
         active_gradient = mkOption {
           type = nullOr Gradient;
         };
         inactive_color = mkOption {
-          type = Color;
-          default = {};
+          type = nullOr Color;
         };
         inactive_gradient = mkOption {
           type = nullOr Gradient;
@@ -722,8 +733,7 @@ in
           type = bool;
         };
         urgent_color = mkOption {
-          type = Color;
-          default = {};
+          type = nullOr Color;
         };
         urgent_gradient = mkOption {
           type = nullOr Gradient;
@@ -809,64 +819,60 @@ in
     Config = submodule {
       options = {
         animations = mkOption {
-          type = Animations;
-          default = {};
+          type = nullOr Animations;
         };
-        binds = Binds;
+        binds = mkOption {
+          type = nullOr Binds;
+        };
         blur = mkOption {
-          type = Blur;
-          default = {};
+          type = nullOr Blur;
         };
         clipboard = mkOption {
-          type = Clipboard;
-          default = {};
+          type = nullOr Clipboard;
         };
         config_notification = mkOption {
-          type = ConfigNotification;
-          default = {};
+          type = nullOr ConfigNotification;
         };
         cursor = mkOption {
-          type = Cursor;
-          default = {};
+          type = nullOr Cursor;
         };
         debug = mkOption {
-          type = Debug;
-          default = {};
+          type = nullOr Debug;
         };
-        environment = Environment;
+        environment = mkOption {
+          type = nullOr Environment;
+        };
         gestures = mkOption {
-          type = Gestures;
-          default = {};
+          type = nullOr Gestures;
         };
         hotkey_overlay = mkOption {
-          type = HotkeyOverlay;
-          default = {};
+          type = nullOr HotkeyOverlay;
         };
         input = mkOption {
-          type = Input;
-          default = {};
+          type = nullOr Input;
         };
         layer_rules = mkOption {
           type = listOf LayerRule;
           default = [];
         };
         layout = mkOption {
-          type = Layout;
-          default = {};
+          type = nullOr Layout;
         };
-        outputs = Outputs;
+        outputs = mkOption {
+          type = nullOr Outputs;
+        };
         overview = mkOption {
-          type = Overview;
-          default = {};
+          type = nullOr Overview;
         };
         prefer_no_csd = mkOption {
           type = bool;
         };
         recent_windows = mkOption {
-          type = RecentWindows;
-          default = {};
+          type = nullOr RecentWindows;
         };
-        screenshot_path = ScreenshotPath;
+        screenshot_path = mkOption {
+          type = nullOr ScreenshotPath;
+        };
         spawn_at_startup = mkOption {
           type = listOf SpawnAtStartup;
           default = [];
@@ -876,8 +882,7 @@ in
           default = [];
         };
         switch_events = mkOption {
-          type = SwitchBinds;
-          default = {};
+          type = nullOr SwitchBinds;
         };
         window_rules = mkOption {
           type = listOf WindowRule;
@@ -888,8 +893,7 @@ in
           default = [];
         };
         xwayland_satellite = mkOption {
-          type = XwaylandSatellite;
-          default = {};
+          type = nullOr XwaylandSatellite;
         };
       };
     };
@@ -950,7 +954,7 @@ in
       };
     };
     Curve = mkOption {
-      type = attrsTag {
+      type = attrTag {
         CubicBezier = mkOption {
           type = float;
         };
@@ -1098,10 +1102,10 @@ in
       options = {
         relative_to = RelativeTo;
         x = mkOption {
-          type = float;
+          type = nullOr float;
         };
         y = mkOption {
-          type = float;
+          type = nullOr float;
         };
       };
     };
@@ -1115,15 +1119,13 @@ in
     FocusRing = submodule {
       options = {
         active_color = mkOption {
-          type = Color;
-          default = {};
+          type = nullOr Color;
         };
         active_gradient = mkOption {
           type = nullOr Gradient;
         };
         inactive_color = mkOption {
-          type = Color;
-          default = {};
+          type = nullOr Color;
         };
         inactive_gradient = mkOption {
           type = nullOr Gradient;
@@ -1132,8 +1134,7 @@ in
           type = bool;
         };
         urgent_color = mkOption {
-          type = Color;
-          default = {};
+          type = nullOr Color;
         };
         urgent_gradient = mkOption {
           type = nullOr Gradient;
@@ -1146,16 +1147,13 @@ in
     Gestures = submodule {
       options = {
         dnd_edge_view_scroll = mkOption {
-          type = DndEdgeViewScroll;
-          default = {};
+          type = nullOr DndEdgeViewScroll;
         };
         dnd_edge_workspace_switch = mkOption {
-          type = DndEdgeWorkspaceSwitch;
-          default = {};
+          type = nullOr DndEdgeWorkspaceSwitch;
         };
         hot_corners = mkOption {
-          type = HotCorners;
-          default = {};
+          type = nullOr HotCorners;
         };
       };
     };
@@ -1165,17 +1163,14 @@ in
           type = ints.s16;
         };
         from = mkOption {
-          type = Color;
-          default = {};
+          type = nullOr Color;
         };
         in_ = mkOption {
-          type = GradientInterpolation;
-          default = {};
+          type = nullOr GradientInterpolation;
         };
         relative_to = GradientRelativeTo;
         to = mkOption {
-          type = Color;
-          default = {};
+          type = nullOr Color;
         };
       };
     };
@@ -1255,8 +1250,7 @@ in
           type = nullOr FocusFollowsMouse;
         };
         keyboard = mkOption {
-          type = Keyboard;
-          default = {};
+          type = nullOr Keyboard;
         };
         mod_key = mkOption {
           type = nullOr ModKey;
@@ -1265,28 +1259,22 @@ in
           type = nullOr ModKey;
         };
         mouse = mkOption {
-          type = Mouse;
-          default = {};
+          type = nullOr Mouse;
         };
         tablet = mkOption {
-          type = Tablet;
-          default = {};
+          type = nullOr Tablet;
         };
         touch = mkOption {
-          type = Touch;
-          default = {};
+          type = nullOr Touch;
         };
         touchpad = mkOption {
-          type = Touchpad;
-          default = {};
+          type = nullOr Touchpad;
         };
         trackball = mkOption {
-          type = Trackball;
-          default = {};
+          type = nullOr Trackball;
         };
         trackpoint = mkOption {
-          type = Trackpoint;
-          default = {};
+          type = nullOr Trackpoint;
         };
         warp_mouse_to_focus = mkOption {
           type = nullOr WarpMouseToFocus;
@@ -1299,8 +1287,7 @@ in
     InsertHint = submodule {
       options = {
         color = mkOption {
-          type = Color;
-          default = {};
+          type = nullOr Color;
         };
         gradient = mkOption {
           type = nullOr Gradient;
@@ -1339,13 +1326,12 @@ in
         };
         track_layout = TrackLayout;
         xkb = mkOption {
-          type = Xkb;
-          default = {};
+          type = nullOr Xkb;
         };
       };
     };
     Kind = mkOption {
-      type = attrsTag {
+      type = attrTag {
         Easing = mkOption {
           type = EasingParams;
           default = {};
@@ -1362,8 +1348,7 @@ in
           type = nullOr bool;
         };
         background_effect = mkOption {
-          type = BackgroundEffectRule;
-          default = {};
+          type = nullOr BackgroundEffectRule;
         };
         block_out_from = mkOption {
           type = nullOr BlockOutFrom;
@@ -1386,12 +1371,10 @@ in
           type = nullOr bool;
         };
         popups = mkOption {
-          type = PopupsRule;
-          default = {};
+          type = nullOr PopupsRule;
         };
         shadow = mkOption {
-          type = ShadowRule;
-          default = {};
+          type = nullOr ShadowRule;
         };
       };
     };
@@ -1401,12 +1384,10 @@ in
           type = bool;
         };
         background_color = mkOption {
-          type = Color;
-          default = {};
+          type = nullOr Color;
         };
         border = mkOption {
-          type = Border;
-          default = {};
+          type = nullOr Border;
         };
         center_focused_column = CenterFocusedColumn;
         default_column_display = ColumnDisplay;
@@ -1417,15 +1398,13 @@ in
           type = bool;
         };
         focus_ring = mkOption {
-          type = FocusRing;
-          default = {};
+          type = nullOr FocusRing;
         };
         gaps = mkOption {
           type = float;
         };
         insert_hint = mkOption {
-          type = InsertHint;
-          default = {};
+          type = nullOr InsertHint;
         };
         preset_column_widths = mkOption {
           type = listOf PresetSize;
@@ -1436,16 +1415,13 @@ in
           default = [];
         };
         shadow = mkOption {
-          type = Shadow;
-          default = {};
+          type = nullOr Shadow;
         };
         struts = mkOption {
-          type = Struts;
-          default = {};
+          type = nullOr Struts;
         };
         tab_indicator = mkOption {
-          type = TabIndicator;
-          default = {};
+          type = nullOr TabIndicator;
         };
       };
     };
@@ -1499,7 +1475,7 @@ in
       };
     };
     LayoutSwitchTarget = mkOption {
-      type = attrsTag {
+      type = attrTag {
         Index = mkOption {
           type = ints.u8;
         };
@@ -1602,7 +1578,7 @@ in
           type = nullOr AccelProfile;
         };
         accel_speed = mkOption {
-          type = float;
+          type = nullOr float;
         };
         left_handed = mkOption {
           type = bool;
@@ -1645,8 +1621,7 @@ in
     MruHighlight = submodule {
       options = {
         active_color = mkOption {
-          type = Color;
-          default = {};
+          type = nullOr Color;
         };
         corner_radius = mkOption {
           type = float;
@@ -1655,8 +1630,7 @@ in
           type = float;
         };
         urgent_color = mkOption {
-          type = Color;
-          default = {};
+          type = nullOr Color;
         };
       };
     };
@@ -1725,12 +1699,10 @@ in
     Overview = submodule {
       options = {
         backdrop_color = mkOption {
-          type = Color;
-          default = {};
+          type = nullOr Color;
         };
         workspace_shadow = mkOption {
-          type = WorkspaceShadow;
-          default = {};
+          type = nullOr WorkspaceShadow;
         };
         zoom = mkOption {
           type = float;
@@ -1747,8 +1719,7 @@ in
     PopupsRule = submodule {
       options = {
         background_effect = mkOption {
-          type = BackgroundEffectRule;
-          default = {};
+          type = nullOr BackgroundEffectRule;
         };
         geometry_corner_radius = mkOption {
           type = nullOr CornerRadius;
@@ -1769,7 +1740,7 @@ in
       };
     };
     PositionChange = mkOption {
-      type = attrsTag {
+      type = attrTag {
         AdjustFixed = mkOption {
           type = float;
         };
@@ -1785,7 +1756,7 @@ in
       };
     };
     PresetSize = mkOption {
-      type = attrsTag {
+      type = attrTag {
         Fixed = mkOption {
           type = ints.s32;
         };
@@ -1810,8 +1781,7 @@ in
           type = ints.u16;
         };
         highlight = mkOption {
-          type = MruHighlight;
-          default = {};
+          type = nullOr MruHighlight;
         };
         on = mkOption {
           type = bool;
@@ -1820,8 +1790,7 @@ in
           type = ints.u16;
         };
         previews = mkOption {
-          type = MruPreviews;
-          default = {};
+          type = nullOr MruPreviews;
         };
       };
     };
@@ -1875,8 +1844,7 @@ in
     Shadow = submodule {
       options = {
         color = mkOption {
-          type = Color;
-          default = {};
+          type = nullOr Color;
         };
         draw_behind_window = mkOption {
           type = bool;
@@ -1902,10 +1870,10 @@ in
     ShadowOffset = submodule {
       options = {
         x = mkOption {
-          type = float;
+          type = nullOr float;
         };
         y = mkOption {
-          type = float;
+          type = nullOr float;
         };
       };
     };
@@ -1938,7 +1906,7 @@ in
       };
     };
     SizeChange = mkOption {
-      type = attrsTag {
+      type = attrTag {
         AdjustFixed = mkOption {
           type = ints.s32;
         };
@@ -1984,16 +1952,16 @@ in
     Struts = submodule {
       options = {
         bottom = mkOption {
-          type = float;
+          type = nullOr float;
         };
         left = mkOption {
-          type = float;
+          type = nullOr float;
         };
         right = mkOption {
-          type = float;
+          type = nullOr float;
         };
         top = mkOption {
-          type = float;
+          type = nullOr float;
         };
       };
     };
@@ -2205,7 +2173,7 @@ in
           type = nullOr AccelProfile;
         };
         accel_speed = mkOption {
-          type = float;
+          type = nullOr float;
         };
         click_method = mkOption {
           type = nullOr ClickMethod;
@@ -2269,7 +2237,7 @@ in
           type = nullOr AccelProfile;
         };
         accel_speed = mkOption {
-          type = float;
+          type = nullOr float;
         };
         left_handed = mkOption {
           type = bool;
@@ -2300,7 +2268,7 @@ in
           type = nullOr AccelProfile;
         };
         accel_speed = mkOption {
-          type = float;
+          type = nullOr float;
         };
         left_handed = mkOption {
           type = bool;
@@ -2406,15 +2374,13 @@ in
           type = nullOr bool;
         };
         background_effect = mkOption {
-          type = BackgroundEffectRule;
-          default = {};
+          type = nullOr BackgroundEffectRule;
         };
         block_out_from = mkOption {
           type = nullOr BlockOutFrom;
         };
         border = mkOption {
-          type = BorderRule;
-          default = {};
+          type = nullOr BorderRule;
         };
         clip_to_geometry = mkOption {
           type = nullOr bool;
@@ -2439,8 +2405,7 @@ in
           default = [];
         };
         focus_ring = mkOption {
-          type = BorderRule;
-          default = {};
+          type = nullOr BorderRule;
         };
         geometry_corner_radius = mkOption {
           type = nullOr CornerRadius;
@@ -2486,19 +2451,16 @@ in
           type = nullOr str;
         };
         popups = mkOption {
-          type = PopupsRule;
-          default = {};
+          type = nullOr PopupsRule;
         };
         scroll_factor = mkOption {
           type = nullOr float;
         };
         shadow = mkOption {
-          type = ShadowRule;
-          default = {};
+          type = nullOr ShadowRule;
         };
         tab_indicator = mkOption {
-          type = TabIndicatorRule;
-          default = {};
+          type = nullOr TabIndicatorRule;
         };
         tiled_state = mkOption {
           type = nullOr bool;
@@ -2520,14 +2482,13 @@ in
       };
     };
     WorkspaceLayoutPart = mkOption {
-      type = LayoutPart;
-      default = {};
+      type = nullOr LayoutPart;
     };
     WorkspaceName = mkOption {
       type = str;
     };
     WorkspaceReference = mkOption {
-      type = attrsTag {
+      type = attrTag {
         Id = mkOption {
           type = ints.unsigned;
         };
@@ -2542,8 +2503,7 @@ in
     WorkspaceShadow = submodule {
       options = {
         color = mkOption {
-          type = Color;
-          default = {};
+          type = nullOr Color;
         };
         off = mkOption {
           type = bool;

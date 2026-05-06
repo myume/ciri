@@ -7,7 +7,7 @@ use anyhow::Context;
 use log::{debug, warn};
 use syn::{GenericArgument, Item, ItemEnum, ItemStruct, PathArguments, Type};
 
-use crate::crawler::ItemMap;
+use crate::crawler::{Defaultable, ItemMap};
 
 #[derive(Debug, Clone)]
 pub enum NixType {
@@ -72,11 +72,6 @@ impl Display for NixType {
                     format!("listOf {}", ty)
                 }
                 NixType::NullOr(ty) => {
-                    let ty = if let NixType::Submodule(sub) = ty.as_ref() {
-                        sub.to_string()
-                    } else {
-                        ty.to_string()
-                    };
                     format!("nullOr {}", ty)
                 }
                 NixType::Enum(variants) => format!(
@@ -96,7 +91,7 @@ impl Display for NixType {
                 NixType::Reference(_) => unreachable!("should be handled in option"),
                 NixType::AttrTag(options) => {
                     format!(
-                        "attrsTag {{
+                        "attrTag {{
                             {}
                         }}",
                         options
@@ -166,14 +161,16 @@ type NixDeclarations = BTreeMap<String, NixValue>;
 
 pub struct NixTypeParser {
     structs: ItemMap,
+    defaultable: Defaultable,
     visited: HashSet<String>,
     overrides: BTreeMap<String, NixType>,
 }
 
 impl NixTypeParser {
-    pub fn new(structs: ItemMap) -> NixTypeParser {
+    pub fn new(structs: ItemMap, defaultable: Defaultable) -> NixTypeParser {
         NixTypeParser {
             structs,
+            defaultable,
             visited: HashSet::new(),
             overrides: BTreeMap::from([("Key".into(), NixType::String)]),
         }
@@ -336,7 +333,7 @@ impl NixTypeParser {
             let type_ident = &segments.last().unwrap().ident;
             let field_ident = field.ident.as_ref().unwrap_or(&root.ident).to_string();
 
-            let ty = if let Some(submodule) = self.structs.get(&type_ident.to_string()) {
+            let mut ty = if let Some(submodule) = self.structs.get(&type_ident.to_string()) {
                 let sub = submodule.clone();
                 nix_values.extend(self.item_to_submodules(&sub)?);
                 let name = type_ident.to_string();
@@ -350,6 +347,10 @@ impl NixTypeParser {
                 deps.extend(ty_deps);
                 ty
             };
+
+            if self.defaultable.contains(&type_ident.to_string()) {
+                ty = NixType::NullOr(Box::new(ty));
+            }
 
             submodule
                 .options
