@@ -144,7 +144,6 @@ impl NixOption {
         NixOption {
             default: match ty {
                 NixType::List(_) => Some("[]".into()),
-                NixType::Submodule(_) => Some("{}".into()),
                 _ => None,
             },
             ty,
