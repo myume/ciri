@@ -654,10 +654,10 @@ in
           type = Action;
         };
         allow_inhibiting = mkOption {
-          type = bool;
+          type = nullOr bool;
         };
         allow_when_locked = mkOption {
-          type = bool;
+          type = nullOr bool;
         };
         cooldown = mkOption {
           type = nullOr ints.u32;
@@ -669,7 +669,7 @@ in
           type = str;
         };
         repeat = mkOption {
-          type = bool;
+          type = nullOr bool;
         };
       };
     };

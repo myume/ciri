@@ -1,5 +1,5 @@
 use std::{
-    collections::{BTreeMap, HashSet},
+    collections::{BTreeMap, HashMap, HashSet},
     fmt::Display,
 };
 
@@ -154,11 +154,17 @@ impl NixOption {
 type NixDeclarations = BTreeMap<String, NixValue>;
 type NixTransformPass<'a> = Box<dyn Fn(NixDeclarations) -> NixDeclarations + 'a>;
 
+enum ApplyNullable {
+    Include(HashSet<String>),
+    Exclude(HashSet<String>),
+}
+
 pub struct NixTypeParser {
     structs: ItemMap,
     defaultable: Defaultable,
     visited: HashSet<String>,
-    type_overrides: BTreeMap<String, NixType>,
+    null_overrides: HashMap<String, ApplyNullable>,
+    type_overrides: HashMap<String, NixType>,
 }
 
 impl NixTypeParser {
@@ -167,7 +173,11 @@ impl NixTypeParser {
             structs,
             defaultable,
             visited: HashSet::new(),
-            type_overrides: BTreeMap::from([("Key".into(), NixType::String)]),
+            null_overrides: HashMap::from([(
+                "Bind".into(),
+                ApplyNullable::Exclude(HashSet::from(["key".into(), "action".into()])),
+            )]),
+            type_overrides: HashMap::from([("Key".into(), NixType::String)]),
         }
     }
 
@@ -184,7 +194,7 @@ impl NixTypeParser {
 
         let transformations: [NixTransformPass; 2] = [
             Box::new(NixTypeParser::collapse_wrapped_types),
-            Box::new(|input| self.apply_defaultable(input)),
+            Box::new(|input| self.apply_nullable(input)),
         ];
         for transform in transformations {
             submodules = transform(submodules);
@@ -205,7 +215,10 @@ impl NixTypeParser {
         ))
     }
 
-    fn apply_defaultable(&self, input: NixDeclarations) -> NixDeclarations {
+    fn apply_nullable(&self, input: NixDeclarations) -> NixDeclarations {
+        let can_apply_null =
+            |ty: &NixType| !matches!(ty, NixType::NullOr(_)) && !matches!(ty, NixType::List(_));
+
         input
             .into_iter()
             .map(|(k, mut v)| {
@@ -213,8 +226,28 @@ impl NixTypeParser {
                     && let NixValue::Submodule(ref mut submodule) = v
                 {
                     for opt in submodule.options.values_mut() {
-                        if !matches!(opt.ty, NixType::NullOr(_))
-                            && !matches!(opt.ty, NixType::List(_))
+                        if can_apply_null(&opt.ty) {
+                            opt.ty = NixType::NullOr(Box::new(opt.ty.clone()));
+                        }
+                    }
+                }
+                (k, v)
+            })
+            .map(|(k, mut v)| {
+                if let Some(nullable) = self.null_overrides.get(&k)
+                    && let NixValue::Submodule(ref mut submodule) = v
+                {
+                    for (opt_name, opt) in submodule.options.iter_mut() {
+                        let names = match nullable {
+                            ApplyNullable::Include(hash_set) => hash_set,
+                            ApplyNullable::Exclude(hash_set) => hash_set,
+                        };
+
+                        if ((matches!(nullable, ApplyNullable::Include(_))
+                            && names.contains(opt_name))
+                            || (matches!(nullable, ApplyNullable::Exclude(_))
+                                && !names.contains(opt_name)))
+                            && can_apply_null(&opt.ty)
                         {
                             opt.ty = NixType::NullOr(Box::new(opt.ty.clone()));
                         }
