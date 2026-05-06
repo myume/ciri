@@ -26,7 +26,7 @@
 
     homeManagerModules = {
       default = self.homeManagerModules.ciri;
-      ciri = ./nix/hm-module.nix self;
+      ciri = ./modules/hm-module.nix self;
     };
   };
 }

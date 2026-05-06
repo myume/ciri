@@ -11,23 +11,12 @@
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
       modules = [
         ../hm-module.nix
+        ./test-config.nix
         {
           home = {
             username = "test";
             homeDirectory = "/home/test";
             stateVersion = "25.11";
-          };
-
-          ciri = {
-            enable = true;
-            settings = {
-              binds = [
-                {
-                  key = "Mod+K";
-                  action.FullscreenWindow = true;
-                }
-              ];
-            };
           };
         }
       ];
