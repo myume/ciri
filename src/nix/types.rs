@@ -25,7 +25,6 @@ pub enum NixType {
     I16,
     AttrTag(BTreeMap<String, NixOption>),
     Submodule(String),
-    Reference(String),
 }
 
 #[derive(Debug, Clone)]
@@ -88,7 +87,6 @@ impl Display for NixType {
                 NixType::I32 => "ints.s32".to_string(),
                 NixType::I16 => "ints.s16".to_string(),
                 NixType::Submodule(s) => s.to_string(),
-                NixType::Reference(_) => unreachable!("should be handled in option"),
                 NixType::AttrTag(options) => {
                     format!(
                         "attrTag {{
@@ -108,22 +106,19 @@ impl Display for NixType {
 
 impl Display for NixOption {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match &self.ty {
-            NixType::Reference(s) => write!(f, "{s}"),
-            ty => write!(
-                f,
-                "mkOption {{
+        write!(
+            f,
+            "mkOption {{
                     type = {}; 
                     {}
                 }}",
-                ty,
-                if let Some(default) = self.default.clone() {
-                    format!("default = {};", default)
-                } else {
-                    "".into()
-                }
-            ),
-        }
+            self.ty,
+            if let Some(default) = self.default.clone() {
+                format!("default = {};", default)
+            } else {
+                "".into()
+            }
+        )
     }
 }
 
@@ -158,6 +153,7 @@ impl NixOption {
 }
 
 type NixDeclarations = BTreeMap<String, NixValue>;
+type NixTransformPass<'a> = Box<dyn Fn(NixDeclarations) -> NixDeclarations + 'a>;
 
 pub struct NixTypeParser {
     structs: ItemMap,
@@ -187,7 +183,10 @@ impl NixTypeParser {
                 .clone(),
         )?;
 
-        let transformations = [NixTypeParser::collapse_wrapped_types];
+        let transformations: [NixTransformPass; 2] = [
+            Box::new(NixTypeParser::collapse_wrapped_types),
+            Box::new(|input| self.apply_defaultable(input)),
+        ];
         for transform in transformations {
             submodules = transform(submodules);
         }
@@ -207,7 +206,27 @@ impl NixTypeParser {
         ))
     }
 
-    pub fn collapse_wrapped_types(input: NixDeclarations) -> NixDeclarations {
+    fn apply_defaultable(&self, input: NixDeclarations) -> NixDeclarations {
+        input
+            .into_iter()
+            .map(|(k, mut v)| {
+                if self.defaultable.contains(&k)
+                    && let NixValue::Submodule(ref mut submodule) = v
+                {
+                    for opt in submodule.options.values_mut() {
+                        if !matches!(opt.ty, NixType::NullOr(_))
+                            && !matches!(opt.ty, NixType::List(_))
+                        {
+                            opt.ty = NixType::NullOr(Box::new(opt.ty.clone()));
+                        }
+                    }
+                }
+                (k, v)
+            })
+            .collect()
+    }
+
+    fn collapse_wrapped_types(input: NixDeclarations) -> NixDeclarations {
         let mut collapsed_types = HashSet::new();
         input
             .into_iter()
@@ -231,7 +250,7 @@ impl NixTypeParser {
                         if let NixType::Submodule(ref inner) = opt.ty
                             && collapsed_types.contains(inner)
                         {
-                            opt.ty = NixType::Reference(inner.clone());
+                            opt.ty = NixType::Submodule(inner.clone());
                         }
                     }
                 }
@@ -333,24 +352,16 @@ impl NixTypeParser {
             let type_ident = &segments.last().unwrap().ident;
             let field_ident = field.ident.as_ref().unwrap_or(&root.ident).to_string();
 
-            let mut ty = if let Some(submodule) = self.structs.get(&type_ident.to_string()) {
+            let ty = if let Some(submodule) = self.structs.get(&type_ident.to_string()) {
                 let sub = submodule.clone();
                 nix_values.extend(self.item_to_submodules(&sub)?);
                 let name = type_ident.to_string();
-                if matches!(&sub, Item::Enum(_)) {
-                    NixType::Reference(name)
-                } else {
-                    NixType::Submodule(name)
-                }
+                NixType::Submodule(name)
             } else {
                 let (ty, ty_deps) = self.primitive_to_nix(&field.ty);
                 deps.extend(ty_deps);
                 ty
             };
-
-            if self.defaultable.contains(&type_ident.to_string()) {
-                ty = NixType::NullOr(Box::new(ty));
-            }
 
             submodule
                 .options
