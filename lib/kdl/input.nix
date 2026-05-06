@@ -26,10 +26,32 @@ in rec {
     }
   '';
 
+  touchpadToKDL = touchpad: let
+    sections =
+      lib.mapAttrsToList primitiveToKDL touchpad;
+  in ''
+    touchpad {
+    ${sectionsToString (indentSections sections)}
+    }
+  '';
+
+  tabletToKDL = tablet: let
+    sections =
+      lib.mapAttrsToList primitiveToKDL tablet;
+  in ''
+    tablet {
+    ${sectionsToString (indentSections sections)}
+    }
+  '';
+
   toKDL = input: let
-    sections = [
-      (mapNull keyboardToKDL input.keyboard)
-    ];
+    sections =
+      [
+        (mapNull keyboardToKDL input.keyboard)
+        (mapNull touchpadToKDL input.touchpad)
+        (mapNull touchpadToKDL input.tablet)
+      ]
+      ++ (lib.mapAttrsToList primitiveToKDL input);
   in ''
     input {
     ${sectionsToString (indentSections sections)}

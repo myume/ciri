@@ -12,6 +12,13 @@
             options = "caps:ctrl_modifier";
           };
         };
+        touchpad = {
+          dwt = true;
+          tap = true;
+        };
+        tablet = {
+          map_to_output = "DP-2";
+        };
       };
       screenshot_path = "~/Pictures";
       binds = [
