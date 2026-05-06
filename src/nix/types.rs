@@ -17,12 +17,14 @@ pub enum NixType {
     List(Box<NixType>),
     NullOr(Box<NixType>),
     Enum(Vec<String>),
+    Either(Box<NixType>, Box<NixType>),
     U8,
     U16,
     U32,
     Unsigned,
     I32,
     I16,
+    Int,
     AttrTag(BTreeMap<String, NixOption>),
     TypeReference(String),
 }
@@ -99,6 +101,8 @@ impl Display for NixType {
                     )
                 }
                 NixType::Unsigned => "ints.unsigned".to_string(),
+                NixType::Either(ty1, ty2) => format!("either {} {}", ty1, ty2),
+                NixType::Int => "int".into(),
             }
         )
     }
@@ -177,7 +181,13 @@ impl NixTypeParser {
                 "Bind".into(),
                 Filter::Exclude(HashSet::from(["key".into(), "action".into()])),
             )]),
-            type_overrides: HashMap::from([("Key".into(), NixType::String)]),
+            type_overrides: HashMap::from([
+                ("Key".into(), NixType::String),
+                (
+                    "FloatOrInt".into(),
+                    NixType::Either(Box::new(NixType::Float), Box::new(NixType::Int)),
+                ),
+            ]),
         }
     }
 
@@ -433,7 +443,6 @@ impl NixTypeParser {
             "bool" => NixType::Bool,
             "f32" => NixType::Float,
             "f64" => NixType::Float,
-            "FloatOrInt" => NixType::Float,
             "Option" | "Vec" => {
                 if let PathArguments::AngleBracketed(ref arg) = head.arguments
                     && let GenericArgument::Type(inner_ty) =

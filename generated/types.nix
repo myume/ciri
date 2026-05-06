@@ -638,10 +638,10 @@ in
           type = nullOr bool;
         };
         noise = mkOption {
-          type = nullOr float;
+          type = nullOr (either float int);
         };
         saturation = mkOption {
-          type = nullOr float;
+          type = nullOr (either float int);
         };
         xray = mkOption {
           type = nullOr bool;
@@ -752,7 +752,7 @@ in
           type = nullOr Gradient;
         };
         width = mkOption {
-          type = nullOr float;
+          type = nullOr (either float int);
         };
       };
     };
@@ -1067,10 +1067,10 @@ in
           type = RelativeTo;
         };
         x = mkOption {
-          type = float;
+          type = either float int;
         };
         y = mkOption {
-          type = float;
+          type = either float int;
         };
       };
     };
@@ -1414,7 +1414,7 @@ in
           type = nullOr BorderRule;
         };
         gaps = mkOption {
-          type = nullOr float;
+          type = nullOr (either float int);
         };
         insert_hint = mkOption {
           type = nullOr InsertHintPart;
@@ -1539,7 +1539,7 @@ in
           type = nullOr AccelProfile;
         };
         accel_speed = mkOption {
-          type = nullOr float;
+          type = nullOr (either float int);
         };
         left_handed = mkOption {
           type = nullOr bool;
@@ -1639,7 +1639,7 @@ in
           type = nullOr Position;
         };
         scale = mkOption {
-          type = nullOr float;
+          type = nullOr (either float int);
         };
         transform = mkOption {
           type = nullOr Transform;
@@ -1754,13 +1754,13 @@ in
     ScrollFactor = submodule {
       options = {
         base = mkOption {
-          type = nullOr float;
+          type = nullOr (either float int);
         };
         horizontal = mkOption {
-          type = nullOr float;
+          type = nullOr (either float int);
         };
         vertical = mkOption {
-          type = nullOr float;
+          type = nullOr (either float int);
         };
       };
     };
@@ -1798,10 +1798,10 @@ in
     ShadowOffset = submodule {
       options = {
         x = mkOption {
-          type = float;
+          type = either float int;
         };
         y = mkOption {
-          type = float;
+          type = either float int;
         };
       };
     };
@@ -1826,10 +1826,10 @@ in
           type = nullOr bool;
         };
         softness = mkOption {
-          type = nullOr float;
+          type = nullOr (either float int);
         };
         spread = mkOption {
-          type = nullOr float;
+          type = nullOr (either float int);
         };
       };
     };
@@ -1878,16 +1878,16 @@ in
     Struts = submodule {
       options = {
         bottom = mkOption {
-          type = nullOr float;
+          type = nullOr (either float int);
         };
         left = mkOption {
-          type = nullOr float;
+          type = nullOr (either float int);
         };
         right = mkOption {
-          type = nullOr float;
+          type = nullOr (either float int);
         };
         top = mkOption {
-          type = nullOr float;
+          type = nullOr (either float int);
         };
       };
     };
@@ -1980,13 +1980,13 @@ in
           type = nullOr Gradient;
         };
         corner_radius = mkOption {
-          type = nullOr float;
+          type = nullOr (either float int);
         };
         gap = mkOption {
-          type = nullOr float;
+          type = nullOr (either float int);
         };
         gaps_between_tabs = mkOption {
-          type = nullOr float;
+          type = nullOr (either float int);
         };
         hide_when_single_tab = mkOption {
           type = nullOr Flag;
@@ -2019,7 +2019,7 @@ in
           type = nullOr Gradient;
         };
         width = mkOption {
-          type = nullOr float;
+          type = nullOr (either float int);
         };
       };
     };
@@ -2096,7 +2096,7 @@ in
           type = nullOr AccelProfile;
         };
         accel_speed = mkOption {
-          type = nullOr float;
+          type = nullOr (either float int);
         };
         click_method = mkOption {
           type = nullOr ClickMethod;
@@ -2158,7 +2158,7 @@ in
           type = nullOr AccelProfile;
         };
         accel_speed = mkOption {
-          type = nullOr float;
+          type = nullOr (either float int);
         };
         left_handed = mkOption {
           type = nullOr bool;
@@ -2189,7 +2189,7 @@ in
           type = nullOr AccelProfile;
         };
         accel_speed = mkOption {
-          type = nullOr float;
+          type = nullOr (either float int);
         };
         left_handed = mkOption {
           type = nullOr bool;
@@ -2363,7 +2363,7 @@ in
           type = nullOr PopupsRule;
         };
         scroll_factor = mkOption {
-          type = nullOr float;
+          type = nullOr (either float int);
         };
         shadow = mkOption {
           type = nullOr ShadowRule;
