@@ -7,8 +7,6 @@ use std::{
 use log::info;
 use syn::{Item, Type};
 
-const SKIPPED_STRUCTS: [&str; 2] = ["FloatOrInt", "Key"];
-
 pub type ItemMap = HashMap<String, Item>;
 pub type Defaultable = HashSet<String>;
 
@@ -67,9 +65,7 @@ fn parse_file(path: &Path) -> anyhow::Result<(ItemMap, Defaultable)> {
                     defaultables.insert(item_struct.ident.to_string());
                 }
 
-                if !SKIPPED_STRUCTS.contains(&ident.as_str()) {
-                    structs.entry(ident).or_insert(item);
-                }
+                structs.entry(ident).or_insert(item);
             }
             _ => {}
         }

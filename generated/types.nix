@@ -700,13 +700,13 @@ in
     Border = submodule {
       options = {
         active_color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
         active_gradient = mkOption {
           type = nullOr Gradient;
         };
         inactive_color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
         inactive_gradient = mkOption {
           type = nullOr Gradient;
@@ -715,7 +715,7 @@ in
           type = nullOr bool;
         };
         urgent_color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
         urgent_gradient = mkOption {
           type = nullOr Gradient;
@@ -728,13 +728,13 @@ in
     BorderRule = submodule {
       options = {
         active_color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
         active_gradient = mkOption {
           type = nullOr Gradient;
         };
         inactive_color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
         inactive_gradient = mkOption {
           type = nullOr Gradient;
@@ -746,7 +746,7 @@ in
           type = nullOr bool;
         };
         urgent_color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
         urgent_gradient = mkOption {
           type = nullOr Gradient;
@@ -769,22 +769,6 @@ in
       options = {
         disable_primary = mkOption {
           type = nullOr bool;
-        };
-      };
-    };
-    Color = submodule {
-      options = {
-        a = mkOption {
-          type = nullOr float;
-        };
-        b = mkOption {
-          type = nullOr float;
-        };
-        g = mkOption {
-          type = nullOr float;
-        };
-        r = mkOption {
-          type = nullOr float;
         };
       };
     };
@@ -1084,13 +1068,13 @@ in
     FocusRing = submodule {
       options = {
         active_color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
         active_gradient = mkOption {
           type = nullOr Gradient;
         };
         inactive_color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
         inactive_gradient = mkOption {
           type = nullOr Gradient;
@@ -1099,7 +1083,7 @@ in
           type = nullOr bool;
         };
         urgent_color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
         urgent_gradient = mkOption {
           type = nullOr Gradient;
@@ -1128,7 +1112,7 @@ in
           type = ints.s16;
         };
         from = mkOption {
-          type = Color;
+          type = str;
         };
         in_ = mkOption {
           type = GradientInterpolation;
@@ -1137,7 +1121,7 @@ in
           type = GradientRelativeTo;
         };
         to = mkOption {
-          type = Color;
+          type = str;
         };
       };
     };
@@ -1247,7 +1231,7 @@ in
     InsertHint = submodule {
       options = {
         color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
         gradient = mkOption {
           type = nullOr Gradient;
@@ -1260,7 +1244,7 @@ in
     InsertHintPart = submodule {
       options = {
         color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
         gradient = mkOption {
           type = nullOr Gradient;
@@ -1342,7 +1326,7 @@ in
           type = nullOr bool;
         };
         background_color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
         border = mkOption {
           type = nullOr Border;
@@ -1393,7 +1377,7 @@ in
           type = nullOr Flag;
         };
         background_color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
         border = mkOption {
           type = nullOr BorderRule;
@@ -1578,7 +1562,7 @@ in
     MruHighlight = submodule {
       options = {
         active_color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
         corner_radius = mkOption {
           type = nullOr float;
@@ -1587,7 +1571,7 @@ in
           type = nullOr float;
         };
         urgent_color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
       };
     };
@@ -1609,10 +1593,10 @@ in
     Output = submodule {
       options = {
         backdrop_color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
         background_color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
         focus_at_startup = mkOption {
           type = nullOr bool;
@@ -1653,7 +1637,7 @@ in
     Overview = submodule {
       options = {
         backdrop_color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
         workspace_shadow = mkOption {
           type = nullOr WorkspaceShadow;
@@ -1773,13 +1757,13 @@ in
     Shadow = submodule {
       options = {
         color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
         draw_behind_window = mkOption {
           type = nullOr bool;
         };
         inactive_color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
         offset = mkOption {
           type = nullOr ShadowOffset;
@@ -1808,13 +1792,13 @@ in
     ShadowRule = submodule {
       options = {
         color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
         draw_behind_window = mkOption {
           type = nullOr bool;
         };
         inactive_color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
         off = mkOption {
           type = nullOr bool;
@@ -1918,7 +1902,7 @@ in
     TabIndicator = submodule {
       options = {
         active_color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
         active_gradient = mkOption {
           type = nullOr Gradient;
@@ -1936,7 +1920,7 @@ in
           type = nullOr bool;
         };
         inactive_color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
         inactive_gradient = mkOption {
           type = nullOr Gradient;
@@ -1954,7 +1938,7 @@ in
           type = nullOr TabIndicatorPosition;
         };
         urgent_color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
         urgent_gradient = mkOption {
           type = nullOr Gradient;
@@ -1974,7 +1958,7 @@ in
     TabIndicatorPart = submodule {
       options = {
         active_color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
         active_gradient = mkOption {
           type = nullOr Gradient;
@@ -1992,7 +1976,7 @@ in
           type = nullOr Flag;
         };
         inactive_color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
         inactive_gradient = mkOption {
           type = nullOr Gradient;
@@ -2013,7 +1997,7 @@ in
           type = nullOr TabIndicatorPosition;
         };
         urgent_color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
         urgent_gradient = mkOption {
           type = nullOr Gradient;
@@ -2032,19 +2016,19 @@ in
     TabIndicatorRule = submodule {
       options = {
         active_color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
         active_gradient = mkOption {
           type = nullOr Gradient;
         };
         inactive_color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
         inactive_gradient = mkOption {
           type = nullOr Gradient;
         };
         urgent_color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
         urgent_gradient = mkOption {
           type = nullOr Gradient;
@@ -2408,7 +2392,7 @@ in
     WorkspaceShadow = submodule {
       options = {
         color = mkOption {
-          type = nullOr Color;
+          type = nullOr str;
         };
         off = mkOption {
           type = nullOr bool;

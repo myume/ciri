@@ -183,6 +183,7 @@ impl NixTypeParser {
             )]),
             type_overrides: HashMap::from([
                 ("Key".into(), NixType::String),
+                ("Color".into(), NixType::String),
                 (
                     "FloatOrInt".into(),
                     NixType::Either(Box::new(NixType::Float), Box::new(NixType::Int)),
@@ -202,7 +203,7 @@ impl NixTypeParser {
                 .clone(),
         )?;
 
-        let transformations: [NixTransformPass; 2] = [
+        let transformations: [NixTransformPass; _] = [
             Box::new(NixTypeParser::collapse_wrapped_types),
             Box::new(|input| self.apply_nullable(input)),
         ];
@@ -393,7 +394,9 @@ impl NixTypeParser {
             let type_ident = &segments.last().unwrap().ident;
             let field_ident = field.ident.as_ref().unwrap_or(&root.ident).to_string();
 
-            let ty = if let Some(submodule) = self.structs.get(&type_ident.to_string()) {
+            let ty = if let Some(submodule) = self.structs.get(&type_ident.to_string())
+                && !self.type_overrides.contains_key(&type_ident.to_string())
+            {
                 let sub = submodule.clone();
                 nix_values.extend(self.item_to_submodules(&sub)?);
                 let name = type_ident.to_string();
