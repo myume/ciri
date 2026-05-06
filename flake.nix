@@ -23,5 +23,10 @@
     devShells = forAllSystems (pkgs: {
       default = pkgs.callPackage ./nix/shell.nix {};
     });
+
+    homeManagerModules = {
+      default = self.homeManagerModules.ciri;
+      ciri = ./nix/hm-module.nix self;
+    };
   };
 }
