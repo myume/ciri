@@ -8,7 +8,7 @@ use indexmap::IndexMap;
 use log::{debug, warn};
 use syn::{GenericArgument, Item, ItemEnum, ItemStruct, PathArguments, Type};
 
-use crate::crawler::{Defaultable, ItemMap};
+use crate::crawler::{ItemMap, TraitsMap};
 
 #[derive(Debug, Clone)]
 pub enum NixType {
@@ -161,17 +161,17 @@ enum Filter {
 
 pub struct NixTypeParser {
     structs: ItemMap,
-    defaultable: Defaultable,
+    traits_map: TraitsMap,
     visited: HashSet<String>,
     null_overrides: HashMap<String, Filter>,
     type_overrides: HashMap<String, NixType>,
 }
 
 impl NixTypeParser {
-    pub fn new(structs: ItemMap, defaultable: Defaultable) -> NixTypeParser {
+    pub fn new(structs: ItemMap, traits_map: TraitsMap) -> NixTypeParser {
         NixTypeParser {
             structs,
-            defaultable,
+            traits_map,
             visited: HashSet::new(),
             null_overrides: HashMap::from([(
                 "Bind".into(),
@@ -230,7 +230,8 @@ impl NixTypeParser {
         input
             .into_iter()
             .map(|(k, mut v)| {
-                if self.defaultable.contains(&k)
+                if let Some(traits) = self.traits_map.get(&k)
+                    && traits.contains("Default")
                     && let NixValue::Submodule(ref mut submodule) = v
                 {
                     for opt in submodule.options.values_mut() {

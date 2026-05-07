@@ -1,15 +1,12 @@
 use anyhow::{Context, anyhow};
 use env_logger::Env;
 use log::info;
-use std::{
-    collections::{HashMap, HashSet},
-    env::temp_dir,
-    fs::File,
-    io::Write,
-    process::Command,
-};
+use std::{env::temp_dir, fs::File, io::Write, process::Command};
 
-use crate::nix::types::NixTypeParser;
+use crate::{
+    crawler::{ItemMap, TraitsMap},
+    nix::types::NixTypeParser,
+};
 
 const NIRI_REPO_URL: &str = "https://github.com/niri-wm/niri.git";
 
@@ -37,15 +34,15 @@ fn main() -> anyhow::Result<()> {
         }
     }
 
-    let mut structs = HashMap::new();
-    let mut defaultables = HashSet::new();
+    let mut structs = ItemMap::new();
+    let mut traits_map = TraitsMap::new();
     for path in CRAWLER_PATHS {
         let (found_structs, found_defaults) = crawler::crawl(&repo_dir.join(path))?;
         structs.extend(found_structs);
-        defaultables.extend(found_defaults);
+        traits_map.extend(found_defaults);
     }
 
-    let nix_config_type = NixTypeParser::new(structs, defaultables).generate_config_type()?;
+    let nix_config_type = NixTypeParser::new(structs, traits_map).generate_config_type()?;
 
     info!("Outputting types...");
     let type_path = "generated/types.nix";

@@ -265,6 +265,7 @@ dependencies = [
  "env_logger",
  "indexmap",
  "log",
+ "proc-macro2",
  "syn",
 ]
 
