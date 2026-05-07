@@ -210,10 +210,16 @@ impl NixTypeParser {
             })
             .collect();
 
-        type_overrides.extend([(
-            "FloatOrInt".into(),
-            NixType::either(NixType::Float, NixType::Int),
-        )]);
+        type_overrides.extend([
+            (
+                "FloatOrInt".into(),
+                NixType::either(NixType::Float, NixType::Int),
+            ),
+            (
+                "WorkspaceReference".into(),
+                NixType::either(NixType::String, NixType::Unsigned),
+            ),
+        ]);
 
         NixTypeParser {
             structs,

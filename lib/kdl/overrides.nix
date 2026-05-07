@@ -66,8 +66,16 @@ in {
           lib.lists.flatten (lib.mapAttrsToList (name: value:
             if name == "args"
             then
-              map toKDLString
-              value
+              if builtins.isList value
+              then
+                map toKDLString (lib.flatten (map (val:
+                  if builtins.isAttrs val
+                  then lib.attrValues val
+                  else val)
+                value))
+              else
+                map toKDLString
+                value
             else if value != null
             then [
               "${name}=${toKDLString value}"
@@ -76,7 +84,7 @@ in {
           action)
         else if builtins.isString action && action != ""
         then [''"${action}"'']
-        else if !builtins.isInt action && builtins.isFloat action
+        else if builtins.isInt action || builtins.isFloat action
         then [(toString action)]
         else [];
     in ''"${val.key}" { ${actionName}${

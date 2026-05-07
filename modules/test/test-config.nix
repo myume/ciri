@@ -1,4 +1,4 @@
-{
+{lib, ...}: {
   programs.ciri = {
     enable = true;
     settings = {
@@ -63,16 +63,29 @@
         hide-after-inactive-ms = 1000;
       };
 
-      binds = [
-        {
-          key = "Mod+Return";
-          action.spawn-sh = "kitty -1";
-        }
-        {
-          key = "Mod+P";
-          action.screenshot = {};
-        }
-      ];
+      binds = let
+        workspaces = lib.flatten (map (n: [
+          {
+            key = "Mod+${toString n}";
+            action.focus-workspace = n;
+          }
+          {
+            key = "Mod+Shift+${toString n}";
+            action.move-column-to-workspace.args = [n];
+          }
+        ]) (lib.lists.range 1 9));
+      in
+        workspaces
+        ++ [
+          {
+            key = "Mod+Return";
+            action.spawn-sh = "kitty -1";
+          }
+          {
+            key = "Mod+P";
+            action.screenshot = {};
+          }
+        ];
 
       layer-rules = [
         {

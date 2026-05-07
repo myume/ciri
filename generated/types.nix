@@ -1838,7 +1838,7 @@ in
         type = bool;
       };
       focus-workspace = mkOption {
-        type = workspace-reference;
+        type = either str ints.unsigned;
       };
       focus-workspace-previous = mkOption {
         type = bool;
@@ -1869,7 +1869,7 @@ in
             };
             args = mkOption {
               type = listOf (oneOf [
-                workspace-reference
+                (either str ints.unsigned)
               ]);
               default = [];
             };
@@ -1902,7 +1902,7 @@ in
             };
             args = mkOption {
               type = listOf (oneOf [
-                workspace-reference
+                (either str ints.unsigned)
               ]);
               default = [];
             };
@@ -2091,17 +2091,6 @@ in
       };
       close-overview = mkOption {
         type = bool;
-      };
-    };
-    workspace-reference = attrTag {
-      id = mkOption {
-        type = ints.unsigned;
-      };
-      index = mkOption {
-        type = ints.u8;
-      };
-      name = mkOption {
-        type = str;
       };
     };
     switch-binds = submodule {
