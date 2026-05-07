@@ -1328,11 +1328,11 @@ in
     window-rule = submodule {
       options = {
         matches = mkOption {
-          type = listOf match;
+          type = listOf window-rule-match;
           default = [];
         };
         excludes = mkOption {
-          type = listOf match;
+          type = listOf window-rule-match;
           default = [];
         };
         default-column-width = mkOption {
@@ -1424,37 +1424,6 @@ in
         };
         popups = mkOption {
           type = nullOr popups-rule;
-        };
-      };
-    };
-    match = submodule {
-      options = {
-        app-id = mkOption {
-          type = nullOr str;
-        };
-        title = mkOption {
-          type = nullOr str;
-        };
-        is-active = mkOption {
-          type = nullOr bool;
-        };
-        is-focused = mkOption {
-          type = nullOr bool;
-        };
-        is-active-in-column = mkOption {
-          type = nullOr bool;
-        };
-        is-floating = mkOption {
-          type = nullOr bool;
-        };
-        is-window-cast-target = mkOption {
-          type = nullOr bool;
-        };
-        is-urgent = mkOption {
-          type = nullOr bool;
-        };
-        at-startup = mkOption {
-          type = nullOr bool;
         };
       };
     };
@@ -1555,11 +1524,11 @@ in
     layer-rule = submodule {
       options = {
         matches = mkOption {
-          type = listOf match;
+          type = listOf layer-rule-match;
           default = [];
         };
         excludes = mkOption {
-          type = listOf match;
+          type = listOf layer-rule-match;
           default = [];
         };
         opacity = mkOption {
@@ -2295,4 +2264,54 @@ in
         };
       };
     };
+    window-rule-match = submodule {
+      options = {
+        app-id = mkOption {
+          type = nullOr str;
+        };
+        title = mkOption {
+          type = nullOr str;
+        };
+        is-active = mkOption {
+          type = nullOr bool;
+        };
+        is-focused = mkOption {
+          type = nullOr bool;
+        };
+        is-active-in-column = mkOption {
+          type = nullOr bool;
+        };
+        is-floating = mkOption {
+          type = nullOr bool;
+        };
+        is-window-cast-target = mkOption {
+          type = nullOr bool;
+        };
+        is-urgent = mkOption {
+          type = nullOr bool;
+        };
+        at-startup = mkOption {
+          type = nullOr bool;
+        };
+      };
+    };
+    layer-rule-match = submodule {
+      options = {
+        namespace = mkOption {
+          type = nullOr str;
+        };
+        at-startup = mkOption {
+          type = nullOr bool;
+        };
+        layer = mkOption {
+          type = nullOr layer;
+        };
+      };
+    };
+    layer = enum [
+      "background"
+      "bottom"
+      "top"
+      "overlay"
+    ];
   }

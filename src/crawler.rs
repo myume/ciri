@@ -4,9 +4,9 @@ use std::{
     path::Path,
 };
 
-use log::debug;
+use log::{debug, warn};
 use proc_macro2::TokenTree;
-use syn::{Item, Type};
+use syn::{Ident, Item, Type, spanned::Spanned};
 
 pub type ItemMap = HashMap<String, Item>;
 pub type TraitsMap = HashMap<String, HashSet<String>>;
@@ -18,7 +18,12 @@ pub fn crawl(path: &Path) -> anyhow::Result<(ItemMap, TraitsMap)> {
         for entry in read_dir(path)? {
             let path = entry?.path();
             let (found_structs, found_traits) = crawl(&path)?;
-            structs.extend(found_structs);
+            for (key, item) in found_structs {
+                if structs.contains_key(&key) {
+                    warn!("struct with duplicate name: {}", key);
+                }
+                structs.insert(key, item);
+            }
             for (k, v) in found_traits {
                 traits_map.entry(k).or_default().extend(v);
             }
@@ -39,7 +44,7 @@ fn parse_file(path: &Path) -> anyhow::Result<(ItemMap, TraitsMap)> {
 
     let mut structs = ItemMap::new();
     let mut trait_map = TraitsMap::new();
-    for item in ast.items {
+    for mut item in ast.items {
         match item {
             Item::Impl(ref item_impl) => {
                 if let Some(ref item_trait) = item_impl.trait_
@@ -62,8 +67,12 @@ fn parse_file(path: &Path) -> anyhow::Result<(ItemMap, TraitsMap)> {
             }
             Item::Struct(ref item_struct) => {
                 let struct_ident = item_struct.ident.to_string();
-                item_struct.attrs.iter().for_each(|attr| {
-                    if let syn::Meta::List(ref meta_list) = attr.meta {
+
+                // collect derived traits
+                for attr in item_struct.attrs.iter() {
+                    if attr.path().is_ident("derive")
+                        && let syn::Meta::List(ref meta_list) = attr.meta
+                    {
                         for token in meta_list.tokens.clone() {
                             if let TokenTree::Ident(attr_ident) = token {
                                 trait_map
@@ -73,9 +82,25 @@ fn parse_file(path: &Path) -> anyhow::Result<(ItemMap, TraitsMap)> {
                             }
                         }
                     }
-                });
+                }
 
-                structs.entry(struct_ident).or_insert(item);
+                // there are two match structs, one for layer rule and one for window rule
+                let (ident, item) = if struct_ident == "Match" {
+                    let ident = format!(
+                        "{}_match",
+                        path.file_stem()
+                            .expect("should be a file")
+                            .to_str()
+                            .unwrap()
+                    );
+                    let mut updated_struct = item_struct.clone();
+                    updated_struct.ident = Ident::new(&ident, item_struct.span());
+                    (ident, Item::Struct(updated_struct))
+                } else {
+                    (struct_ident.to_string(), item)
+                };
+
+                structs.entry(ident).or_insert(item);
             }
             _ => {}
         }

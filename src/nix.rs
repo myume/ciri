@@ -5,7 +5,7 @@ use std::{
 
 use anyhow::Context;
 use indexmap::IndexMap;
-use log::{trace, warn};
+use log::{debug, error, trace, warn};
 use regex::Regex;
 use syn::{Attribute, GenericArgument, Item, ItemEnum, ItemStruct, Meta, PathArguments, Type};
 
@@ -34,6 +34,13 @@ pub enum NixType {
 }
 
 impl NixType {
+    pub fn innermost_type(&self) -> NixType {
+        match self {
+            NixType::List(nix_type) | NixType::NullOr(nix_type) => nix_type.innermost_type(),
+            _ => self.clone(),
+        }
+    }
+
     pub fn null(inner: NixType) -> NixType {
         NixType::NullOr(Box::new(inner))
     }
@@ -178,6 +185,7 @@ pub struct NixTypeParser {
     traits_map: TraitsMap,
     visited: HashSet<String>,
     null_overrides: HashMap<String, Filter>,
+    option_overrides: HashMap<(String, String), NixOption>,
     type_overrides: HashMap<String, NixType>,
 }
 
@@ -216,19 +224,69 @@ impl NixTypeParser {
                 Filter::Exclude(HashSet::from(["key".into(), "action".into()])),
             )]),
             type_overrides,
+            option_overrides: HashMap::from([
+                (
+                    ("LayerRule".to_string(), "excludes".to_string()),
+                    NixOption::new(NixType::list(NixType::TypeReference(
+                        "layer_rule_match".to_string(),
+                    ))),
+                ),
+                (
+                    ("LayerRule".to_string(), "matches".to_string()),
+                    NixOption::new(NixType::list(NixType::TypeReference(
+                        "layer_rule_match".to_string(),
+                    ))),
+                ),
+                (
+                    ("WindowRule".to_string(), "excludes".to_string()),
+                    NixOption::new(NixType::list(NixType::TypeReference(
+                        "window_rule_match".to_string(),
+                    ))),
+                ),
+                (
+                    ("WindowRule".to_string(), "matches".to_string()),
+                    NixOption::new(NixType::list(NixType::TypeReference(
+                        "window_rule_match".to_string(),
+                    ))),
+                ),
+            ]),
         }
     }
 
     pub fn generate_config_type(&mut self) -> anyhow::Result<String> {
         self.visited.clear();
 
-        let mut submodules = self.item_to_submodules(
+        let mut submodules = self.item_to_nix(
             &self
                 .structs
                 .get("Config")
                 .context("missing root config struct")?
                 .clone(),
         )?;
+
+        let extra_deps: Vec<_> = self
+            .option_overrides
+            .values()
+            .map(|op| op.ty.innermost_type())
+            .filter_map(|ty| {
+                let NixType::TypeReference(ty) = ty else {
+                    return None;
+                };
+                Some(ty)
+            })
+            .collect();
+
+        for dep in extra_deps {
+            submodules.extend(
+                self.item_to_nix(
+                    &self
+                        .structs
+                        .get(&dep)
+                        .context(format!("missing struct {} from niri config", dep))?
+                        .clone(),
+                )?,
+            );
+        }
 
         let transformations: [NixTransformPass; _] = [
             Box::new(NixTypeParser::collapse_wrapped_types),
@@ -329,7 +387,7 @@ impl NixTypeParser {
             .collect()
     }
 
-    fn item_to_submodules(&mut self, root: &Item) -> anyhow::Result<NixDeclarations> {
+    fn item_to_nix(&mut self, root: &Item) -> anyhow::Result<NixDeclarations> {
         let (mut decl, deps) = match root {
             Item::Enum(item_enum) => self.enum_to_option(item_enum),
             Item::Struct(item_struct) => self.struct_to_submodules(item_struct),
@@ -338,9 +396,9 @@ impl NixTypeParser {
 
         for dep in deps {
             if let Some(submodule) = self.structs.get(&dep) {
-                decl.extend(self.item_to_submodules(&submodule.clone())?);
+                decl.extend(self.item_to_nix(&submodule.clone())?);
             } else {
-                warn!("unhandled dependency {dep}");
+                error!("unhandled dependency {dep}");
             }
         }
 
@@ -449,6 +507,13 @@ impl NixTypeParser {
             let type_ident = &segments.last().unwrap().ident;
             let field_ident = field.ident.as_ref().unwrap_or(&root.ident).to_string();
 
+            let field_id = (submodule_name.to_string(), field_ident.to_string());
+            if let Some(opt) = self.option_overrides.get(&field_id) {
+                debug!("Overriding option {}.{}", field_id.0, field_id.1);
+                submodule.options.insert(field_id.1, opt.clone());
+                continue;
+            }
+
             let ty = if self.structs.contains_key(&type_ident.to_string())
                 && !self.type_overrides.contains_key(&type_ident.to_string())
             {
@@ -478,7 +543,7 @@ impl NixTypeParser {
         let head = path_type
             .path
             .segments
-            .first()
+            .last()
             .expect("missing head of path");
 
         let ty_ident = head.ident.to_string();
