@@ -405,11 +405,10 @@ in
     focus-follows-mouse = submodule {
       options = {
         max-scroll-amount = mkOption {
-          type = nullOr percent;
+          type = nullOr str;
         };
       };
     };
-    percent = float;
     mod-key = enum [
       "ctrl"
       "shift"
@@ -488,20 +487,7 @@ in
           type = bool;
         };
         mode = mkOption {
-          type = configured-mode;
-        };
-      };
-    };
-    configured-mode = submodule {
-      options = {
-        width = mkOption {
-          type = ints.u16;
-        };
-        height = mkOption {
-          type = ints.u16;
-        };
-        refresh = mkOption {
-          type = nullOr float;
+          type = str;
         };
       };
     };
@@ -671,35 +657,13 @@ in
           type = gradient-relative-to;
         };
         in- = mkOption {
-          type = gradient-interpolation;
+          type = str;
         };
       };
     };
     gradient-relative-to = enum [
       "window"
       "workspace-view"
-    ];
-    gradient-interpolation = submodule {
-      options = {
-        color-space = mkOption {
-          type = nullOr gradient-color-space;
-        };
-        hue-interpolation = mkOption {
-          type = nullOr hue-interpolation;
-        };
-      };
-    };
-    gradient-color-space = enum [
-      "srgb"
-      "srgb-linear"
-      "oklab"
-      "oklch"
-    ];
-    hue-interpolation = enum [
-      "shorter"
-      "longer"
-      "increasing"
-      "decreasing"
     ];
     shadow-rule = submodule {
       options = {
@@ -1460,10 +1424,10 @@ in
     match = submodule {
       options = {
         app-id = mkOption {
-          type = nullOr regex-eq;
+          type = nullOr str;
         };
         title = mkOption {
-          type = nullOr regex-eq;
+          type = nullOr str;
         };
         is-active = mkOption {
           type = nullOr bool;
@@ -1488,7 +1452,6 @@ in
         };
       };
     };
-    regex-eq = str;
     tab-indicator-rule = submodule {
       options = {
         active-color = mkOption {
@@ -2089,7 +2052,7 @@ in
         type = bool;
       };
       switch-layout = mkOption {
-        type = layout-switch-target;
+        type = str;
       };
       show-hotkey-overlay = mkOption {
         type = bool;
@@ -2140,10 +2103,10 @@ in
         type = bool;
       };
       x = mkOption {
-        type = position-change;
+        type = str;
       };
       y = mkOption {
-        type = position-change;
+        type = str;
       };
       toggle-window-rule-opacity = mkOption {
         type = bool;
@@ -2227,31 +2190,6 @@ in
       };
       name = mkOption {
         type = str;
-      };
-    };
-    layout-switch-target = attrTag {
-      next = mkOption {
-        type = bool;
-      };
-      prev = mkOption {
-        type = bool;
-      };
-      index = mkOption {
-        type = ints.u8;
-      };
-    };
-    position-change = attrTag {
-      set-fixed = mkOption {
-        type = float;
-      };
-      set-proportion = mkOption {
-        type = float;
-      };
-      adjust-fixed = mkOption {
-        type = float;
-      };
-      adjust-proportion = mkOption {
-        type = float;
       };
     };
     mru-direction = enum [

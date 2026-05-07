@@ -37,9 +37,11 @@ fn main() -> anyhow::Result<()> {
     let mut structs = ItemMap::new();
     let mut traits_map = TraitsMap::new();
     for path in CRAWLER_PATHS {
-        let (found_structs, found_defaults) = crawler::crawl(&repo_dir.join(path))?;
+        let (found_structs, found_traits) = crawler::crawl(&repo_dir.join(path))?;
         structs.extend(found_structs);
-        traits_map.extend(found_defaults);
+        for (k, v) in found_traits {
+            traits_map.entry(k).or_default().extend(v);
+        }
     }
 
     let nix_config_type = NixTypeParser::new(structs, traits_map).generate_config_type()?;

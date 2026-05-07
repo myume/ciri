@@ -169,6 +169,30 @@ pub struct NixTypeParser {
 
 impl NixTypeParser {
     pub fn new(structs: ItemMap, traits_map: TraitsMap) -> NixTypeParser {
+        let mut type_overrides: HashMap<String, NixType> = traits_map
+            .iter()
+            .filter_map(|(name, traits)| {
+                if traits.contains("FromStr")
+                    && let Some(item) = structs.get(name)
+                {
+                    match item {
+                        Item::Enum(enum_item) => {
+                            if enum_item.variants.iter().any(|ele| !ele.fields.is_empty()) {
+                                return Some((name.clone(), NixType::String));
+                            }
+                        }
+                        _ => return Some((name.clone(), NixType::String)),
+                    };
+                }
+                None
+            })
+            .collect();
+
+        type_overrides.extend([(
+            "FloatOrInt".into(),
+            NixType::Either(Box::new(NixType::Float), Box::new(NixType::Int)),
+        )]);
+
         NixTypeParser {
             structs,
             traits_map,
@@ -177,15 +201,7 @@ impl NixTypeParser {
                 "Bind".into(),
                 Filter::Exclude(HashSet::from(["key".into(), "action".into()])),
             )]),
-            type_overrides: HashMap::from([
-                ("Key".into(), NixType::String),
-                ("Color".into(), NixType::String),
-                ("SizeChange".into(), NixType::String),
-                (
-                    "FloatOrInt".into(),
-                    NixType::Either(Box::new(NixType::Float), Box::new(NixType::Int)),
-                ),
-            ]),
+            type_overrides,
         }
     }
 

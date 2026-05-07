@@ -17,9 +17,11 @@ pub fn crawl(path: &Path) -> anyhow::Result<(ItemMap, TraitsMap)> {
         let mut traits_map = TraitsMap::new();
         for entry in read_dir(path)? {
             let path = entry?.path();
-            let (found_structs, found_defaults) = crawl(&path)?;
+            let (found_structs, found_traits) = crawl(&path)?;
             structs.extend(found_structs);
-            traits_map.extend(found_defaults);
+            for (k, v) in found_traits {
+                traits_map.entry(k).or_default().extend(v);
+            }
         }
         return Ok((structs, traits_map));
     } else if path.extension().is_some_and(|ext| ext == "rs") {
