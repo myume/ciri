@@ -30,6 +30,20 @@ pub enum NixType {
     TypeReference(String),
 }
 
+impl NixType {
+    pub fn null(inner: NixType) -> NixType {
+        NixType::NullOr(Box::new(inner))
+    }
+
+    pub fn list(inner: NixType) -> NixType {
+        NixType::List(Box::new(inner))
+    }
+
+    pub fn either(left: NixType, right: NixType) -> NixType {
+        NixType::Either(Box::new(left), Box::new(right))
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct NixOption {
     ty: NixType,
@@ -190,7 +204,7 @@ impl NixTypeParser {
 
         type_overrides.extend([(
             "FloatOrInt".into(),
-            NixType::Either(Box::new(NixType::Float), Box::new(NixType::Int)),
+            NixType::either(NixType::Float, NixType::Int),
         )]);
 
         NixTypeParser {
@@ -252,7 +266,7 @@ impl NixTypeParser {
                 {
                     for opt in submodule.options.values_mut() {
                         if can_apply_null(&opt.ty) {
-                            opt.ty = NixType::NullOr(Box::new(opt.ty.clone()));
+                            opt.ty = NixType::null(opt.ty.clone());
                         }
                     }
                 }
@@ -273,7 +287,7 @@ impl NixTypeParser {
                                 && !names.contains(opt_name)))
                             && can_apply_null(&opt.ty)
                         {
-                            opt.ty = NixType::NullOr(Box::new(opt.ty.clone()));
+                            opt.ty = NixType::null(opt.ty.clone());
                         }
                     }
                 }
@@ -467,11 +481,10 @@ impl NixTypeParser {
                 {
                     let (ty, inner_deps) = self.primitive_to_nix(inner_ty);
                     deps.extend(inner_deps);
-                    let inner_nix = Box::new(ty);
                     if ty_ident == "Option" {
-                        NixType::NullOr(inner_nix)
+                        NixType::null(ty)
                     } else {
-                        NixType::List(inner_nix)
+                        NixType::list(ty)
                     }
                 } else {
                     unreachable!("unhandled field type {:?}", ty);
