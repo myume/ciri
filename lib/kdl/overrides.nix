@@ -1,8 +1,9 @@
-{utils}:
-with utils; {
-  ".layout.shadow.offset" = name: value: "${name} x=${toString value.x} y=${toString value.y}";
+{utils}: let
+  inherit (utils) sectionsToString indentSection;
+in {
+  "layout.shadow.offset" = name: value: "${name} x=${toString value.x} y=${toString value.y}";
 
-  ".binds" = name: value: let
+  binds = name: value: let
     binds = map (val: let
       actionName = builtins.head (builtins.attrNames val.action);
       action = val.action.${actionName};

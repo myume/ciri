@@ -30,7 +30,10 @@
     overrides ? {},
     path ? "",
   }: name: value: let
-    currentPath = path + "." + name;
+    currentPath =
+      if path != ""
+      then path + "." + name
+      else name;
     handlers = {
       "string" = name: value: ''${name} "${value}"'';
       "bool" = name: _: "${name}";
@@ -38,10 +41,14 @@
       "float" = name: value: "${name} ${toString value}";
       "set" = name: value: sectionToKDL name overrides value currentPath;
     };
-    handler =
+    override =
       overrides.${
         currentPath
-      } or handlers."${lib.typeOf value}" or (_: _: null);
+      } or null;
+    handler =
+      if builtins.isFunction override
+      then override
+      else handlers."${lib.typeOf value}" or (_: _: null);
   in
     handler name value;
 
