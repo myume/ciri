@@ -27,29 +27,34 @@
 
   cornerRadiusToKDL = name: value: "${name} ${builtins.concatStringsSep " " (map toKDLString (builtins.attrValues value))}";
 in {
-  "window-rules.window-rule.background-effect.blur" = toBoolArg;
-  "window-rules.window-rule.background-effect.xray" = toBoolArg;
-  "window-rules.window-rule.clip-to-geometry" = toBoolArg;
-  "window-rules.window-rule.geometry-corner-radius" = cornerRadiusToKDL;
-  "window-rules.window-rule.matches" = matchesToKDL;
+  window-rules.window-rule = {
+    background-effect.blur = toBoolArg;
+    background-effect.xray = toBoolArg;
+    clip-to-geometry = toBoolArg;
+    geometry-corner-radius = cornerRadiusToKDL;
+    matches = matchesToKDL;
+  };
 
-  "layer-rules.layer-rule.place-within-backdrop" = toBoolArg;
-  "layer-rules.layer-rule.background-effect.blur" = toBoolArg;
-  "layer-rules.layer-rule.background-effect.xray" = toBoolArg;
-  "layer-rules.layer-rule.matches" = matchesToKDL;
+  layer-rules.layer-rule = {
+    place-within-backdrop = toBoolArg;
+    background-effect.blur = toBoolArg;
+    background-effect.xray = toBoolArg;
+    matches = matchesToKDL;
+  };
 
-  "layout.shadow.offset" = name: value: "${name} x=${toString value.x} y=${toString value.y}";
-
-  "layout.preset-column-widths" = name: value: let
-    sections = lib.flatten (
-      map flattenAttrEntries
-      value
-    );
-  in ''
-    ${name} {
-    ${sectionsToString (map indentSection sections)}
-    }
-  '';
+  layout = {
+    shadow.offset = name: value: "${name} x=${toString value.x} y=${toString value.y}";
+    preset-column-widths = name: value: let
+      sections = lib.flatten (
+        map flattenAttrEntries
+        value
+      );
+    in ''
+      ${name} {
+      ${sectionsToString (map indentSection sections)}
+      }
+    '';
+  };
 
   binds = name: value: let
     binds = map (val: let

@@ -36,12 +36,9 @@
 
   primitiveToKDL = {
     overrides ? {},
-    path ? "",
+    path ? [],
   }: name: value: let
-    currentPath =
-      if path != ""
-      then path + "." + name
-      else name;
+    currentPath = path ++ [name];
     handlers = {
       "string" = name: value: ''${name} "${value}"'';
       "bool" = name: value:
@@ -70,9 +67,10 @@
         else null;
     };
     override =
-      overrides.${
-        currentPath
-      } or null;
+      lib.attrsets.attrByPath
+      currentPath
+      null
+      overrides;
     handler =
       if builtins.isFunction override && value != null
       then override
