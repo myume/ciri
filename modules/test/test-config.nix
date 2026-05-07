@@ -62,6 +62,17 @@
 
         hide-after-inactive-ms = 1000;
       };
+
+      binds = [
+        {
+          key = "Mod+Return";
+          action.spawn-sh = "kitty -1";
+        }
+        {
+          key = "Mod+P";
+          action.screenshot = "";
+        }
+      ];
     };
   };
 }

@@ -10,7 +10,7 @@ in {
       values =
         if builtins.isAttrs action
         then map toString (builtins.attrValues action)
-        else if builtins.isString action
+        else if builtins.isString action && action != ""
         then [''"${action}"'']
         else if !builtins.isInt action && builtins.isFloat action
         then [(toString action)]
@@ -19,7 +19,7 @@ in {
         if values == []
         then ""
         else " " + builtins.concatStringsSep " " values
-      } }'')
+      }; }'')
     value;
   in ''
     ${name} {
