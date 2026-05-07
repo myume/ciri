@@ -11,3 +11,4 @@ log = "0.4.29"
 env_logger = "0.11.10"
 indexmap = "2.0"
 proc-macro2 = "1.0"
+clap = { version = "4.6.1", features = ["derive"] }
