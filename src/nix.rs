@@ -6,7 +6,7 @@ use std::{
 use anyhow::Context;
 use indexmap::IndexMap;
 use log::{trace, warn};
-use syn::{GenericArgument, Item, ItemEnum, ItemStruct, PathArguments, Type};
+use syn::{GenericArgument, Item, ItemEnum, ItemStruct, Meta, PathArguments, Type};
 
 use crate::crawler::{ItemMap, TraitsMap};
 
@@ -351,6 +351,23 @@ impl NixTypeParser {
             let mut options = IndexMap::new();
 
             for var in root.variants.iter() {
+                if var.attrs.iter().any(|attr| {
+                    let Meta::List(ref list) = attr.meta else {
+                        return false;
+                    };
+
+                    attr.path().is_ident("knuffel")
+                        && list.tokens.clone().into_iter().any(|token| {
+                            let proc_macro2::TokenTree::Ident(ident) = token else {
+                                return false;
+                            };
+
+                            ident == "skip"
+                        })
+                }) {
+                    continue;
+                }
+
                 for field in var.fields.iter() {
                     let (ty, ty_deps) = self.primitive_to_nix(&field.ty);
                     deps.extend(ty_deps);

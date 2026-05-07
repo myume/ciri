@@ -1612,9 +1612,6 @@ in
       quit = mkOption {
         type = bool;
       };
-      change-vt = mkOption {
-        type = ints.s32;
-      };
       suspend = mkOption {
         type = bool;
       };
@@ -1643,15 +1640,6 @@ in
       do-screen-transition = mkOption {
         type = nullOr (ints.u16);
       };
-      write-to-disk = mkOption {
-        type = bool;
-      };
-      cancel-screenshot = mkOption {
-        type = bool;
-      };
-      screenshot-toggle-pointer = mkOption {
-        type = bool;
-      };
       screenshot = mkOption {
         type = nullOr str;
       };
@@ -1661,38 +1649,17 @@ in
       screenshot-window = mkOption {
         type = nullOr str;
       };
-      id = mkOption {
-        type = nullOr (ints.unsigned);
-      };
-      show-pointer = mkOption {
-        type = bool;
-      };
-      path = mkOption {
-        type = nullOr str;
-      };
       toggle-keyboard-shortcuts-inhibit = mkOption {
         type = bool;
       };
       close-window = mkOption {
         type = bool;
       };
-      close-window-by-id = mkOption {
-        type = ints.unsigned;
-      };
       fullscreen-window = mkOption {
         type = bool;
       };
-      fullscreen-window-by-id = mkOption {
-        type = ints.unsigned;
-      };
       toggle-windowed-fullscreen = mkOption {
         type = bool;
-      };
-      toggle-windowed-fullscreen-by-id = mkOption {
-        type = ints.unsigned;
-      };
-      focus-window = mkOption {
-        type = ints.unsigned;
       };
       focus-window-in-column = mkOption {
         type = ints.u8;
@@ -1703,13 +1670,7 @@ in
       focus-column-left = mkOption {
         type = bool;
       };
-      focus-column-left-under-mouse = mkOption {
-        type = bool;
-      };
       focus-column-right = mkOption {
-        type = bool;
-      };
-      focus-column-right-under-mouse = mkOption {
         type = bool;
       };
       focus-column-first = mkOption {
@@ -1811,14 +1772,8 @@ in
       consume-or-expel-window-left = mkOption {
         type = bool;
       };
-      consume-or-expel-window-left-by-id = mkOption {
-        type = ints.unsigned;
-      };
       consume-or-expel-window-right = mkOption {
         type = bool;
-      };
-      consume-or-expel-window-right-by-id = mkOption {
-        type = ints.unsigned;
       };
       consume-window-into-column = mkOption {
         type = bool;
@@ -1844,22 +1799,13 @@ in
       center-window = mkOption {
         type = bool;
       };
-      center-window-by-id = mkOption {
-        type = ints.unsigned;
-      };
       center-visible-columns = mkOption {
         type = bool;
       };
       focus-workspace-down = mkOption {
         type = bool;
       };
-      focus-workspace-down-under-mouse = mkOption {
-        type = bool;
-      };
       focus-workspace-up = mkOption {
-        type = bool;
-      };
-      focus-workspace-up-under-mouse = mkOption {
         type = bool;
       };
       focus-workspace = mkOption {
@@ -1875,15 +1821,6 @@ in
         type = bool;
       };
       move-window-to-workspace = mkOption {
-        type = bool;
-      };
-      window-id = mkOption {
-        type = ints.unsigned;
-      };
-      reference = mkOption {
-        type = workspace-reference;
-      };
-      focus = mkOption {
         type = bool;
       };
       move-column-to-workspace-down = mkOption {
@@ -1904,26 +1841,14 @@ in
       move-workspace-to-index = mkOption {
         type = ints.unsigned;
       };
-      new-idx = mkOption {
-        type = ints.unsigned;
-      };
-      output-name = mkOption {
-        type = str;
-      };
       move-workspace-to-monitor = mkOption {
         type = str;
       };
       set-workspace-name = mkOption {
         type = str;
       };
-      name = mkOption {
-        type = str;
-      };
       unset-workspace-name = mkOption {
         type = bool;
-      };
-      unset-work-space-name-by-ref = mkOption {
-        type = workspace-reference;
       };
       focus-monitor-left = mkOption {
         type = bool;
@@ -1967,9 +1892,6 @@ in
       move-window-to-monitor = mkOption {
         type = str;
       };
-      output = mkOption {
-        type = str;
-      };
       move-column-to-monitor-left = mkOption {
         type = bool;
       };
@@ -1994,17 +1916,11 @@ in
       set-window-width = mkOption {
         type = str;
       };
-      change = mkOption {
-        type = str;
-      };
       set-window-height = mkOption {
         type = str;
       };
       reset-window-height = mkOption {
         type = bool;
-      };
-      reset-window-height-by-id = mkOption {
-        type = ints.unsigned;
       };
       switch-preset-column-width = mkOption {
         type = bool;
@@ -2018,32 +1934,17 @@ in
       switch-preset-window-width-back = mkOption {
         type = bool;
       };
-      switch-preset-window-width-by-id = mkOption {
-        type = ints.unsigned;
-      };
-      switch-preset-window-width-back-by-id = mkOption {
-        type = ints.unsigned;
-      };
       switch-preset-window-height = mkOption {
         type = bool;
       };
       switch-preset-window-height-back = mkOption {
         type = bool;
       };
-      switch-preset-window-height-by-id = mkOption {
-        type = ints.unsigned;
-      };
-      switch-preset-window-height-back-by-id = mkOption {
-        type = ints.unsigned;
-      };
       maximize-column = mkOption {
         type = bool;
       };
       maximize-window-to-edges = mkOption {
         type = bool;
-      };
-      maximize-window-to-edges-by-id = mkOption {
-        type = ints.unsigned;
       };
       set-column-width = mkOption {
         type = str;
@@ -2078,20 +1979,11 @@ in
       toggle-window-floating = mkOption {
         type = bool;
       };
-      toggle-window-floating-by-id = mkOption {
-        type = ints.unsigned;
-      };
       move-window-to-floating = mkOption {
         type = bool;
       };
-      move-window-to-floating-by-id = mkOption {
-        type = ints.unsigned;
-      };
       move-window-to-tiling = mkOption {
         type = bool;
-      };
-      move-window-to-tiling-by-id = mkOption {
-        type = ints.unsigned;
       };
       focus-floating = mkOption {
         type = bool;
@@ -2102,32 +1994,17 @@ in
       switch-focus-between-floating-and-tiling = mkOption {
         type = bool;
       };
-      x = mkOption {
-        type = str;
-      };
-      y = mkOption {
-        type = str;
-      };
       toggle-window-rule-opacity = mkOption {
         type = bool;
       };
-      toggle-window-rule-opacity-by-id = mkOption {
-        type = ints.unsigned;
-      };
       set-dynamic-cast-window = mkOption {
         type = bool;
-      };
-      set-dynamic-cast-window-by-id = mkOption {
-        type = ints.unsigned;
       };
       set-dynamic-cast-monitor = mkOption {
         type = nullOr str;
       };
       clear-dynamic-cast-target = mkOption {
         type = bool;
-      };
-      stop-cast = mkOption {
-        type = ints.unsigned;
       };
       toggle-overview = mkOption {
         type = bool;
@@ -2136,48 +2013,6 @@ in
         type = bool;
       };
       close-overview = mkOption {
-        type = bool;
-      };
-      toggle-window-urgent = mkOption {
-        type = ints.unsigned;
-      };
-      set-window-urgent = mkOption {
-        type = ints.unsigned;
-      };
-      unset-window-urgent = mkOption {
-        type = ints.unsigned;
-      };
-      load-config-file = mkOption {
-        type = nullOr str;
-      };
-      direction = mkOption {
-        type = mru-direction;
-      };
-      scope = mkOption {
-        type = nullOr mru-scope;
-      };
-      filter = mkOption {
-        type = nullOr mru-filter;
-      };
-      mru-confirm = mkOption {
-        type = bool;
-      };
-      mru-cancel = mkOption {
-        type = bool;
-      };
-      mru-close-current-window = mkOption {
-        type = bool;
-      };
-      mru-first = mkOption {
-        type = bool;
-      };
-      mru-last = mkOption {
-        type = bool;
-      };
-      mru-set-scope = mkOption {
-        type = mru-scope;
-      };
-      mru-cycle-scope = mkOption {
         type = bool;
       };
     };
@@ -2192,19 +2027,6 @@ in
         type = str;
       };
     };
-    mru-direction = enum [
-      "forward"
-      "backward"
-    ];
-    mru-scope = enum [
-      "all"
-      "output"
-      "workspace"
-    ];
-    mru-filter = enum [
-      "all"
-      "app-id"
-    ];
     switch-binds = submodule {
       options = {
         lid-open = mkOption {
