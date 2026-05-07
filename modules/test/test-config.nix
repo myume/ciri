@@ -1,5 +1,5 @@
 {
-  ciri = {
+  programs.ciri = {
     enable = true;
     settings = {
       input = {
