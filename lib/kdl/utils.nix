@@ -46,7 +46,7 @@
         currentPath
       } or null;
     handler =
-      if builtins.isFunction override
+      if builtins.isFunction override && value != null
       then override
       else handlers."${lib.typeOf value}" or (_: _: null);
   in

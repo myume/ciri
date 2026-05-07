@@ -26,7 +26,7 @@
 
     homeManagerModules = {
       default = self.homeManagerModules.ciri;
-      ciri = import ./modules/hm-module.nix {inherit (self) lib config;};
+      ciri = import ./modules/hm-module.nix;
     };
   };
 }
