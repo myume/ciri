@@ -27,6 +27,7 @@ pub enum NixType {
     I16,
     Int,
     AttrTag(IndexMap<String, NixOption>),
+    Submodule(Submodule),
     TypeReference(String),
 }
 
@@ -53,21 +54,6 @@ pub struct NixOption {
 #[derive(Debug, Clone)]
 pub struct Submodule {
     options: IndexMap<String, NixOption>,
-}
-
-#[derive(Debug, Clone)]
-pub enum NixValue {
-    Submodule(Submodule),
-    Type(NixType),
-}
-
-impl Display for NixValue {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            NixValue::Submodule(submodule) => submodule.fmt(f),
-            NixValue::Type(nix_type) => nix_type.fmt(f),
-        }
-    }
 }
 
 impl Display for NixType {
@@ -113,6 +99,7 @@ impl Display for NixType {
                 NixType::Unsigned => "ints.unsigned".to_string(),
                 NixType::Either(ty1, ty2) => format!("either {} {}", ty1, ty2),
                 NixType::Int => "int".into(),
+                NixType::Submodule(submodule) => submodule.to_string(),
             }
         )
     }
@@ -165,7 +152,7 @@ impl NixOption {
     }
 }
 
-type NixDeclarations = IndexMap<String, NixValue>;
+type NixDeclarations = IndexMap<String, NixType>;
 type NixTransformPass<'a> = Box<dyn Fn(NixDeclarations) -> NixDeclarations + 'a>;
 
 enum Filter {
@@ -262,7 +249,7 @@ impl NixTypeParser {
             .map(|(k, mut v)| {
                 if let Some(traits) = self.traits_map.get(&k)
                     && traits.contains("Default")
-                    && let NixValue::Submodule(ref mut submodule) = v
+                    && let NixType::Submodule(ref mut submodule) = v
                 {
                     for opt in submodule.options.values_mut() {
                         if can_apply_null(&opt.ty) {
@@ -274,7 +261,7 @@ impl NixTypeParser {
             })
             .map(|(k, mut v)| {
                 if let Some(nullable) = self.null_overrides.get(&k)
-                    && let NixValue::Submodule(ref mut submodule) = v
+                    && let NixType::Submodule(ref mut submodule) = v
                 {
                     for (opt_name, opt) in submodule.options.iter_mut() {
                         let names = match nullable {
@@ -301,13 +288,13 @@ impl NixTypeParser {
         input
             .into_iter()
             .map(|(k, v)| {
-                if let NixValue::Submodule(ref sub) = v
+                if let NixType::Submodule(ref sub) = v
                     && sub.options.len() == 1
                     && sub.options.contains_key(&k)
                 {
                     let opt = sub.options.get(&k).expect("opt to exist").clone();
                     collapsed_types.insert(k.clone());
-                    (k, NixValue::Type(opt.ty))
+                    (k, opt.ty)
                 } else {
                     (k, v)
                 }
@@ -315,7 +302,7 @@ impl NixTypeParser {
             .collect::<NixDeclarations>()
             .into_iter()
             .map(|(k, mut v)| {
-                if let NixValue::Submodule(ref mut sub) = v {
+                if let NixType::Submodule(ref mut sub) = v {
                     for opt in sub.options.values_mut() {
                         if let NixType::TypeReference(ref inner) = opt.ty
                             && collapsed_types.contains(inner)
@@ -392,7 +379,7 @@ impl NixTypeParser {
             NixType::Enum(variants)
         };
 
-        decl.insert(root.ident.to_string(), NixValue::Type(ty));
+        decl.insert(root.ident.to_string(), ty);
 
         Ok((decl, deps))
     }
@@ -439,7 +426,7 @@ impl NixTypeParser {
                 .options
                 .insert(field_ident.to_string(), NixOption::new(ty));
         }
-        nix_values.insert(submodule_name, NixValue::Submodule(submodule));
+        nix_values.insert(submodule_name, NixType::Submodule(submodule));
 
         Ok((nix_values, deps))
     }
