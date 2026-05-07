@@ -1,7 +1,7 @@
 {lib}: let
   utils = import ./utils.nix {inherit lib;};
   inherit (utils) primitiveToKDL sectionsToString;
-  overrides = import ./overrides.nix {inherit utils;};
+  overrides = import ./overrides.nix {inherit lib utils;};
 in {
   configToKDL = config: let
     sections =
