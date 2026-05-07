@@ -33,7 +33,7 @@ struct Cli {
     output_path: PathBuf,
 
     /// Directory to save niri repo to, by default saves to /tmp/niri.
-    #[arg(short, long)]
+    #[arg(long)]
     repo_dir: Option<PathBuf>,
 
     #[arg(long)]
@@ -42,6 +42,10 @@ struct Cli {
     /// Clean up cloned repo
     #[arg(long)]
     cleanup: bool,
+
+    /// Niri branch to clone
+    #[arg(short, long, default_value = "main")]
+    branch: String,
 }
 
 fn main() -> anyhow::Result<()> {
@@ -60,14 +64,40 @@ fn main() -> anyhow::Result<()> {
 
     if !niri_dir.exists() {
         info!("Cloning niri repo to {}", niri_dir.display());
-        let mut child = Command::new("git")
-            .args(["clone", NIRI_REPO_URL])
+        let mut clone = Command::new("git")
+            .args(["clone", NIRI_REPO_URL, "-b", args.branch.as_str()])
             .current_dir(&repo_dir)
             .spawn()
             .context("Failed to clone niri repo")?;
 
-        if !child.wait()?.success() {
+        if !clone.wait()?.success() {
             return Err(anyhow!("Failed to clone niri repo"));
+        }
+    } else {
+        info!(
+            "Niri repo exists at {}, changing branch to {:?}",
+            niri_dir.display(),
+            args.branch
+        );
+
+        let mut fetch = Command::new("git")
+            .arg("fetch")
+            .current_dir(&niri_dir)
+            .spawn()
+            .context("Failed to fetch repo branches")?;
+
+        if !fetch.wait()?.success() {
+            return Err(anyhow!("Failed to fetch repo branches"));
+        }
+
+        let mut change = Command::new("git")
+            .args(["checkout", args.branch.as_str()])
+            .current_dir(&niri_dir)
+            .spawn()
+            .context("Failed to clone niri repo")?;
+
+        if !change.wait()?.success() {
+            return Err(anyhow!("Failed to change to branch {}", args.branch));
         }
     }
 
