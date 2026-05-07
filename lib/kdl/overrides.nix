@@ -24,10 +24,13 @@
     ];
   in
     sectionsToString matches;
+
+  cornerRadiusToKDL = name: value: "${name} ${builtins.concatStringsSep " " (map toKDLString (builtins.attrValues value))}";
 in {
   "window-rules.window-rule.background-effect.blur" = toBoolArg;
   "window-rules.window-rule.background-effect.xray" = toBoolArg;
   "window-rules.window-rule.clip-to-geometry" = toBoolArg;
+  "window-rules.window-rule.geometry-corner-radius" = cornerRadiusToKDL;
   "window-rules.window-rule.matches" = matchesToKDL;
 
   "layer-rules.layer-rule.place-within-backdrop" = toBoolArg;
