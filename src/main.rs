@@ -101,6 +101,7 @@ fn main() -> anyhow::Result<()> {
         }
     }
 
+    info!("Crawling niri files...");
     let mut structs = ItemMap::new();
     let mut traits_map = TraitsMap::new();
     for path in CRAWLER_PATHS {

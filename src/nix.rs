@@ -5,7 +5,7 @@ use std::{
 
 use anyhow::Context;
 use indexmap::IndexMap;
-use log::{debug, warn};
+use log::{trace, warn};
 use syn::{GenericArgument, Item, ItemEnum, ItemStruct, PathArguments, Type};
 
 use crate::crawler::{ItemMap, TraitsMap};
@@ -459,7 +459,7 @@ impl NixTypeParser {
         let ty_ident = head.ident.to_string();
 
         if let Some(val) = self.type_overrides.get(&ty_ident) {
-            debug!("applying overrides for {}", &ty_ident);
+            trace!("applying overrides for {}", &ty_ident);
             return (val.clone(), deps);
         }
 

@@ -4,7 +4,7 @@ use std::{
     path::Path,
 };
 
-use log::info;
+use log::debug;
 use proc_macro2::TokenTree;
 use syn::{Item, Type};
 
@@ -32,7 +32,7 @@ pub fn crawl(path: &Path) -> anyhow::Result<(ItemMap, TraitsMap)> {
 }
 
 fn parse_file(path: &Path) -> anyhow::Result<(ItemMap, TraitsMap)> {
-    info!("Crawling file {}...", path.display());
+    debug!("Crawling file {}...", path.display());
 
     let content = read_to_string(path)?;
     let ast = syn::parse_file(&content)?;
