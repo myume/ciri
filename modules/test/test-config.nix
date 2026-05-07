@@ -11,6 +11,7 @@
         touchpad = {
           tap = true;
           dwt = true;
+          natural-scroll = false;
         };
         tablet = {
           map-to-output = "DP-2";
@@ -50,6 +51,16 @@
         default-column-width = {
           proportion = 1.0 / 2.0;
         };
+      };
+      clipboard.disable-primary = true;
+      gestures = {
+        hot-corners.off = true;
+      };
+      cursor = {
+        xcursor-theme = "Bibata-Original-Ice";
+        xcursor-size = 16;
+
+        hide-after-inactive-ms = 1000;
       };
     };
   };

@@ -36,7 +36,10 @@
       else name;
     handlers = {
       "string" = name: value: ''${name} "${value}"'';
-      "bool" = name: _: "${name}";
+      "bool" = name: value:
+        if value
+        then "${name}"
+        else null;
       "int" = name: value: "${name} ${toString value}";
       "float" = name: value: "${name} ${toString value}";
       "set" = name: value: sectionToKDL name overrides value currentPath;
