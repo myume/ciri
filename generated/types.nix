@@ -1155,7 +1155,13 @@ in
         type = bool;
       };
       cubic-bezier = mkOption {
-        type = float;
+        type = listOf (oneOf [
+          float
+          float
+          float
+          float
+        ]);
+        default = [];
       };
     };
     spring-params = submodule {
@@ -1610,7 +1616,13 @@ in
     };
     action = attrTag {
       quit = mkOption {
-        type = bool;
+        type = submodule {
+          options = {
+            skip-confirmation = mkOption {
+              type = nullOr bool;
+            };
+          };
+        };
       };
       suspend = mkOption {
         type = bool;
@@ -1638,16 +1650,64 @@ in
         type = str;
       };
       do-screen-transition = mkOption {
-        type = nullOr (ints.u16);
+        type = submodule {
+          options = {
+            delay-ms = mkOption {
+              type = nullOr (ints.u16);
+            };
+          };
+        };
       };
       screenshot = mkOption {
-        type = nullOr str;
+        type = submodule {
+          options = {
+            show-pointer = mkOption {
+              type = nullOr bool;
+            };
+            args = mkOption {
+              type = listOf (oneOf [
+                (nullOr str)
+              ]);
+              default = [];
+            };
+          };
+        };
       };
       screenshot-screen = mkOption {
-        type = nullOr str;
+        type = submodule {
+          options = {
+            write-to-disk = mkOption {
+              type = nullOr bool;
+            };
+            show-pointer = mkOption {
+              type = nullOr bool;
+            };
+            args = mkOption {
+              type = listOf (oneOf [
+                (nullOr str)
+              ]);
+              default = [];
+            };
+          };
+        };
       };
       screenshot-window = mkOption {
-        type = nullOr str;
+        type = submodule {
+          options = {
+            write-to-disk = mkOption {
+              type = nullOr bool;
+            };
+            show-pointer = mkOption {
+              type = nullOr bool;
+            };
+            args = mkOption {
+              type = listOf (oneOf [
+                (nullOr str)
+              ]);
+              default = [];
+            };
+          };
+        };
       };
       toggle-keyboard-shortcuts-inhibit = mkOption {
         type = bool;
@@ -1815,22 +1875,70 @@ in
         type = bool;
       };
       move-window-to-workspace-down = mkOption {
-        type = bool;
+        type = submodule {
+          options = {
+            focus = mkOption {
+              type = nullOr bool;
+            };
+          };
+        };
       };
       move-window-to-workspace-up = mkOption {
-        type = bool;
+        type = submodule {
+          options = {
+            focus = mkOption {
+              type = nullOr bool;
+            };
+          };
+        };
       };
       move-window-to-workspace = mkOption {
-        type = bool;
+        type = submodule {
+          options = {
+            focus = mkOption {
+              type = nullOr bool;
+            };
+            args = mkOption {
+              type = listOf (oneOf [
+                workspace-reference
+              ]);
+              default = [];
+            };
+          };
+        };
       };
       move-column-to-workspace-down = mkOption {
-        type = bool;
+        type = submodule {
+          options = {
+            focus = mkOption {
+              type = nullOr bool;
+            };
+          };
+        };
       };
       move-column-to-workspace-up = mkOption {
-        type = bool;
+        type = submodule {
+          options = {
+            focus = mkOption {
+              type = nullOr bool;
+            };
+          };
+        };
       };
       move-column-to-workspace = mkOption {
-        type = bool;
+        type = submodule {
+          options = {
+            focus = mkOption {
+              type = nullOr bool;
+            };
+            args = mkOption {
+              type = listOf (oneOf [
+                workspace-reference
+              ]);
+              default = [];
+            };
+          };
+        };
       };
       move-workspace-down = mkOption {
         type = bool;

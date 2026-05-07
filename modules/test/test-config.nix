@@ -70,7 +70,7 @@
         }
         {
           key = "Mod+P";
-          action.screenshot = "";
+          action.screenshot = {};
         }
       ];
     };

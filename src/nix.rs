@@ -6,11 +6,12 @@ use std::{
 use anyhow::Context;
 use indexmap::IndexMap;
 use log::{trace, warn};
-use syn::{GenericArgument, Item, ItemEnum, ItemStruct, Meta, PathArguments, Type};
+use regex::Regex;
+use syn::{Attribute, GenericArgument, Item, ItemEnum, ItemStruct, Meta, PathArguments, Type};
 
 use crate::crawler::{ItemMap, TraitsMap};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum NixType {
     String,
     Bool,
@@ -19,6 +20,7 @@ pub enum NixType {
     NullOr(Box<NixType>),
     Enum(Vec<String>),
     Either(Box<NixType>, Box<NixType>),
+    OneOf(Vec<NixType>),
     U8,
     U16,
     U32,
@@ -43,15 +45,19 @@ impl NixType {
     pub fn either(left: NixType, right: NixType) -> NixType {
         NixType::Either(Box::new(left), Box::new(right))
     }
+
+    pub fn one_of(inner: Vec<NixType>) -> NixType {
+        NixType::OneOf(inner)
+    }
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct NixOption {
     ty: NixType,
     default: Option<String>,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Submodule {
     options: IndexMap<String, NixOption>,
 }
@@ -100,6 +106,13 @@ impl Display for NixType {
                 NixType::Either(ty1, ty2) => format!("either {} {}", ty1, ty2),
                 NixType::Int => "int".into(),
                 NixType::Submodule(submodule) => submodule.to_string(),
+                NixType::OneOf(nix_types) => format!(
+                    "oneOf [{}]",
+                    nix_types
+                        .iter()
+                        .map(|ty| format!("({})\n", ty))
+                        .collect::<String>()
+                ),
             }
         )
     }
@@ -351,39 +364,47 @@ impl NixTypeParser {
             let mut options = IndexMap::new();
 
             for var in root.variants.iter() {
-                if var.attrs.iter().any(|attr| {
-                    let Meta::List(ref list) = attr.meta else {
-                        return false;
-                    };
-
-                    attr.path().is_ident("knuffel")
-                        && list.tokens.clone().into_iter().any(|token| {
-                            let proc_macro2::TokenTree::Ident(ident) = token else {
-                                return false;
-                            };
-
-                            ident == "skip"
-                        })
-                }) {
+                if is_skipped(&var.attrs) {
                     continue;
                 }
 
+                let mut properties = IndexMap::new();
+                let mut field_types = Vec::new();
                 for field in var.fields.iter() {
                     let (ty, ty_deps) = self.primitive_to_nix(&field.ty);
+
+                    if let Some((property_name, default)) = to_kdl_property(&field.attrs) {
+                        let ty = if default.is_some() {
+                            NixType::null(ty)
+                        } else {
+                            ty
+                        };
+                        properties.insert(property_name, NixOption::new(ty));
+                    } else {
+                        field_types.push(ty);
+                    }
                     deps.extend(ty_deps);
-                    options.insert(
-                        field
-                            .ident
-                            .clone()
-                            .map(|ident| ident.to_string())
-                            .unwrap_or(var.ident.to_string()),
-                        NixOption::new(ty),
-                    );
                 }
 
-                if var.fields.is_empty() {
-                    options.insert(var.ident.to_string(), NixOption::new(NixType::Bool));
-                }
+                let opt_ty = if !properties.is_empty() {
+                    let mut options = properties;
+
+                    if !field_types.is_empty() {
+                        options.insert(
+                            "args".into(),
+                            NixOption::new(NixType::list(NixType::one_of(field_types))),
+                        );
+                    }
+
+                    NixType::Submodule(Submodule { options })
+                } else if field_types.is_empty() {
+                    NixType::Bool
+                } else if field_types.len() == 1 {
+                    field_types[0].clone()
+                } else {
+                    NixType::list(NixType::one_of(field_types))
+                };
+                options.insert(var.ident.to_string(), NixOption::new(opt_ty));
             }
 
             NixType::AttrTag(options)
@@ -503,6 +524,44 @@ impl NixTypeParser {
 
         (ty, deps)
     }
+}
+
+fn is_skipped(attrs: &[Attribute]) -> bool {
+    attrs.iter().any(|attr| {
+        let Meta::List(ref list) = attr.meta else {
+            return false;
+        };
+
+        attr.path().is_ident("knuffel")
+            && list.tokens.clone().into_iter().any(|token| {
+                let proc_macro2::TokenTree::Ident(ident) = token else {
+                    return false;
+                };
+
+                ident == "skip"
+            })
+    })
+}
+
+fn to_kdl_property(attrs: &[Attribute]) -> Option<(String, Option<String>)> {
+    let name_capture =
+        Regex::new(r#"name\s*=\s*"([^"]+)"\s*\)(?:\s*,\s*default(?:\s*=\s*([^"\s\)]+))?)?"#)
+            .unwrap();
+    for attr in attrs {
+        if let Some(ident) = attr.path().get_ident()
+            && ident == "knuffel"
+            && let Meta::List(ref meta) = attr.meta
+            && let Some(caps) = name_capture.captures(&meta.tokens.to_string())
+        {
+            let property_name = caps[1].to_string();
+            let mut default = caps.get(2).map(|default| default.as_str().to_string());
+            if meta.tokens.to_string().contains("default") && default.is_none() {
+                default = Some(String::new());
+            }
+            return Some((property_name, default));
+        }
+    }
+    None
 }
 
 fn pascal_case_to_hypen(s: &str) -> String {

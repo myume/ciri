@@ -114,6 +114,7 @@ dependencies = [
  "indexmap",
  "log",
  "proc-macro2",
+ "regex",
  "syn",
 ]
 
