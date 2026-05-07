@@ -66,11 +66,6 @@ impl Display for NixType {
                 NixType::Bool => "bool".to_string(),
                 NixType::Float => "float".to_string(),
                 NixType::List(ty) => {
-                    let ty = if let NixType::TypeReference(sub) = ty.as_ref() {
-                        sub.to_string()
-                    } else {
-                        ty.to_string()
-                    };
                     format!("listOf ({})", ty)
                 }
                 NixType::NullOr(ty) => {
@@ -80,7 +75,7 @@ impl Display for NixType {
                     "enum [{}]",
                     variants
                         .iter()
-                        .map(|var| format!("\"{var}\""))
+                        .map(|var| format!("\"{}\"", pascal_case_to_hypen(var)))
                         .collect::<Vec<String>>()
                         .join("\n")
                 ),
@@ -89,7 +84,7 @@ impl Display for NixType {
                 NixType::U32 => "ints.u32".to_string(),
                 NixType::I32 => "ints.s32".to_string(),
                 NixType::I16 => "ints.s16".to_string(),
-                NixType::TypeReference(s) => s.to_string(),
+                NixType::TypeReference(s) => pascal_case_to_hypen(s),
                 NixType::AttrTag(options) => {
                     format!(
                         "attrTag {{
@@ -97,7 +92,7 @@ impl Display for NixType {
                         }}",
                         options
                             .iter()
-                            .map(|(k, v)| format!("{} = {};", k, v))
+                            .map(|(k, v)| format!("{} = {};", pascal_case_to_hypen(k), v))
                             .collect::<String>()
                     )
                 }
@@ -138,7 +133,7 @@ impl Display for Submodule {
             }}",
             self.options
                 .iter()
-                .map(|(name, opt)| format!("{} = {};", name, opt))
+                .map(|(name, opt)| format!("{} = {};", pascal_case_to_hypen(name), opt))
                 .collect::<String>(),
         )
     }
@@ -221,8 +216,8 @@ impl NixTypeParser {
                 {}
             }}",
             submodules
-                .iter()
-                .map(|(name, module)| format!("{} = {};\n", name, module))
+                .into_iter()
+                .map(|(name, module)| format!("{} = {};\n", pascal_case_to_hypen(&name), module))
                 .collect::<String>()
         ))
     }
@@ -335,6 +330,7 @@ impl NixTypeParser {
         let is_data_enum = root.variants.iter().any(|ele| !ele.fields.is_empty());
         let ty = if is_data_enum {
             let mut options = IndexMap::new();
+
             for var in root.variants.iter() {
                 for field in var.fields.iter() {
                     let (ty, ty_deps) = self.primitive_to_nix(&field.ty);
@@ -353,12 +349,13 @@ impl NixTypeParser {
                     options.insert(var.ident.to_string(), NixOption::new(NixType::Bool));
                 }
             }
+
             NixType::AttrTag(options)
         } else {
             let variants = root
                 .variants
                 .iter()
-                .map(|var| var.ident.to_string().to_lowercase())
+                .map(|var| var.ident.to_string())
                 .collect();
             NixType::Enum(variants)
         };
@@ -471,4 +468,19 @@ impl NixTypeParser {
 
         (ty, deps)
     }
+}
+
+fn pascal_case_to_hypen(s: &str) -> String {
+    let mut chars = vec![];
+    for char in s.chars() {
+        if !chars.is_empty() && char.is_uppercase() {
+            chars.push('-');
+        }
+        chars.push(char);
+    }
+    chars
+        .into_iter()
+        .collect::<String>()
+        .to_lowercase()
+        .replace("_", "-")
 }

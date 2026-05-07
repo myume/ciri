@@ -30,8 +30,7 @@
     overrides ? {},
     path ? "",
   }: name: value: let
-    sanitizedName = builtins.replaceStrings ["_"] ["-"] name;
-    currentPath = path + "." + sanitizedName;
+    currentPath = path + "." + name;
     handlers = {
       "string" = name: value: ''${name} "${value}"'';
       "bool" = name: _: "${name}";
@@ -44,7 +43,7 @@
         currentPath
       } or handlers."${lib.typeOf value}" or (_: _: null);
   in
-    handler sanitizedName value;
+    handler name value;
 
   sectionToKDL = name: overrides: cfg: path: let
     sections =

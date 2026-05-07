@@ -15,7 +15,7 @@ in {
 
     settings = mkOption {
       description = "Niri config";
-      type = niriTypes.Config;
+      type = niriTypes.config;
       default = {};
     };
   };

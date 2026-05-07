@@ -5,9 +5,9 @@
       input = {
         keyboard = {
           numlock = true;
-          repeat_delay = 600;
-          repeat_rate = 20;
-          track_layout = "global";
+          repeat-delay = 600;
+          repeat-rate = 20;
+          track-layout = "global";
           xkb = {
             options = "caps:ctrl_modifier";
           };
@@ -17,11 +17,11 @@
           tap = true;
         };
         tablet = {
-          map_to_output = "DP-2";
+          map-to-output = "DP-2";
         };
       };
-      prefer_no_csd = true;
-      screenshot_path = "~/Pictures";
+      prefer-no-csd = true;
+      screenshot-path = "~/Pictures";
       layout = {
         gaps = 10.0;
         struts = {
@@ -39,18 +39,18 @@
           };
           softness = 30.000000;
           spread = 5.000000;
-          draw_behind_window = false;
+          draw-behind-window = false;
           color = "#00000070";
         };
       };
       binds = [
         {
           key = "Mod+A";
-          action.FocusWorkspace = {};
+          action.focus-workspace = {};
         }
         {
           key = "Mod+K";
-          action.FullscreenWindow = true;
+          action.fullscreen-window = true;
         }
       ];
     };
