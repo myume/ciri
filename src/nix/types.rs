@@ -180,6 +180,7 @@ impl NixTypeParser {
             type_overrides: HashMap::from([
                 ("Key".into(), NixType::String),
                 ("Color".into(), NixType::String),
+                ("SizeChange".into(), NixType::String),
                 (
                     "FloatOrInt".into(),
                     NixType::Either(Box::new(NixType::Float), Box::new(NixType::Int)),

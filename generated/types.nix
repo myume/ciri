@@ -2029,13 +2029,13 @@ in
         type = str;
       };
       set-window-width = mkOption {
-        type = size-change;
+        type = str;
       };
       change = mkOption {
-        type = size-change;
+        type = str;
       };
       set-window-height = mkOption {
-        type = size-change;
+        type = str;
       };
       reset-window-height = mkOption {
         type = bool;
@@ -2083,7 +2083,7 @@ in
         type = ints.unsigned;
       };
       set-column-width = mkOption {
-        type = size-change;
+        type = str;
       };
       expand-column-to-available-width = mkOption {
         type = bool;
@@ -2227,20 +2227,6 @@ in
       };
       name = mkOption {
         type = str;
-      };
-    };
-    size-change = attrTag {
-      set-fixed = mkOption {
-        type = ints.s32;
-      };
-      set-proportion = mkOption {
-        type = float;
-      };
-      adjust-fixed = mkOption {
-        type = ints.s32;
-      };
-      adjust-proportion = mkOption {
-        type = float;
       };
     };
     layout-switch-target = attrTag {

@@ -46,11 +46,17 @@
       binds = [
         {
           key = "Mod+A";
-          action.focus-workspace = {};
+          action.focus-workspace = {
+            id = 1;
+          };
         }
         {
           key = "Mod+K";
           action.fullscreen-window = true;
+        }
+        {
+          key = "Ctrl+Shift+H";
+          action.set-column-width = "-10%";
         }
       ];
     };
