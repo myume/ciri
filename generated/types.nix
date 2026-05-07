@@ -656,7 +656,7 @@ in
         relative-to = mkOption {
           type = gradient-relative-to;
         };
-        in- = mkOption {
+        in_ = mkOption {
           type = str;
         };
       };

@@ -509,9 +509,16 @@ fn pascal_case_to_hypen(s: &str) -> String {
         }
         chars.push(char);
     }
-    chars
+
+    let mut res = chars
         .into_iter()
         .collect::<String>()
         .to_lowercase()
-        .replace("_", "-")
+        .replace("_", "-");
+
+    if res.ends_with("-") {
+        res.replace_range(res.len() - 1.., "_")
+    }
+
+    res
 }
