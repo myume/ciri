@@ -40,6 +40,25 @@
       "int" = name: value: "${name} ${toString value}";
       "float" = name: value: "${name} ${toString value}";
       "set" = name: value: sectionToKDL name overrides value currentPath;
+      "list" = name: value:
+      # best effort estimate for a list, will probably need to override in the general case
+        if value != []
+        then let
+          sections =
+            map (
+              primitiveToKDL {
+                inherit overrides;
+                path = currentPath;
+              }
+              "[]" # not sure if i like using this special symbol, but we'll live with it for now
+            )
+            value;
+        in ''
+          ${name} {
+          ${sectionsToString sections}
+          }
+        ''
+        else null;
     };
     override =
       overrides.${
@@ -58,9 +77,13 @@
         inherit overrides path;
       })
       cfg;
-  in ''
-    ${name} {
-    ${sectionsToString (map (mapNull indentSection) sections)}
-    }
-  '';
+    kdl = sectionsToString (map (mapNull indentSection) sections);
+  in
+    if name == "[]"
+    then kdl
+    else ''
+      ${name} {
+      ${kdl}
+      }
+    '';
 }

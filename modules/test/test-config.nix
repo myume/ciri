@@ -4,61 +4,53 @@
     settings = {
       input = {
         keyboard = {
-          numlock = true;
-          repeat-delay = 600;
-          repeat-rate = 20;
-          track-layout = "global";
           xkb = {
             options = "caps:ctrl_modifier";
           };
         };
         touchpad = {
-          dwt = true;
           tap = true;
+          dwt = true;
         };
         tablet = {
           map-to-output = "DP-2";
         };
       };
+
+      screenshot-path = "~/Pictures/Screenshots/%Y-%m-%dT%H:%M:%S.png";
       prefer-no-csd = true;
-      screenshot-path = "~/Pictures";
+
       layout = {
         gaps = 10.0;
         struts = {
-          left = 0;
-          right = 0;
           top = -4;
-          bottom = 0;
+        };
+
+        focus-ring.off = true;
+        border = {
+          width = 2.0;
+          active-color = "#89B4FA";
+          inactive-color = "#313244";
         };
 
         shadow = {
           on = true;
-          offset = {
-            x = 0.000000;
-            y = 5.000000;
-          };
-          softness = 30.000000;
-          spread = 5.000000;
-          draw-behind-window = false;
-          color = "#00000070";
+        };
+
+        preset-column-widths = [
+          {proportion = 1.0 / 6.0;}
+          {proportion = 1.0 / 4.0;}
+          {proportion = 1.0 / 3.0;}
+          {proportion = 1.0 / 2.0;}
+          {proportion = 2.0 / 3.0;}
+          {proportion = 3.0 / 4.0;}
+          {proportion = 5.0 / 6.0;}
+        ];
+
+        default-column-width = {
+          proportion = 1.0 / 2.0;
         };
       };
-      binds = [
-        {
-          key = "Mod+A";
-          action.focus-workspace = {
-            id = 1;
-          };
-        }
-        {
-          key = "Mod+K";
-          action.fullscreen-window = true;
-        }
-        {
-          key = "Ctrl+Shift+H";
-          action.set-column-width = "-10%";
-        }
-      ];
     };
   };
 }
