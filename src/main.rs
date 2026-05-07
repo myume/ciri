@@ -5,7 +5,7 @@ use std::{env::temp_dir, fs::File, io::Write, process::Command};
 
 use crate::{
     crawler::{ItemMap, TraitsMap},
-    nix::types::NixTypeParser,
+    nix::NixTypeParser,
 };
 
 const NIRI_REPO_URL: &str = "https://github.com/niri-wm/niri.git";
