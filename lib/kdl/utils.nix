@@ -1,4 +1,11 @@
 {lib}: rec {
+  # this is a best effort. add more as they come up
+  singularize = s:
+    if lib.hasSuffix "ches" s
+    then lib.removeSuffix "es" s
+    else if lib.hasSuffix "s" s
+    then lib.removeSuffix "s" s
+    else s;
   indentSection = section:
     lib.pipe section [
       (lib.splitString "\n")
@@ -10,7 +17,8 @@
   filterNulls = builtins.filter (ele: ele != null);
 
   sectionsToString = sections:
-    lib.pipe sections [
+    lib.pipe
+    sections [
       filterNulls
       (map (lib.removeSuffix "\n"))
       (builtins.concatStringsSep "\n")
@@ -53,13 +61,11 @@
                 inherit overrides;
                 path = currentPath;
               }
-              "[]" # not sure if i like using this special symbol, but we'll live with it for now
+              (singularize name)
             )
             value;
         in ''
-          ${name} {
           ${sectionsToString sections}
-          }
         ''
         else null;
     };
@@ -81,12 +87,9 @@
       })
       cfg;
     kdl = sectionsToString (map (mapNull indentSection) sections);
-  in
-    if name == "[]"
-    then kdl
-    else ''
-      ${name} {
-      ${kdl}
-      }
-    '';
+  in ''
+    ${name} {
+    ${kdl}
+    }
+  '';
 }
