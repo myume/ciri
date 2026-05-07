@@ -104,6 +104,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "ciri"
+version = "0.1.0"
+dependencies = [
+ "alejandra",
+ "anyhow",
+ "clap",
+ "env_logger",
+ "indexmap",
+ "log",
+ "proc-macro2",
+ "syn",
+]
+
+[[package]]
 name = "clap"
 version = "4.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -301,20 +315,6 @@ name = "once_cell_polyfill"
 version = "1.70.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "384b8ab6d37215f3c5301a95a4accb5d64aa607f1fcb26a11b5303878451b4fe"
-
-[[package]]
-name = "package"
-version = "0.1.0"
-dependencies = [
- "alejandra",
- "anyhow",
- "clap",
- "env_logger",
- "indexmap",
- "log",
- "proc-macro2",
- "syn",
-]
 
 [[package]]
 name = "portable-atomic"

@@ -3,7 +3,7 @@
   lib,
 }:
 rustPlatform.buildRustPackage {
-  pname = "package";
+  pname = "ciri";
   version = "0.1.0";
 
   src = ../.;
@@ -13,14 +13,10 @@ rustPlatform.buildRustPackage {
   ];
 
   meta = {
-    description = "A program that does something";
-    longDescription = ''
-      Let's hope this program continues to do that something,
-      forever.
-    '';
-    homepage = "https://example.com";
+    description = "Nix configuration options generation for niri";
+    homepage = "https://github.com/myume/ciri";
     license = lib.licenses.mit;
-    maintainers = with lib.maintainers; [you];
-    platforms = lib.platforms.all;
+    maintainers = with lib.maintainers; [yum];
+    platforms = lib.platforms.linux;
   };
 }

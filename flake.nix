@@ -16,8 +16,8 @@
     packages = forAllSystems (pkgs: let
       inherit (pkgs.stdenv.hostPlatform) system;
     in {
-      package = pkgs.callPackage ./nix/package.nix {};
-      default = self.packages.${system}.package;
+      ciri = pkgs.callPackage ./nix/package.nix {};
+      default = self.packages.${system}.ciri;
     });
 
     devShells = forAllSystems (pkgs: {
