@@ -6,11 +6,11 @@
   inherit (lib.modules) mkIf;
   inherit (lib.options) mkOption mkEnableOption;
 
-  cfg = config.programs.ciri;
+  cfg = config.programs.niri;
   niriTypes = import ../generated/types.nix {inherit lib;};
   ciriLib = import ../lib {inherit lib;};
 in {
-  options.programs.ciri = {
+  options.programs.niri = {
     enable = mkEnableOption "Ciri, nix config for niri";
 
     settings = mkOption {
