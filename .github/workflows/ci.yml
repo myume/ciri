@@ -22,7 +22,7 @@ jobs:
       working-directory: ./generated
       run: | 
         cargo run -- --clean -o ./generated.nix
-        diff -s ./types.nix ./generated.nix || {
+        diff ./types.nix ./generated.nix || {
           echo "types.nix does not match generated file, is the file up to date?"
           exit 1
         }
