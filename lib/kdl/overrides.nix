@@ -22,7 +22,7 @@
     matches = lib.pipe value [
       (map flattenAttrEntries)
       lib.flatten
-      utils.filterNulls
+      utils.filterEmpty
       (map (builtins.replaceStrings [" "] ["="]))
       (map (s: "match ${s}"))
     ];
@@ -31,7 +31,12 @@
 
   cornerRadiusToKDL = name: value: "${name} ${builtins.concatStringsSep " " (map toKDLString (builtins.attrValues value))}";
 
-  spawnAtStartupToKDL = name: commands: sectionsToString (map (commandSet: "${name} ${toKDLString commandSet.command}") commands);
+  spawnAtStartupToKDL = name: commands:
+    sectionsToString (
+      map
+      (commandSet: "${name} ${toKDLString commandSet.command}")
+      commands
+    );
 in {
   spawn-at-startup = spawnAtStartupToKDL;
   spawn-sh-at-startup = spawnAtStartupToKDL;

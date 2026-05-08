@@ -14,12 +14,12 @@
       (builtins.concatStringsSep "")
     ];
 
-  filterNulls = builtins.filter (ele: ele != null);
+  filterEmpty = builtins.filter (ele: ele != null && ele != "");
 
   sectionsToString = sections:
     lib.pipe
     sections [
-      filterNulls
+      filterEmpty
       (map (lib.removeSuffix "\n"))
       (builtins.concatStringsSep "\n")
     ];
