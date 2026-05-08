@@ -1,5 +1,5 @@
 {lib, ...}: {
-  programs.ciri = {
+  programs.niri = {
     enable = true;
     settings = {
       input = {
