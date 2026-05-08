@@ -1,0 +1,17 @@
+name: Cleanup
+on:
+  pull_request_target:
+    types: [closed]
+
+jobs:
+  # https://github.com/cli/cli/issues/9073
+  delete-branch:
+    if: github.event.pull_request.merged == true && github.event.pull_request.head.ref == 'update-niri-types'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+      - run: git push origin --delete update-niri-types
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
