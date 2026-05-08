@@ -21,7 +21,7 @@ in {
   };
 
   config = mkIf cfg.enable {
-    xdg.configFile."ciri/ciri.kdl" = {
+    xdg.configFile."niri/config.kdl" = {
       text = ciriLib.kdl.configToKDL cfg.settings;
     };
   };
