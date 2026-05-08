@@ -2253,6 +2253,25 @@ in
         };
       };
     };
+    layer-rule-match = submodule {
+      options = {
+        namespace = mkOption {
+          type = nullOr str;
+        };
+        at-startup = mkOption {
+          type = nullOr bool;
+        };
+        layer = mkOption {
+          type = nullOr layer;
+        };
+      };
+    };
+    layer = enum [
+      "background"
+      "bottom"
+      "top"
+      "overlay"
+    ];
     window-rule-match = submodule {
       options = {
         app-id = mkOption {
@@ -2284,23 +2303,4 @@ in
         };
       };
     };
-    layer-rule-match = submodule {
-      options = {
-        namespace = mkOption {
-          type = nullOr str;
-        };
-        at-startup = mkOption {
-          type = nullOr bool;
-        };
-        layer = mkOption {
-          type = nullOr layer;
-        };
-      };
-    };
-    layer = enum [
-      "background"
-      "bottom"
-      "top"
-      "overlay"
-    ];
   }
