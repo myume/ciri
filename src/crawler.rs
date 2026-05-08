@@ -44,7 +44,7 @@ fn parse_file(path: &Path) -> anyhow::Result<(ItemMap, TraitsMap)> {
 
     let mut structs = ItemMap::new();
     let mut trait_map = TraitsMap::new();
-    for mut item in ast.items {
+    for item in ast.items {
         match item {
             Item::Impl(ref item_impl) => {
                 if let Some(ref item_trait) = item_impl.trait_

@@ -5,7 +5,7 @@ use std::{
 
 use anyhow::Context;
 use indexmap::IndexMap;
-use log::{debug, error, trace, warn};
+use log::{debug, error, trace};
 use regex::Regex;
 use syn::{Attribute, GenericArgument, Item, ItemEnum, ItemStruct, Meta, PathArguments, Type};
 
@@ -176,6 +176,7 @@ type NixDeclarations = IndexMap<String, NixType>;
 type NixTransformPass<'a> = Box<dyn Fn(NixDeclarations) -> NixDeclarations + 'a>;
 
 enum Filter {
+    #[allow(dead_code)]
     Include(HashSet<String>),
     Exclude(HashSet<String>),
 }
