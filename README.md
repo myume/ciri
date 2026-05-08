@@ -1,0 +1,94 @@
+# Ciri
+
+Nix configuration options generated directly from
+[Niri](https://github.com/niri-wm/niri)
+
+## Flake Usage
+
+Add ciri to your flake inputs:
+
+```nix
+ciri = {
+  url = "github:myume/ciri";
+  inputs.nixpkgs.follows = "nixpkgs";
+};
+```
+
+Make sure to import the home manager modules in your config:
+
+```nix
+imports = [ inputs.ciri.homeManagerModules.default ];
+```
+
+and set up your Niri config in the settings
+
+```nix
+{
+    programs.ciri = {
+        enable = true;
+        settings = {
+            ...
+        }
+    }
+}
+```
+
+There isn't much documentation on the options in the settings for this flake,
+but it generally mirrors the niri config 1:1.
+
+To look up options, see the [types file](./generated/types.nix). The `config`
+type contains all options that you can pass to the settings option.
+
+## Type Generation
+
+The type of the niri configuration options are generated automatically by the
+complementing rust program.
+
+To regenerate the types you can run
+
+```bash
+ciri
+```
+
+This will clone the repo under `/tmp/niri` by default.
+
+Note: that the program doesn't clean up the repo by default. To cleanup, make
+sure to pass the `--cleanup` flag.
+
+You can reclone the repo with the clean flag.
+
+```bash
+ciri --clean
+```
+
+### Niri version
+
+To use a specific version/branch of niri you can pass in the `-b` or `--branch`
+flag. This will clone the repo at that version, and generate types accordingly.
+
+```bash
+ciri --branch 'v25.11'
+```
+
+The main branch of this repo will target niri/main.
+
+For more options see `ciri --help`
+
+## KDL Generation
+
+This flake uses a best effort approach to translate Nix options to KDL. There
+are bound to be edge cases that aren't handled since Nix attrsets doesn't map to
+KDL nicely.
+
+We use [overrides](./lib/kdl/overrides.nix) to fix and adjust options that
+aren't quite right. I'm fixing these issues as I run into them, so whatever
+options I use in my config probably work, but outside of that, there might be
+issues.
+
+If you notice that the kdl config generation is wrong, feel free to
+[file an issue](https://github.com/myume/ciri/issues/new?template=kdl-config-generation-malformed.md)
+or open a PR with an override.
+
+## Credits
+
+- [sodiboo/niri-flake](https://github.com/sodiboo/niri-flake)

@@ -36,6 +36,7 @@ struct Cli {
     #[arg(long)]
     repo_dir: Option<PathBuf>,
 
+    /// Regenerate the niri types from a clean repo
     #[arg(long)]
     clean: bool,
 
