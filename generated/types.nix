@@ -42,6 +42,9 @@ in
         animations = mkOption {
           type = nullOr animations;
         };
+        blur = mkOption {
+          type = nullOr blur;
+        };
         gestures = mkOption {
           type = nullOr gestures;
         };
@@ -363,6 +366,12 @@ in
         };
         map-to-output = mkOption {
           type = nullOr str;
+        };
+        map-to-focused-output = mkOption {
+          type = nullOr bool;
+        };
+        map-to-focused-window = mkOption {
+          type = nullOr bool;
         };
         left-handed = mkOption {
           type = nullOr bool;
@@ -1205,6 +1214,25 @@ in
     screenshot-ui-open-anim = animation;
     overview-open-close-anim = animation;
     recent-windows-close-anim = animation;
+    blur = submodule {
+      options = {
+        off = mkOption {
+          type = nullOr bool;
+        };
+        passes = mkOption {
+          type = nullOr (ints.u8);
+        };
+        offset = mkOption {
+          type = nullOr float;
+        };
+        noise = mkOption {
+          type = nullOr float;
+        };
+        saturation = mkOption {
+          type = nullOr float;
+        };
+      };
+    };
     gestures = submodule {
       options = {
         dnd-edge-view-scroll = mkOption {
@@ -1391,6 +1419,12 @@ in
         tiled-state = mkOption {
           type = nullOr bool;
         };
+        background-effect = mkOption {
+          type = nullOr background-effect-rule;
+        };
+        popups = mkOption {
+          type = nullOr popups-rule;
+        };
       };
     };
     tab-indicator-rule = submodule {
@@ -1458,6 +1492,35 @@ in
       "left"
       "right"
     ];
+    background-effect-rule = submodule {
+      options = {
+        xray = mkOption {
+          type = nullOr bool;
+        };
+        blur = mkOption {
+          type = nullOr bool;
+        };
+        noise = mkOption {
+          type = nullOr (either float int);
+        };
+        saturation = mkOption {
+          type = nullOr (either float int);
+        };
+      };
+    };
+    popups-rule = submodule {
+      options = {
+        opacity = mkOption {
+          type = nullOr float;
+        };
+        geometry-corner-radius = mkOption {
+          type = nullOr corner-radius;
+        };
+        background-effect = mkOption {
+          type = nullOr background-effect-rule;
+        };
+      };
+    };
     layer-rule = submodule {
       options = {
         matches = mkOption {
@@ -1485,6 +1548,12 @@ in
         };
         baba-is-float = mkOption {
           type = nullOr bool;
+        };
+        background-effect = mkOption {
+          type = nullOr background-effect-rule;
+        };
+        popups = mkOption {
+          type = nullOr popups-rule;
         };
       };
     };
@@ -1595,6 +1664,9 @@ in
         type = submodule {
           options = {
             write-to-disk = mkOption {
+              type = nullOr bool;
+            };
+            show-pointer = mkOption {
               type = nullOr bool;
             };
             args = mkOption {
@@ -2071,6 +2143,9 @@ in
         restrict-primary-scanout-to-matching-format = mkOption {
           type = nullOr bool;
         };
+        force-disable-connectors-on-resume = mkOption {
+          type = nullOr bool;
+        };
         render-drm-device = mkOption {
           type = nullOr str;
         };
@@ -2186,8 +2261,17 @@ in
         at-startup = mkOption {
           type = nullOr bool;
         };
+        layer = mkOption {
+          type = nullOr layer;
+        };
       };
     };
+    layer = enum [
+      "background"
+      "bottom"
+      "top"
+      "overlay"
+    ];
     window-rule-match = submodule {
       options = {
         app-id = mkOption {
