@@ -11,8 +11,11 @@ env:
 
 jobs:
   updateTypes:
-    name: "Update niri types"
+    name: update niri types
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
 
     steps:
       - uses: actions/checkout@v6
@@ -40,11 +43,12 @@ jobs:
               Generated niri types based on the latest commit: [${{  steps.niri_hash.outputs.hash  }}](https://github.com/niri-wm/niri/tree/${{  steps.niri_hash.outputs.hash  }}/niri-config).
             labels: |
               niri-type-update
+            delete-branch: true
             assignees: myume
 
       - name: Enable Auto-Merge
         if: steps.cpr.outputs.pull-request-operation == 'created'
-        run: gh pr merge "${{ steps.cpr.outputs.pull-request-number }}" --auto --merge
+        run: gh pr merge "${{ steps.cpr.outputs.pull-request-number }}" --auto --squash
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
