@@ -186,7 +186,7 @@ pub struct NixTypeParser {
     traits_map: TraitsMap,
     visited: HashSet<String>,
     null_overrides: HashMap<String, Filter>,
-    option_overrides: HashMap<(String, String), NixOption>,
+    option_overrides: IndexMap<(String, String), NixOption>,
     type_overrides: HashMap<String, NixType>,
 }
 
@@ -231,7 +231,7 @@ impl NixTypeParser {
                 Filter::Exclude(HashSet::from(["key".into(), "action".into()])),
             )]),
             type_overrides,
-            option_overrides: HashMap::from([
+            option_overrides: IndexMap::from([
                 (
                     ("LayerRule".to_string(), "excludes".to_string()),
                     NixOption::new(NixType::list(NixType::TypeReference(
