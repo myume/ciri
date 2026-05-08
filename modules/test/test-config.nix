@@ -21,6 +21,17 @@
       screenshot-path = "~/Pictures/Screenshots/%Y-%m-%dT%H:%M:%S.png";
       prefer-no-csd = true;
 
+      spawn-sh-at-startup = [
+        {
+          command = "echo hello world";
+        }
+      ];
+      spawn-at-startup = [
+        {
+          command = ["echo" "hello world"];
+        }
+      ];
+
       layout = {
         gaps = 10.0;
         struts = {

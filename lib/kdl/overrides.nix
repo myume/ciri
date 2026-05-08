@@ -3,9 +3,13 @@
   utils,
 }: let
   inherit (utils) sectionsToString indentSection mapNull;
+
   toBoolArg = name: value: "${name} ${lib.boolToString value}";
+
   toKDLString = value:
-    if builtins.isBool value
+    if builtins.isList value
+    then builtins.concatStringsSep " " (map toKDLString value)
+    else if builtins.isBool value
     then lib.boolToString value
     else if builtins.isString value
     then "\"${value}\""
@@ -26,7 +30,12 @@
     sectionsToString matches;
 
   cornerRadiusToKDL = name: value: "${name} ${builtins.concatStringsSep " " (map toKDLString (builtins.attrValues value))}";
+
+  spawnAtStartupToKDL = name: commands: sectionsToString (map (commandSet: "${name} ${toKDLString commandSet.command}") commands);
 in {
+  spawn-at-startup = spawnAtStartupToKDL;
+  spawn-sh-at-startup = spawnAtStartupToKDL;
+
   window-rules.window-rule = {
     background-effect.blur = toBoolArg;
     background-effect.xray = toBoolArg;
