@@ -36,15 +36,28 @@ jobs:
         uses: peter-evans/create-pull-request@v8
         with:
             commit-message: "chore(types): update niri types"
-            branch: types/update-niri-types
+            branch: update-niri-types
             delete-branch: true
             title: "chore(types): update niri types"
             body: |
               Generated niri types based on the latest commit: [${{  steps.niri_hash.outputs.hash  }}](https://github.com/niri-wm/niri/tree/${{  steps.niri_hash.outputs.hash  }}/niri-config).
             labels: |
               niri-type-update
-            delete-branch: true
             assignees: myume
+
+      - name: Checkout as real user
+        if: steps.cpr.outputs.pull-request-operation == 'created'
+        uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.AUTO_APPROVE_PAT }}
+
+      - name: Trigger checks
+        if: steps.cpr.outputs.pull-request-operation == 'created'
+        run: |
+          git fetch origin update-niri-types
+          git checkout update-niri-types
+          git commit --amend --no-edit
+          git push --force origin update-niri-types
 
       - name: Enable Auto-Merge
         if: steps.cpr.outputs.pull-request-operation == 'created'
