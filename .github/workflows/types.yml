@@ -1,0 +1,43 @@
+name: Check Niri Types
+
+on:
+ workflow_dispatch:
+
+ schedule:
+   - cron: "0 0 * * 0" # every sunday
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  updateTypes:
+    name: "Update niri types"
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Generate types
+        run: cargo run -- --clean
+
+      - name: Get external hash
+        id: niri_hash
+        run: |
+          HASH=$(gh api repos/YaLTeR/niri/commits/main --template '{{.sha}}')
+          echo "hash=$HASH" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Create PR
+        uses: peter-evans/create-pull-request@v8
+        with:
+            commit-message: "chore(types): update niri types"
+            branch: types/update-niri-types
+            delete-branch: true
+            title: "chore(types): update niri types"
+            body: |
+              Generated niri types based on the latest commit: [${{  steps.niri_hash.outputs.hash  }}](https://github.com/YaLTeR/niri-wm/niri/tree/${{  steps.niri_hash.outputs.hash  }}/niri-config)
+            labels: |
+              niri-type-update
+            assignees: myume
+
