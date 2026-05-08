@@ -11,8 +11,11 @@ env:
 
 jobs:
   updateTypes:
-    name: "Update niri types"
+    name: update niri types
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
 
     steps:
       - uses: actions/checkout@v6
