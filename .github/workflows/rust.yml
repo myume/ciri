@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build
+      run: cargo build --release --verbose
+    - name: Run tests
+      run: cargo test --verbose
+    - name: Check niri types
+      working-directory: ./generated
+      run: | 
+        cargo run -- --clean -o ./generated.nix
+        diff -s ./types.nix ./generated.nix || {
+          echo "types.nix does not match generated file, is the file up to date?"
+          exit 1
+        }
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+    - uses: dtolnay/rust-toolchain@beta
+      with:
+        components: rustfmt clippy
+    - name: Run clippy
+      run: cargo clippy --all-targets --all-features -- -D warnings
+    - name: Run rustfmt
+      run: cargo fmt --all --check
