@@ -28,7 +28,7 @@
 
     homeManagerModules = {
       default = self.homeManagerModules.ciri;
-      ciri = import ./nix/hm-module.nix;
+      ciri = import ./nix/home-manager;
     };
 
     checks = forAllSystems (pkgs: {
