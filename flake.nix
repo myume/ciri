@@ -32,7 +32,7 @@
     };
 
     checks = forAllSystems (pkgs: {
-      check-niri-types = let
+      niri-types = let
         hm = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           modules = [
@@ -47,9 +47,17 @@
             }
           ];
         };
+        config-file =
+          pkgs.writeText "niri-config"
+          hm.config.xdg.configFile."niri/config.kdl".text;
       in
-        pkgs.writeText "niri-config"
-        hm.config.xdg.configFile."niri/config.kdl".text;
+        pkgs.runCommand "validate-config"
+        {
+          nativeBuildInputs = [pkgs.niri];
+        } ''
+          niri validate --config ${config-file}
+          touch $out
+        '';
     });
   };
 }
