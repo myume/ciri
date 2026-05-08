@@ -494,16 +494,15 @@ impl NixTypeParser {
         let mut nix_values = IndexMap::new();
         let mut deps = Vec::new();
 
-        let mut submodule = Submodule {
-            options: IndexMap::new(),
-        };
-
         let submodule_name = root.ident.to_string();
         if self.visited.contains(&submodule_name) {
             return Ok((nix_values, deps));
         }
-
         self.visited.insert(submodule_name.clone());
+
+        let mut submodule = Submodule {
+            options: IndexMap::new(),
+        };
 
         for field in &root.fields {
             let syn::Type::Path(type_path) = &field.ty else {
