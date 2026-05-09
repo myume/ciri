@@ -18,6 +18,33 @@
     packages = forAllSystems (pkgs: let
       inherit (pkgs.stdenv.hostPlatform) system;
     in {
+      docs = let
+        inherit (pkgs) lib;
+        eval = lib.evalModules {
+          modules = [./nix/home-manager/options.nix];
+        };
+        optionsDoc = pkgs.nixosOptionsDoc {
+          inherit (eval) options;
+          warningsAreErrors = false;
+          transformOptions = opt:
+            opt
+            // {
+              # Fix declaration paths to GitHub URLs
+              declarations =
+                map (decl: {
+                  url = "https://github.com/myume/ciri/blob/main/${
+                    lib.removePrefix (toString ./. + "/") (toString decl)
+                  }";
+                  name = lib.removePrefix (toString ./. + "/") (toString decl);
+                })
+                opt.declarations;
+
+              visible = opt.visible && !lib.hasPrefix "_" opt.name;
+            };
+        };
+      in
+        optionsDoc.optionsCommonMark;
+
       ciri = pkgs.callPackage ./nix/package.nix {};
       default = self.packages.${system}.ciri;
     });
@@ -32,7 +59,7 @@
     };
 
     checks = forAllSystems (pkgs: {
-      niri-types = let
+      validate-types = let
         hm = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           modules = [
