@@ -19,9 +19,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+      - uses: cachix/install-nix-action@v31
 
       - name: Generate types
         run: cargo run -- --clean
+
+      - name: Generate docs
+        run: |
+          nix build .#docs
+          cp result docs.md
 
       - name: Get external hash
         id: niri_hash
