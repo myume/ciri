@@ -35,11 +35,16 @@ and set up your Niri config in the settings
 }
 ```
 
-There isn't much documentation on the options in the settings for this flake,
-but it generally mirrors the niri config 1:1.
+You can see the generated docs in [docs.md](/docs.md). For more information on
+each option, you can visit the
+[niri wiki](https://niri-wm.github.io/niri/Configuration%3A-Introduction.html).
+The name of the options should generally mirror the niri ones 1:1.
 
-To look up options, see the [types file](./generated/types.nix). The `config`
-type contains all options that you can pass to the settings option.
+To look up options types directly, see the [types file](./generated/types.nix).
+The `config` type contains all options that you can pass to the settings option.
+
+You can also see the [example-config](./nix/tests/example-config.nix) for more
+info on how configure the options.
 
 ## Type Generation
 
