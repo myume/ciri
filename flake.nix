@@ -31,11 +31,11 @@
             // {
               # Fix declaration paths to GitHub URLs
               declarations =
-                map (decl: {
-                  url = "https://github.com/myume/ciri/blob/main/${
-                    lib.removePrefix (toString ./. + "/") (toString decl)
-                  }";
-                  name = lib.removePrefix (toString ./. + "/") (toString decl);
+                map (decl: let
+                  filepath = lib.removePrefix (toString ./. + "/") (toString decl);
+                in {
+                  url = "https://github.com/myume/ciri/blob/main/${filepath}";
+                  name = filepath;
                 })
                 opt.declarations;
 

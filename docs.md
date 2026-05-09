@@ -6909,8 +6909,6 @@ null or (submodule)
 
 ## programs\.niri\.settings\.input\.keyboard\.numlock
 
-
-
 This option has no description\.
 
 
@@ -9213,8 +9211,6 @@ null
 
 ## programs\.niri\.settings\.layer-rules\.\*\.matches
 
-
-
 This option has no description\.
 
 
@@ -11156,8 +11152,6 @@ list of attribute-tagged union with choices: fixed, proportion
 
 
 ## programs\.niri\.settings\.layout\.preset-window-heights\.\*\.fixed
-
-
 
 This option has no description\.
 
@@ -13101,8 +13095,6 @@ one of “window”, “workspace-view”
 
 ## programs\.niri\.settings\.outputs\.\*\.layout\.focus-ring\.active-gradient\.to
 
-
-
 This option has no description\.
 
 
@@ -14989,8 +14981,6 @@ null
 
 ## programs\.niri\.settings\.outputs\.\*\.off
 
-
-
 This option has no description\.
 
 
@@ -16709,8 +16699,6 @@ null
 
 
 ## programs\.niri\.settings\.recent-windows\.binds\.\*\.action\.move-window-down
-
-
 
 This option has no description\.
 
@@ -18534,8 +18522,6 @@ null or (submodule)
 
 
 ## programs\.niri\.settings\.switch-events\.lid-close\.spawn
-
-
 
 This option has no description\.
 
@@ -20526,8 +20512,6 @@ null
 
 
 ## programs\.niri\.settings\.window-rules\.\*\.matches\.\*\.is-urgent
-
-
 
 This option has no description\.
 
@@ -22534,8 +22518,6 @@ null
 
 
 ## programs\.niri\.settings\.workspaces\.\*\.layout\.focus-ring\.active-gradient
-
-
 
 This option has no description\.
 
