@@ -21,32 +21,32 @@
   in {
     packages = forAllSystems (pkgs: let
       inherit (pkgs.stdenv.hostPlatform) system;
-
-      inherit (pkgs) lib;
-      eval = lib.evalModules {
-        modules = [./nix/home-manager/options.nix];
-      };
-      optionsDoc = pkgs.nixosOptionsDoc {
-        inherit (eval) options;
-        warningsAreErrors = false;
-        transformOptions = opt:
-          opt
-          // {
-            name = lib.removePrefix "programs.niri." opt.name;
-            declarations =
-              map (decl: let
-                filepath = lib.removePrefix (toString ./. + "/") (toString decl);
-              in {
-                url = "https://github.com/myume/ciri/blob/main/${filepath}";
-                name = filepath;
-              })
-              opt.declarations;
-
-            visible = opt.visible && !lib.hasPrefix "_" opt.name;
-          };
-      };
     in {
-      docs =
+      docs = let
+        inherit (pkgs) lib;
+        eval = lib.evalModules {
+          modules = [./nix/home-manager/options.nix];
+        };
+        optionsDoc = pkgs.nixosOptionsDoc {
+          inherit (eval) options;
+          warningsAreErrors = false;
+          transformOptions = opt:
+            opt
+            // {
+              name = lib.removePrefix "programs.niri." opt.name;
+              declarations =
+                map (decl: let
+                  filepath = lib.removePrefix (toString ./. + "/") (toString decl);
+                in {
+                  url = "https://github.com/myume/ciri/blob/main/${filepath}";
+                  name = filepath;
+                })
+                opt.declarations;
+
+              visible = opt.visible && !lib.hasPrefix "_" opt.name;
+            };
+        };
+      in
         pkgs.runCommandLocal "project-docs" {
           nativeBuildInputs = [
             (ndg.packages.${system}.ndg. overrideAttrs {
@@ -99,6 +99,9 @@
       in
         pkgs.runCommand "validate-config"
         {
+          # technically this can break since we target niri main not unstable
+          # ...but it makes ci much fast since we don't have to build niri
+          # hopefully we don't run into any issues otherwise we'll need to pull the niri flake
           nativeBuildInputs = [pkgs.niri];
         } ''
           niri validate --config ${config-file}
