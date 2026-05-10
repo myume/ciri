@@ -57,4 +57,4 @@ visit the
 The name of the options should generally be identical to what it is in niri.
 
 An example configuration can also be found
-[here](https://github.com/myume/ciri/blob/main/nix/tests/example-config.nix).
+[here](https://github.com/myume/ciri/blob/main/examples/example-config.nix).

@@ -83,7 +83,7 @@
           inherit pkgs;
           modules = [
             self.homeManagerModules.default
-            ./nix/tests/example-config.nix
+            ./examples/example-config.nix
             {
               home = {
                 username = "test";
