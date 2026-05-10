@@ -40,7 +40,7 @@ The name of the options should generally mirror the niri ones 1:1.
 To look up options types directly, see the [types file](./generated/types.nix).
 The `config` type contains all options that you can pass to the settings option.
 
-You can also see the [example-config](./nix/tests/example-config.nix) for more
+You can also see the [example-config](./examples/example-config.nix) for more
 info on how configure the options.
 
 ## Type Generation
