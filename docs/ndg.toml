@@ -9,7 +9,3 @@ options_toc_depth = 2
 highlight_code = true
 tab_style = "none"
 revision = "main"
-
-[search]
-enable = true
-max_heading_level = 3
