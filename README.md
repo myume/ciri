@@ -10,10 +10,7 @@ Nix configuration options generated directly from
 Add ciri to your flake inputs:
 
 ```nix
-ciri = {
-  url = "github:myume/ciri";
-  inputs.nixpkgs.follows = "nixpkgs";
-};
+ciri.url = "github:myume/ciri";
 ```
 
 Make sure to import the home manager modules in your config:
@@ -35,7 +32,7 @@ and set up your Niri config in the settings
 }
 ```
 
-You can view the documentation at [here](https://ciri.meyume.com/). For more
+You can view the documentation [here](https://ciri.meyume.com/). For more
 information on each option, you can visit the
 [niri wiki](https://niri-wm.github.io/niri/Configuration%3A-Introduction.html).
 The name of the options should generally mirror the niri ones 1:1.
