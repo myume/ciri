@@ -1,13 +1,17 @@
 {
   description = "Ciri nix flake";
 
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs?ref=nixos-unstable";
-  inputs.home-manager.url = "github:nix-community/home-manager";
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs?ref=nixos-unstable";
+    home-manager.url = "github:nix-community/home-manager";
+    ndg.url = "github:feel-co/ndg";
+  };
 
   outputs = {
     self,
     nixpkgs,
     home-manager,
+    ndg,
     ...
   }: let
     forAllSystems = function:
@@ -17,33 +21,48 @@
   in {
     packages = forAllSystems (pkgs: let
       inherit (pkgs.stdenv.hostPlatform) system;
-    in {
-      docs = let
-        inherit (pkgs) lib;
-        eval = lib.evalModules {
-          modules = [./nix/home-manager/options.nix];
-        };
-        optionsDoc = pkgs.nixosOptionsDoc {
-          inherit (eval) options;
-          warningsAreErrors = false;
-          transformOptions = opt:
-            opt
-            // {
-              # Fix declaration paths to GitHub URLs
-              declarations =
-                map (decl: let
-                  filepath = lib.removePrefix (toString ./. + "/") (toString decl);
-                in {
-                  url = "https://github.com/myume/ciri/blob/main/${filepath}";
-                  name = filepath;
-                })
-                opt.declarations;
 
-              visible = opt.visible && !lib.hasPrefix "_" opt.name;
-            };
-        };
-      in
-        optionsDoc.optionsCommonMark;
+      inherit (pkgs) lib;
+      eval = lib.evalModules {
+        modules = [./nix/home-manager/options.nix];
+      };
+      optionsDoc = pkgs.nixosOptionsDoc {
+        inherit (eval) options;
+        warningsAreErrors = false;
+        transformOptions = opt:
+          opt
+          // {
+            name = lib.removePrefix "programs.niri." opt.name;
+            declarations =
+              map (decl: let
+                filepath = lib.removePrefix (toString ./. + "/") (toString decl);
+              in {
+                url = "https://github.com/myume/ciri/blob/main/${filepath}";
+                name = filepath;
+              })
+              opt.declarations;
+
+            visible = opt.visible && !lib.hasPrefix "_" opt.name;
+          };
+      };
+    in {
+      docs =
+        pkgs.runCommandLocal "project-docs" {
+          nativeBuildInputs = [
+            (ndg.packages.${system}.ndg. overrideAttrs {
+              doCheck = false;
+            })
+          ];
+        } ''
+          mkdir -p $out
+          ndg \
+            --config-file ${./docs/ndg.toml} \
+            html \
+            --input-dir ${./docs} \
+            --output-dir $out \
+            --module-options ${optionsDoc.optionsJSON}/share/doc/nixos/options.json \
+            --jobs $NIX_BUILD_CORES
+        '';
 
       ciri = pkgs.callPackage ./nix/package.nix {};
       default = self.packages.${system}.ciri;
