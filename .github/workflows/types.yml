@@ -1,4 +1,4 @@
-name: Check Niri Types
+name: Update Niri Types
 
 on:
  workflow_dispatch:
@@ -23,11 +23,6 @@ jobs:
 
       - name: Generate types
         run: cargo run -- --clean
-
-      - name: Generate docs
-        run: |
-          nix build .#docs
-          cp result docs.md
 
       - name: Get external hash
         id: niri_hash

@@ -1,0 +1,15 @@
+title = "Ciri"
+input_dir = "docs"
+output_dir = "build"
+
+generate_anchors = true
+
+options_toc_depth = 2
+
+highlight_code = true
+tab_style = "none"
+revision = "main"
+
+[search]
+enable = true
+max_heading_level = 3
