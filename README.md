@@ -35,8 +35,8 @@ and set up your Niri config in the settings
 }
 ```
 
-You can see the generated docs in [docs.md](/docs.md). For more information on
-each option, you can visit the
+You can view the documentation at [here](https://ciri.meyume.com/). For more
+information on each option, you can visit the
 [niri wiki](https://niri-wm.github.io/niri/Configuration%3A-Introduction.html).
 The name of the options should generally mirror the niri ones 1:1.
 
