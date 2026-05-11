@@ -12,7 +12,7 @@ use std::{
 
 use crate::{
     crawler::{ItemMap, TraitsMap},
-    nix::NixTypeParser,
+    nix::types::NixTypeParser,
 };
 
 mod crawler;
