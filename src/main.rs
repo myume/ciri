@@ -12,7 +12,7 @@ use std::{
 
 use crate::{
     crawler::{ItemMap, TraitsMap},
-    nix::NixTypeParser,
+    nix::types::NixTypeParser,
 };
 
 mod crawler;
@@ -47,6 +47,9 @@ struct Cli {
     /// Niri branch to clone
     #[arg(short, long, default_value = "main")]
     branch: String,
+
+    #[arg(long, default_value = "./docs/option-docs.json")]
+    docs_path: PathBuf,
 }
 
 fn main() -> anyhow::Result<()> {
@@ -113,7 +116,8 @@ fn main() -> anyhow::Result<()> {
         }
     }
 
-    let nix_config_type = NixTypeParser::new(structs, traits_map).generate_config_type()?;
+    let nix_config_type =
+        NixTypeParser::new(&args.docs_path, structs, &traits_map)?.generate_config_type()?;
 
     info!("Outputting types...");
     let mut type_file = File::create(&args.output_path)?;

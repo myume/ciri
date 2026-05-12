@@ -58,7 +58,7 @@
           ndg \
             --config-file ${./docs/ndg.toml} \
             html \
-            --input-dir ${./docs} \
+            --input-dir ${./docs/content} \
             --output-dir $out \
             --module-options ${optionsDoc.optionsJSON}/share/doc/nixos/options.json \
             --jobs $NIX_BUILD_CORES
