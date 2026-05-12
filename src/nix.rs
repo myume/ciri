@@ -6,6 +6,7 @@ mod overrides;
 pub mod types;
 
 pub type NixDeclarations = IndexMap<String, NixType>;
+type OptionsMap = IndexMap<String, NixOption>;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum NixType {
@@ -24,7 +25,7 @@ pub enum NixType {
     I32,
     I16,
     Int,
-    AttrTag(IndexMap<String, NixOption>),
+    AttrTag(OptionsMap),
     Submodule(Submodule),
     TypeReference(String),
 }
@@ -38,7 +39,7 @@ pub struct NixOption {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Submodule {
-    options: IndexMap<String, NixOption>,
+    options: OptionsMap,
 }
 
 impl NixType {

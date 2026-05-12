@@ -34,7 +34,7 @@ impl Display for NixType {
                     "enum [{}]",
                     variants
                         .iter()
-                        .map(|var| format!("\"{}\"", pascal_case_to_hypen(var)))
+                        .map(|var| format!("\"{}\"", var))
                         .collect::<Vec<String>>()
                         .join("\n")
                 ),
@@ -43,7 +43,7 @@ impl Display for NixType {
                 NixType::U32 => "ints.u32".to_string(),
                 NixType::I32 => "ints.s32".to_string(),
                 NixType::I16 => "ints.s16".to_string(),
-                NixType::TypeReference(s) => pascal_case_to_hypen(s),
+                NixType::TypeReference(s) => s.clone(),
                 NixType::AttrTag(options) => {
                     format!(
                         "attrTag {{
@@ -51,7 +51,7 @@ impl Display for NixType {
                         }}",
                         options
                             .iter()
-                            .map(|(k, v)| format!("{} = {};", pascal_case_to_hypen(k), v))
+                            .map(|(k, v)| format!("{} = {};", k, v))
                             .collect::<String>()
                     )
                 }
@@ -76,8 +76,8 @@ impl Display for NixOption {
         write!(
             f,
             "mkOption {{
-                    {}
-                }}",
+                {}
+            }}",
             [
                 Some(format!("type = {};", self.ty)),
                 self.desc
@@ -106,7 +106,7 @@ impl Display for Submodule {
             }}",
             self.options
                 .iter()
-                .map(|(name, opt)| format!("{} = {};", pascal_case_to_hypen(name), opt))
+                .map(|(name, opt)| format!("{} = {};", name, opt))
                 .collect::<String>(),
         )
     }
@@ -169,9 +169,11 @@ impl NixTypeParser {
             );
         }
 
+        // the order of these matter
         let transformations: [NixTransformPass; _] = [
             Box::new(NixTypeParser::collapse_wrapped_types),
             Box::new(|input| self.overrides.apply_nullable(input)),
+            Box::new(NixTypeParser::normalize_names),
             Box::new(|input| self.docs.inject_docs(input)),
         ];
         for transform in transformations {
@@ -188,9 +190,56 @@ impl NixTypeParser {
             }}",
             submodules
                 .into_iter()
-                .map(|(name, module)| format!("{} = {};\n", pascal_case_to_hypen(&name), module))
+                .map(|(name, module)| format!("{} = {};\n", name, module))
                 .collect::<String>()
         ))
+    }
+
+    fn normalize_type(ty: NixType) -> NixType {
+        match ty {
+            NixType::List(inner) => NixType::list(NixTypeParser::normalize_type(*inner)),
+            NixType::OneOf(tys) => {
+                NixType::one_of(tys.into_iter().map(NixTypeParser::normalize_type).collect())
+            }
+            NixType::NullOr(inner) => NixType::null(NixTypeParser::normalize_type(*inner)),
+            NixType::Either(left, right) => NixType::either(
+                NixTypeParser::normalize_type(*left),
+                NixTypeParser::normalize_type(*right),
+            ),
+            NixType::Enum(items) => {
+                NixType::Enum(items.iter().map(|item| normalize_name(item)).collect())
+            }
+            NixType::AttrTag(index_map) => {
+                let options = index_map
+                    .into_iter()
+                    .map(|(name, mut opt)| {
+                        opt.ty = NixTypeParser::normalize_type(opt.ty);
+                        (normalize_name(&name), opt)
+                    })
+                    .collect();
+                NixType::AttrTag(options)
+            }
+            NixType::Submodule(submodule) => {
+                let options = submodule
+                    .options
+                    .into_iter()
+                    .map(|(name, mut opt)| {
+                        opt.ty = NixTypeParser::normalize_type(opt.ty);
+                        (normalize_name(&name), opt)
+                    })
+                    .collect();
+                NixType::Submodule(Submodule { options })
+            }
+            NixType::TypeReference(ty) => NixType::TypeReference(normalize_name(&ty)),
+            ty => ty,
+        }
+    }
+
+    fn normalize_names(input: NixDeclarations) -> NixDeclarations {
+        input
+            .into_iter()
+            .map(|(k, ty)| (normalize_name(&k), NixTypeParser::normalize_type(ty)))
+            .collect()
     }
 
     fn collapse_wrapped_types(input: NixDeclarations) -> NixDeclarations {
@@ -470,7 +519,7 @@ fn to_kdl_property(attrs: &[Attribute]) -> Option<(String, Option<String>)> {
     None
 }
 
-fn pascal_case_to_hypen(s: &str) -> String {
+fn normalize_name(s: &str) -> String {
     let mut chars = vec![];
     for char in s.chars() {
         if !chars.is_empty() && char.is_uppercase() {
