@@ -172,7 +172,7 @@ impl NixOption {
     }
 }
 
-type NixDeclarations = IndexMap<String, NixType>;
+pub type NixDeclarations = IndexMap<String, NixType>;
 type NixTransformPass<'a> = Box<dyn Fn(NixDeclarations) -> NixDeclarations + 'a>;
 
 enum Filter {
