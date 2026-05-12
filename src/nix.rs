@@ -32,6 +32,7 @@ pub enum NixType {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct NixOption {
     ty: NixType,
+    desc: Option<String>,
     default: Option<String>,
 }
 
@@ -73,6 +74,7 @@ impl NixOption {
                 _ => None,
             },
             ty,
+            desc: None,
         }
     }
 }

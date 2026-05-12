@@ -76,15 +76,21 @@ impl Display for NixOption {
         write!(
             f,
             "mkOption {{
-                    type = {}; 
                     {}
                 }}",
-            self.ty,
-            if let Some(default) = self.default.clone() {
-                format!("default = {};", default)
-            } else {
-                "".into()
-            }
+            [
+                Some(format!("type = {};", self.ty)),
+                self.desc
+                    .clone()
+                    .map(|desc| format!("description = \"{}\";", desc)),
+                self.default
+                    .clone()
+                    .map(|default| format!("default = {};", default))
+            ]
+            .into_iter()
+            .flatten()
+            .collect::<Vec<String>>()
+            .join("\n"),
         )
     }
 }
@@ -166,6 +172,7 @@ impl NixTypeParser {
         let transformations: [NixTransformPass; _] = [
             Box::new(NixTypeParser::collapse_wrapped_types),
             Box::new(|input| self.overrides.apply_nullable(input)),
+            Box::new(|input| self.docs.inject_docs(input)),
         ];
         for transform in transformations {
             submodules = transform(submodules);

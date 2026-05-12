@@ -1,11 +1,11 @@
 use anyhow::anyhow;
-use log::{debug, info};
+use log::{debug, info, trace};
 use std::{collections::HashMap, fs::read_to_string, path::Path};
 
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use crate::nix::NixDeclarations;
+use crate::nix::{NixDeclarations, NixOption, NixType};
 
 /// Documentation for a nix option
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -65,7 +65,37 @@ impl DocInjector {
         Ok(docs)
     }
 
-    pub fn inject_docs(decls: NixDeclarations) -> NixDeclarations {
-        todo!()
+    fn inject_into_option(docs: &OptionDocs, opt: &mut NixOption) {
+        opt.desc = docs.description.clone()
+    }
+
+    pub fn inject_docs(&self, decls: NixDeclarations) -> NixDeclarations {
+        decls
+            .into_iter()
+            .map(|(name, mut decl)| {
+                match decl {
+                    NixType::AttrTag(ref mut variants) => {
+                        for (field, opt) in variants.iter_mut() {
+                            let path = format!("{name}.{field}");
+                            if let Some(docs) = self.docs.get(&path) {
+                                trace!("adding docs for {path}");
+                                DocInjector::inject_into_option(docs, opt);
+                            }
+                        }
+                    }
+                    NixType::Submodule(ref mut submodule) => {
+                        for (field, opt) in submodule.options.iter_mut() {
+                            let path = format!("{name}.{field}");
+                            if let Some(docs) = self.docs.get(&path) {
+                                trace!("adding docs for {path}");
+                                DocInjector::inject_into_option(docs, opt);
+                            }
+                        }
+                    }
+                    _ => {}
+                }
+                (name, decl)
+            })
+            .collect()
     }
 }
