@@ -1,5 +1,5 @@
 title = "Ciri"
-input_dir = "docs"
+input_dir = "docs/content"
 output_dir = "build"
 
 generate_anchors = true
