@@ -1,4 +1,4 @@
-use std::{collections::HashSet, fmt::Display};
+use std::{collections::HashSet, fmt::Display, path::Path};
 
 use anyhow::Context;
 use indexmap::IndexMap;
@@ -114,13 +114,17 @@ pub struct NixTypeParser {
 }
 
 impl NixTypeParser {
-    pub fn new(structs: ItemMap, traits_map: &TraitsMap) -> NixTypeParser {
-        NixTypeParser {
+    pub fn new(
+        docs_path: &Path,
+        structs: ItemMap,
+        traits_map: &TraitsMap,
+    ) -> anyhow::Result<NixTypeParser> {
+        Ok(NixTypeParser {
             overrides: Overrides::new(&structs, traits_map),
             structs,
             visited: HashSet::new(),
-            docs: DocInjector::new(),
-        }
+            docs: DocInjector::new(docs_path)?,
+        })
     }
 
     pub fn generate_config_type(&mut self) -> anyhow::Result<String> {
