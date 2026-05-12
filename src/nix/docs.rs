@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::nix::types::NixDeclarations;
+use crate::nix::NixDeclarations;
 
 /// Documentation for a nix option
 struct OptionDocs {

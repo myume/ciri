@@ -113,7 +113,7 @@ fn main() -> anyhow::Result<()> {
         }
     }
 
-    let nix_config_type = NixTypeParser::new(structs, traits_map).generate_config_type()?;
+    let nix_config_type = NixTypeParser::new(structs, &traits_map).generate_config_type()?;
 
     info!("Outputting types...");
     let mut type_file = File::create(&args.output_path)?;

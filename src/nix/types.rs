@@ -1,7 +1,4 @@
-use std::{
-    collections::{HashMap, HashSet},
-    fmt::Display,
-};
+use std::{collections::HashSet, fmt::Display};
 
 use anyhow::Context;
 use indexmap::IndexMap;
@@ -9,65 +6,14 @@ use log::{debug, error, trace};
 use regex::Regex;
 use syn::{Attribute, GenericArgument, Item, ItemEnum, ItemStruct, Meta, PathArguments, Type};
 
-use crate::crawler::{ItemMap, TraitsMap};
+use crate::{
+    crawler::{ItemMap, TraitsMap},
+    nix::{
+        NixDeclarations, NixOption, NixType, Submodule, docs::DocInjector, overrides::Overrides,
+    },
+};
 
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum NixType {
-    String,
-    Bool,
-    Float,
-    List(Box<NixType>),
-    NullOr(Box<NixType>),
-    Enum(Vec<String>),
-    Either(Box<NixType>, Box<NixType>),
-    OneOf(Vec<NixType>),
-    U8,
-    U16,
-    U32,
-    Unsigned,
-    I32,
-    I16,
-    Int,
-    AttrTag(IndexMap<String, NixOption>),
-    Submodule(Submodule),
-    TypeReference(String),
-}
-
-impl NixType {
-    pub fn innermost_type(&self) -> NixType {
-        match self {
-            NixType::List(nix_type) | NixType::NullOr(nix_type) => nix_type.innermost_type(),
-            _ => self.clone(),
-        }
-    }
-
-    pub fn null(inner: NixType) -> NixType {
-        NixType::NullOr(Box::new(inner))
-    }
-
-    pub fn list(inner: NixType) -> NixType {
-        NixType::List(Box::new(inner))
-    }
-
-    pub fn either(left: NixType, right: NixType) -> NixType {
-        NixType::Either(Box::new(left), Box::new(right))
-    }
-
-    pub fn one_of(inner: Vec<NixType>) -> NixType {
-        NixType::OneOf(inner)
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct NixOption {
-    ty: NixType,
-    default: Option<String>,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Submodule {
-    options: IndexMap<String, NixOption>,
-}
+type NixTransformPass<'a> = Box<dyn Fn(NixDeclarations) -> NixDeclarations + 'a>;
 
 impl Display for NixType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -160,103 +106,20 @@ impl Display for Submodule {
     }
 }
 
-impl NixOption {
-    pub fn new(ty: NixType) -> NixOption {
-        NixOption {
-            default: match ty {
-                NixType::List(_) => Some("[]".into()),
-                _ => None,
-            },
-            ty,
-        }
-    }
-}
-
-pub type NixDeclarations = IndexMap<String, NixType>;
-type NixTransformPass<'a> = Box<dyn Fn(NixDeclarations) -> NixDeclarations + 'a>;
-
-enum Filter {
-    #[allow(dead_code)]
-    Include(HashSet<String>),
-    Exclude(HashSet<String>),
-}
-
 pub struct NixTypeParser {
     structs: ItemMap,
-    traits_map: TraitsMap,
     visited: HashSet<String>,
-    null_overrides: HashMap<String, Filter>,
-    option_overrides: IndexMap<(String, String), NixOption>,
-    type_overrides: HashMap<String, NixType>,
+    overrides: Overrides,
+    docs: DocInjector,
 }
 
 impl NixTypeParser {
-    pub fn new(structs: ItemMap, traits_map: TraitsMap) -> NixTypeParser {
-        let mut type_overrides: HashMap<String, NixType> = traits_map
-            .iter()
-            .filter_map(|(name, traits)| {
-                if traits.contains("FromStr")
-                    && let Some(item) = structs.get(name)
-                {
-                    match item {
-                        Item::Enum(enum_item) => {
-                            if enum_item.variants.iter().any(|ele| !ele.fields.is_empty()) {
-                                return Some((name.clone(), NixType::String));
-                            }
-                        }
-                        _ => return Some((name.clone(), NixType::String)),
-                    };
-                }
-                None
-            })
-            .collect();
-
-        type_overrides.extend([
-            (
-                "FloatOrInt".into(),
-                NixType::either(NixType::Float, NixType::Int),
-            ),
-            (
-                "WorkspaceReference".into(),
-                NixType::either(NixType::String, NixType::Unsigned),
-            ),
-        ]);
-
+    pub fn new(structs: ItemMap, traits_map: &TraitsMap) -> NixTypeParser {
         NixTypeParser {
+            overrides: Overrides::new(&structs, traits_map),
             structs,
-            traits_map,
             visited: HashSet::new(),
-            null_overrides: HashMap::from([(
-                "Bind".into(),
-                Filter::Exclude(HashSet::from(["key".into(), "action".into()])),
-            )]),
-            type_overrides,
-            option_overrides: IndexMap::from([
-                (
-                    ("LayerRule".to_string(), "excludes".to_string()),
-                    NixOption::new(NixType::list(NixType::TypeReference(
-                        "layer_rule_match".to_string(),
-                    ))),
-                ),
-                (
-                    ("LayerRule".to_string(), "matches".to_string()),
-                    NixOption::new(NixType::list(NixType::TypeReference(
-                        "layer_rule_match".to_string(),
-                    ))),
-                ),
-                (
-                    ("WindowRule".to_string(), "excludes".to_string()),
-                    NixOption::new(NixType::list(NixType::TypeReference(
-                        "window_rule_match".to_string(),
-                    ))),
-                ),
-                (
-                    ("WindowRule".to_string(), "matches".to_string()),
-                    NixOption::new(NixType::list(NixType::TypeReference(
-                        "window_rule_match".to_string(),
-                    ))),
-                ),
-            ]),
+            docs: DocInjector::new(),
         }
     }
 
@@ -272,6 +135,7 @@ impl NixTypeParser {
         )?;
 
         let extra_deps: Vec<_> = self
+            .overrides
             .option_overrides
             .values()
             .map(|op| op.ty.innermost_type())
@@ -297,7 +161,7 @@ impl NixTypeParser {
 
         let transformations: [NixTransformPass; _] = [
             Box::new(NixTypeParser::collapse_wrapped_types),
-            Box::new(|input| self.apply_nullable(input)),
+            Box::new(|input| self.overrides.apply_nullable(input)),
         ];
         for transform in transformations {
             submodules = transform(submodules);
@@ -316,49 +180,6 @@ impl NixTypeParser {
                 .map(|(name, module)| format!("{} = {};\n", pascal_case_to_hypen(&name), module))
                 .collect::<String>()
         ))
-    }
-
-    fn apply_nullable(&self, input: NixDeclarations) -> NixDeclarations {
-        let can_apply_null =
-            |ty: &NixType| !matches!(ty, NixType::NullOr(_)) && !matches!(ty, NixType::List(_));
-
-        input
-            .into_iter()
-            .map(|(k, mut v)| {
-                if let Some(traits) = self.traits_map.get(&k)
-                    && traits.contains("Default")
-                    && let NixType::Submodule(ref mut submodule) = v
-                {
-                    for opt in submodule.options.values_mut() {
-                        if can_apply_null(&opt.ty) {
-                            opt.ty = NixType::null(opt.ty.clone());
-                        }
-                    }
-                }
-                (k, v)
-            })
-            .map(|(k, mut v)| {
-                if let Some(nullable) = self.null_overrides.get(&k)
-                    && let NixType::Submodule(ref mut submodule) = v
-                {
-                    for (opt_name, opt) in submodule.options.iter_mut() {
-                        let names = match nullable {
-                            Filter::Include(hash_set) => hash_set,
-                            Filter::Exclude(hash_set) => hash_set,
-                        };
-
-                        if ((matches!(nullable, Filter::Include(_)) && names.contains(opt_name))
-                            || (matches!(nullable, Filter::Exclude(_))
-                                && !names.contains(opt_name)))
-                            && can_apply_null(&opt.ty)
-                        {
-                            opt.ty = NixType::null(opt.ty.clone());
-                        }
-                    }
-                }
-                (k, v)
-            })
-            .collect()
     }
 
     fn collapse_wrapped_types(input: NixDeclarations) -> NixDeclarations {
@@ -514,14 +335,17 @@ impl NixTypeParser {
             let field_ident = field.ident.as_ref().unwrap_or(&root.ident).to_string();
 
             let field_id = (submodule_name.to_string(), field_ident.to_string());
-            if let Some(opt) = self.option_overrides.get(&field_id) {
+            if let Some(opt) = self.overrides.option_overrides.get(&field_id) {
                 debug!("Overriding option {}.{}", field_id.0, field_id.1);
                 submodule.options.insert(field_id.1, opt.clone());
                 continue;
             }
 
             let ty = if self.structs.contains_key(&type_ident.to_string())
-                && !self.type_overrides.contains_key(&type_ident.to_string())
+                && !self
+                    .overrides
+                    .type_overrides
+                    .contains_key(&type_ident.to_string())
             {
                 deps.push(type_ident.to_string());
                 NixType::TypeReference(type_ident.to_string())
@@ -554,7 +378,7 @@ impl NixTypeParser {
 
         let ty_ident = head.ident.to_string();
 
-        if let Some(val) = self.type_overrides.get(&ty_ident) {
+        if let Some(val) = self.overrides.type_overrides.get(&ty_ident) {
             trace!("applying overrides for {}", &ty_ident);
             return (val.clone(), deps);
         }
