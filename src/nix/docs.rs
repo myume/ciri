@@ -11,8 +11,8 @@ use crate::nix::{NixDeclarations, NixOption, NixType};
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 struct OptionDocs {
-    example: Option<String>,
     description: Option<String>,
+    example: Option<serde_json::Value>,
 }
 
 /// Mapping from option path to docs
@@ -66,7 +66,8 @@ impl DocInjector {
     }
 
     fn inject_into_option(docs: &OptionDocs, opt: &mut NixOption) {
-        opt.desc = docs.description.clone()
+        opt.desc = docs.description.clone();
+        opt.example = docs.example.clone().map(json_to_nix);
     }
 
     pub fn inject_docs(&self, decls: NixDeclarations) -> NixDeclarations {
@@ -97,5 +98,30 @@ impl DocInjector {
                 (name, decl)
             })
             .collect()
+    }
+}
+
+fn json_to_nix(val: serde_json::Value) -> String {
+    match val {
+        Value::Null => "null".to_string(),
+        Value::Bool(v) => v.to_string(),
+        Value::Number(number) => number.to_string(),
+        Value::String(s) => format!("{:?}", s),
+        Value::Array(values) => format!(
+            "[{}]",
+            values
+                .into_iter()
+                .map(json_to_nix)
+                .collect::<Vec<String>>()
+                .join(" ")
+        ),
+        Value::Object(map) => format!(
+            "{{
+                {}
+            }}",
+            map.into_iter()
+                .map(|(key, value)| format!("{} = {};", key, json_to_nix(value)))
+                .collect::<String>()
+        ),
     }
 }

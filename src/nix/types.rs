@@ -85,7 +85,8 @@ impl Display for NixOption {
                     .map(|desc| format!("description = \"{}\";", desc)),
                 self.default
                     .clone()
-                    .map(|default| format!("default = {};", default))
+                    .map(|default| format!("default = {};", default)),
+                self.example.clone().map(|ex| format!("example = {};", ex))
             ]
             .into_iter()
             .flatten()

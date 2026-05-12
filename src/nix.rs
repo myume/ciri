@@ -35,6 +35,7 @@ pub struct NixOption {
     ty: NixType,
     desc: Option<String>,
     default: Option<String>,
+    example: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -76,6 +77,7 @@ impl NixOption {
             },
             ty,
             desc: None,
+            example: None,
         }
     }
 }
