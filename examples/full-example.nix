@@ -373,7 +373,7 @@
           shadow = {
             color = "#000000";
             draw-behind-window = true;
-            inactive-color = "test";
+            inactive-color = "#000000";
             off = true;
             offset = {
               x = 0.5;
@@ -387,9 +387,9 @@
       ];
       layout = {
         always-center-single-column = true;
-        background-color = "test";
+        background-color = "#000000";
         border = {
-          active-color = "test";
+          active-color = "#000000";
           active-gradient = {
             angle = 8;
             from = "test";
@@ -397,7 +397,7 @@
             relative-to = "window";
             to = "test";
           };
-          inactive-color = "test";
+          inactive-color = "#000000";
           inactive-gradient = {
             angle = 8;
             from = "test";
@@ -406,7 +406,7 @@
             to = "test";
           };
           off = true;
-          urgent-color = "test";
+          urgent-color = "#000000";
           urgent-gradient = {
             angle = 8;
             from = "test";
@@ -423,7 +423,7 @@
         };
         empty-workspace-above-first = true;
         focus-ring = {
-          active-color = "test";
+          active-color = "#000000";
           active-gradient = {
             angle = 8;
             from = "test";
@@ -431,7 +431,7 @@
             relative-to = "window";
             to = "test";
           };
-          inactive-color = "test";
+          inactive-color = "#000000";
           inactive-gradient = {
             angle = 8;
             from = "test";
@@ -440,7 +440,7 @@
             to = "test";
           };
           off = true;
-          urgent-color = "test";
+          urgent-color = "#000000";
           urgent-gradient = {
             angle = 8;
             from = "test";
@@ -452,7 +452,7 @@
         };
         gaps = 0.5;
         insert-hint = {
-          color = "test";
+          color = "#000000";
           gradient = {
             angle = 8;
             from = "test";
@@ -473,9 +473,9 @@
           }
         ];
         shadow = {
-          color = "test";
+          color = "#000000";
           draw-behind-window = true;
-          inactive-color = "test";
+          inactive-color = "#000000";
           offset = {
             x = 0.5;
             y = 0.5;
@@ -491,7 +491,7 @@
           top = 0.5;
         };
         tab-indicator = {
-          active-color = "test";
+          active-color = "#000000";
           active-gradient = {
             angle = 8;
             from = "test";
@@ -503,7 +503,7 @@
           gap = 0.5;
           gaps-between-tabs = 0.5;
           hide-when-single-tab = true;
-          inactive-color = "test";
+          inactive-color = "#000000";
           inactive-gradient = {
             angle = 8;
             from = "test";
@@ -517,7 +517,7 @@
           off = true;
           place-within-column = true;
           position = "left";
-          urgent-color = "test";
+          urgent-color = "#000000";
           urgent-gradient = {
             angle = 8;
             from = "test";
@@ -530,8 +530,8 @@
       };
       outputs = [
         {
-          backdrop-color = "test";
-          background-color = "test";
+          backdrop-color = "#000000";
+          background-color = "#000000";
           focus-at-startup = true;
           hot-corners = {
             bottom-left = true;
@@ -542,9 +542,9 @@
           };
           layout = {
             always-center-single-column = true;
-            background-color = "test";
+            background-color = "#000000";
             border = {
-              active-color = "test";
+              active-color = "#000000";
               active-gradient = {
                 angle = 8;
                 from = "test";
@@ -552,7 +552,7 @@
                 relative-to = "window";
                 to = "test";
               };
-              inactive-color = "test";
+              inactive-color = "#000000";
               inactive-gradient = {
                 angle = 8;
                 from = "test";
@@ -562,7 +562,7 @@
               };
               off = true;
               on = true;
-              urgent-color = "test";
+              urgent-color = "#000000";
               urgent-gradient = {
                 angle = 8;
                 from = "test";
@@ -579,7 +579,7 @@
             };
             empty-workspace-above-first = true;
             focus-ring = {
-              active-color = "test";
+              active-color = "#000000";
               active-gradient = {
                 angle = 8;
                 from = "test";
@@ -587,7 +587,7 @@
                 relative-to = "window";
                 to = "test";
               };
-              inactive-color = "test";
+              inactive-color = "#000000";
               inactive-gradient = {
                 angle = 8;
                 from = "test";
@@ -597,7 +597,7 @@
               };
               off = true;
               on = true;
-              urgent-color = "test";
+              urgent-color = "#000000";
               urgent-gradient = {
                 angle = 8;
                 from = "test";
@@ -609,7 +609,7 @@
             };
             gaps = 0.5;
             insert-hint = {
-              color = "test";
+              color = "#000000";
               gradient = {
                 angle = 8;
                 from = "test";
@@ -633,7 +633,7 @@
             shadow = {
               color = "#000000";
               draw-behind-window = true;
-              inactive-color = "test";
+              inactive-color = "#000000";
               off = true;
               offset = {
                 x = 0.5;
@@ -650,7 +650,7 @@
               top = 0.5;
             };
             tab-indicator = {
-              active-color = "test";
+              active-color = "#000000";
               active-gradient = {
                 angle = 8;
                 from = "test";
@@ -662,7 +662,7 @@
               gap = 0.5;
               gaps-between-tabs = 0.5;
               hide-when-single-tab = true;
-              inactive-color = "test";
+              inactive-color = "#000000";
               inactive-gradient = {
                 angle = 8;
                 from = "test";
@@ -677,7 +677,7 @@
               on = true;
               place-within-column = true;
               position = "left";
-              urgent-color = "test";
+              urgent-color = "#000000";
               urgent-gradient = {
                 angle = 8;
                 from = "test";
@@ -719,9 +719,9 @@
         }
       ];
       overview = {
-        backdrop-color = "test";
+        backdrop-color = "#000000";
         workspace-shadow = {
-          color = "test";
+          color = "#000000";
           off = true;
           offset = {
             x = 0.5;
@@ -751,10 +751,10 @@
         ];
         debounce-ms = 8;
         highlight = {
-          active-color = "test";
+          active-color = "#000000";
           corner-radius = 0.5;
           padding = 0.5;
-          urgent-color = "test";
+          urgent-color = "#000000";
         };
         on = true;
         open-delay-ms = 8;
@@ -799,7 +799,7 @@
           };
           block-out-from = "screencast";
           border = {
-            active-color = "test";
+            active-color = "#000000";
             active-gradient = {
               angle = 8;
               from = "test";
@@ -807,7 +807,7 @@
               relative-to = "window";
               to = "test";
             };
-            inactive-color = "test";
+            inactive-color = "#000000";
             inactive-gradient = {
               angle = 8;
               from = "test";
@@ -817,7 +817,7 @@
             };
             off = true;
             on = true;
-            urgent-color = "test";
+            urgent-color = "#000000";
             urgent-gradient = {
               angle = 8;
               from = "test";
@@ -855,7 +855,7 @@
             }
           ];
           focus-ring = {
-            active-color = "test";
+            active-color = "#000000";
             active-gradient = {
               angle = 8;
               from = "test";
@@ -863,7 +863,7 @@
               relative-to = "window";
               to = "test";
             };
-            inactive-color = "test";
+            inactive-color = "#000000";
             inactive-gradient = {
               angle = 8;
               from = "test";
@@ -873,7 +873,7 @@
             };
             off = true;
             on = true;
-            urgent-color = "test";
+            urgent-color = "#000000";
             urgent-gradient = {
               angle = 8;
               from = "test";
@@ -933,7 +933,7 @@
           shadow = {
             color = "#000000";
             draw-behind-window = true;
-            inactive-color = "test";
+            inactive-color = "#000000";
             off = true;
             offset = {
               x = 0.5;
@@ -944,7 +944,7 @@
             spread = 0.5;
           };
           tab-indicator = {
-            active-color = "test";
+            active-color = "#000000";
             active-gradient = {
               angle = 8;
               from = "test";
@@ -952,7 +952,7 @@
               relative-to = "window";
               to = "test";
             };
-            inactive-color = "test";
+            inactive-color = "#000000";
             inactive-gradient = {
               angle = 8;
               from = "test";
@@ -960,7 +960,7 @@
               relative-to = "window";
               to = "test";
             };
-            urgent-color = "test";
+            urgent-color = "#000000";
             urgent-gradient = {
               angle = 8;
               from = "test";
@@ -977,9 +977,9 @@
         {
           layout = {
             always-center-single-column = true;
-            background-color = "test";
+            background-color = "#000000";
             border = {
-              active-color = "test";
+              active-color = "#000000";
               active-gradient = {
                 angle = 8;
                 from = "test";
@@ -987,7 +987,7 @@
                 relative-to = "window";
                 to = "test";
               };
-              inactive-color = "test";
+              inactive-color = "#000000";
               inactive-gradient = {
                 angle = 8;
                 from = "test";
@@ -997,7 +997,7 @@
               };
               off = true;
               on = true;
-              urgent-color = "test";
+              urgent-color = "#000000";
               urgent-gradient = {
                 angle = 8;
                 from = "test";
@@ -1014,7 +1014,7 @@
             };
             empty-workspace-above-first = true;
             focus-ring = {
-              active-color = "test";
+              active-color = "#000000";
               active-gradient = {
                 angle = 8;
                 from = "test";
@@ -1022,7 +1022,7 @@
                 relative-to = "window";
                 to = "test";
               };
-              inactive-color = "test";
+              inactive-color = "#000000";
               inactive-gradient = {
                 angle = 8;
                 from = "test";
@@ -1032,7 +1032,7 @@
               };
               off = true;
               on = true;
-              urgent-color = "test";
+              urgent-color = "#000000";
               urgent-gradient = {
                 angle = 8;
                 from = "test";
@@ -1044,7 +1044,7 @@
             };
             gaps = 0.5;
             insert-hint = {
-              color = "test";
+              color = "#000000";
               gradient = {
                 angle = 8;
                 from = "test";
@@ -1068,7 +1068,7 @@
             shadow = {
               color = "#000000";
               draw-behind-window = true;
-              inactive-color = "test";
+              inactive-color = "#000000";
               off = true;
               offset = {
                 x = 0.5;
@@ -1085,7 +1085,7 @@
               top = 0.5;
             };
             tab-indicator = {
-              active-color = "test";
+              active-color = "#000000";
               active-gradient = {
                 angle = 8;
                 from = "test";
@@ -1097,7 +1097,7 @@
               gap = 0.5;
               gaps-between-tabs = 0.5;
               hide-when-single-tab = true;
-              inactive-color = "test";
+              inactive-color = "#000000";
               inactive-gradient = {
                 angle = 8;
                 from = "test";
@@ -1112,7 +1112,7 @@
               on = true;
               place-within-column = true;
               position = "left";
-              urgent-color = "test";
+              urgent-color = "#000000";
               urgent-gradient = {
                 angle = 8;
                 from = "test";

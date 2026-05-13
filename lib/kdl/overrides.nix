@@ -118,6 +118,11 @@
   };
 
   geometry-corner-radius = cornerRadiusToKDL;
+
+  shadow = {
+    offset = name: value: "${name} x=${toString value.x} y=${toString value.y}";
+    draw-behind-window = toBoolArg;
+  };
 in {
   animations = {
     workspace-switch.kind = animationToKDL;
@@ -137,13 +142,13 @@ in {
   spawn-sh-at-startup = spawnAtStartupToKDL;
 
   window-rules.window-rule = {
-    inherit background-effect geometry-corner-radius;
+    inherit background-effect geometry-corner-radius shadow;
     clip-to-geometry = toBoolArg;
     matches = matchToKDL;
   };
 
   layer-rules.layer-rule = {
-    inherit background-effect geometry-corner-radius;
+    inherit background-effect geometry-corner-radius shadow;
     baba-is-float = toBoolArg;
     place-within-backdrop = toBoolArg;
     popups = {
@@ -154,7 +159,7 @@ in {
   };
 
   layout = {
-    shadow.offset = name: value: "${name} x=${toString value.x} y=${toString value.y}";
+    inherit shadow;
     preset-column-widths = name: value: let
       sections = lib.flatten (
         map (flattenAttrEntries " ")

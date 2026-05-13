@@ -48,9 +48,13 @@ fn visit_options(root: &NixType, types: &NixDeclarations) -> Value {
         NixType::Submodule(submodule) => {
             let mut map = Map::new();
             for (k, v) in submodule.options.iter() {
+                let mut opt = v.clone();
+                if k.contains("color") {
+                    opt.example = Some(json!("#000000"));
+                }
                 map.insert(
                     k.to_owned(),
-                    v.example.clone().unwrap_or(visit_options(&v.ty, types)),
+                    opt.example.clone().unwrap_or(visit_options(&v.ty, types)),
                 );
             }
             Value::Object(map)
