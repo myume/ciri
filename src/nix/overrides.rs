@@ -96,6 +96,12 @@ impl Overrides {
                         "window_rule_match".to_string(),
                     ))),
                 ),
+                (
+                    ("RecentWindows".to_string(), "binds".to_string()),
+                    NixOption::new(NixType::null(NixType::list(NixType::TypeReference(
+                        "MruBind".to_string(),
+                    )))),
+                ),
             ]),
         }
     }

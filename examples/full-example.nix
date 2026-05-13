@@ -737,16 +737,14 @@
         binds = [
           {
             action = {
-              quit = {
-                skip-confirmation = true;
+              next-window = {
+                filter = "all";
+                scope = "all";
               };
             };
             allow-inhibiting = true;
-            allow-when-locked = true;
-            cooldown = 8;
             hotkey-overlay-title = "test";
-            key = "Mod+J";
-            repeat = true;
+            key = "Alt+Tab";
           }
         ];
         debounce-ms = 8;

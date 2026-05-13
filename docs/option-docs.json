@@ -55,6 +55,11 @@
       "example": "10%"
     }
   },
+  "mru-bind": {
+    "key": {
+      "example": "Alt+Tab"
+    }
+  },
   "bind": {
     "key": {
       "example": "Mod+J"

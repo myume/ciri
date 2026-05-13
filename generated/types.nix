@@ -2237,8 +2237,7 @@ in
           type = nullOr mru-previews;
         };
         binds = mkOption {
-          type = listOf bind;
-          default = [];
+          type = nullOr (listOf mru-bind);
         };
       };
     };
@@ -2320,4 +2319,56 @@ in
         };
       };
     };
+    mru-bind = submodule {
+      options = {
+        key = mkOption {
+          type = str;
+          example = "Alt+Tab";
+        };
+        action = mkOption {
+          type = mru-action;
+        };
+        allow-inhibiting = mkOption {
+          type = bool;
+        };
+        hotkey-overlay-title = mkOption {
+          type = nullOr (nullOr str);
+        };
+      };
+    };
+    mru-action = attrTag {
+      next-window = mkOption {
+        type = submodule {
+          options = {
+            scope = mkOption {
+              type = nullOr mru-scope;
+            };
+            filter = mkOption {
+              type = nullOr mru-filter;
+            };
+          };
+        };
+      };
+      previous-window = mkOption {
+        type = submodule {
+          options = {
+            scope = mkOption {
+              type = nullOr mru-scope;
+            };
+            filter = mkOption {
+              type = nullOr mru-filter;
+            };
+          };
+        };
+      };
+    };
+    mru-scope = enum [
+      "all"
+      "output"
+      "workspace"
+    ];
+    mru-filter = enum [
+      "all"
+      "app-id"
+    ];
   }

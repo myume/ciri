@@ -265,4 +265,8 @@ in rec {
   overview = {
     workspace-shadow.offset = inlineProperties;
   };
+
+  recent-windows = {
+    binds = bindsToKDL;
+  };
 }
