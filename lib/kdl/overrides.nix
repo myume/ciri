@@ -195,6 +195,10 @@
     preset-window-heights = presetSize;
     preset-column-widths = presetSize;
   };
+
+  popups = {
+    inherit background-effect geometry-corner-radius;
+  };
 in rec {
   inherit layout;
 
@@ -216,19 +220,40 @@ in rec {
   spawn-sh-at-startup = spawnAtStartupToKDL;
 
   window-rules.window-rule = {
-    inherit background-effect geometry-corner-radius shadow border focus-ring tab-indicator insert-hint;
+    inherit
+      background-effect
+      geometry-corner-radius
+      shadow
+      border
+      focus-ring
+      tab-indicator
+      insert-hint
+      popups
+      ;
     baba-is-float = toBoolArg;
     clip-to-geometry = toBoolArg;
-    matches = matchToKDL;
+    excludes = _: matchToKDL "exclude";
+    matches = _: matchToKDL "match";
+    default-floating-position = inlineProperties;
+    draw-border-with-background = toBoolArg;
+    open-floating = toBoolArg;
+    open-focused = toBoolArg;
+    open-fullscreen = toBoolArg;
+    open-maximized = toBoolArg;
+    open-maximized-to-edges = toBoolArg;
+    tiled-state = toBoolArg;
+    variable-refresh-rate = toBoolArg;
   };
 
   layer-rules.layer-rule = {
-    inherit background-effect geometry-corner-radius shadow;
+    inherit
+      background-effect
+      geometry-corner-radius
+      shadow
+      popups
+      ;
     baba-is-float = toBoolArg;
     place-within-backdrop = toBoolArg;
-    popups = {
-      inherit background-effect geometry-corner-radius;
-    };
     excludes = _: matchToKDL "exclude";
     matches = _: matchToKDL "match";
   };
