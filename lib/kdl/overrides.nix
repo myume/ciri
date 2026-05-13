@@ -150,4 +150,12 @@ in {
   };
 
   binds = bindsToKDL;
+
+  debug = {
+    ignored-drm-devices = _: devices:
+      concatStringsSep "\n" (
+        map (dev: "ignore-drm-device ${toKDLString dev}")
+        devices
+      );
+  };
 }
