@@ -391,28 +391,28 @@
         border = {
           active-color = "#000000";
           active-gradient = {
+            "in" = "oklch longer hue";
             angle = 8;
-            from = "test";
-            in_ = "test";
+            from = "#000000";
             relative-to = "window";
-            to = "test";
+            to = "#FFFFFF";
           };
           inactive-color = "#000000";
           inactive-gradient = {
+            "in" = "oklch longer hue";
             angle = 8;
-            from = "test";
-            in_ = "test";
+            from = "#000000";
             relative-to = "window";
-            to = "test";
+            to = "#FFFFFF";
           };
           off = true;
           urgent-color = "#000000";
           urgent-gradient = {
+            "in" = "oklch longer hue";
             angle = 8;
-            from = "test";
-            in_ = "test";
+            from = "#000000";
             relative-to = "window";
-            to = "test";
+            to = "#FFFFFF";
           };
           width = 0.5;
         };
@@ -425,28 +425,28 @@
         focus-ring = {
           active-color = "#000000";
           active-gradient = {
+            "in" = "oklch longer hue";
             angle = 8;
-            from = "test";
-            in_ = "test";
+            from = "#000000";
             relative-to = "window";
-            to = "test";
+            to = "#FFFFFF";
           };
           inactive-color = "#000000";
           inactive-gradient = {
+            "in" = "oklch longer hue";
             angle = 8;
-            from = "test";
-            in_ = "test";
+            from = "#000000";
             relative-to = "window";
-            to = "test";
+            to = "#FFFFFF";
           };
           off = true;
           urgent-color = "#000000";
           urgent-gradient = {
+            "in" = "oklch longer hue";
             angle = 8;
-            from = "test";
-            in_ = "test";
+            from = "#000000";
             relative-to = "window";
-            to = "test";
+            to = "#FFFFFF";
           };
           width = 0.5;
         };
@@ -454,11 +454,11 @@
         insert-hint = {
           color = "#000000";
           gradient = {
+            "in" = "oklch longer hue";
             angle = 8;
-            from = "test";
-            in_ = "test";
+            from = "#000000";
             relative-to = "window";
-            to = "test";
+            to = "#FFFFFF";
           };
           off = true;
         };
@@ -493,11 +493,11 @@
         tab-indicator = {
           active-color = "#000000";
           active-gradient = {
+            "in" = "oklch longer hue";
             angle = 8;
-            from = "test";
-            in_ = "test";
+            from = "#000000";
             relative-to = "window";
-            to = "test";
+            to = "#FFFFFF";
           };
           corner-radius = 0.5;
           gap = 0.5;
@@ -505,11 +505,11 @@
           hide-when-single-tab = true;
           inactive-color = "#000000";
           inactive-gradient = {
+            "in" = "oklch longer hue";
             angle = 8;
-            from = "test";
-            in_ = "test";
+            from = "#000000";
             relative-to = "window";
-            to = "test";
+            to = "#FFFFFF";
           };
           length = {
             total-proportion = 0.5;
@@ -519,11 +519,11 @@
           position = "left";
           urgent-color = "#000000";
           urgent-gradient = {
+            "in" = "oklch longer hue";
             angle = 8;
-            from = "test";
-            in_ = "test";
+            from = "#000000";
             relative-to = "window";
-            to = "test";
+            to = "#FFFFFF";
           };
           width = 0.5;
         };
@@ -546,29 +546,29 @@
             border = {
               active-color = "#000000";
               active-gradient = {
+                "in" = "oklch longer hue";
                 angle = 8;
-                from = "test";
-                in_ = "test";
+                from = "#000000";
                 relative-to = "window";
-                to = "test";
+                to = "#FFFFFF";
               };
               inactive-color = "#000000";
               inactive-gradient = {
+                "in" = "oklch longer hue";
                 angle = 8;
-                from = "test";
-                in_ = "test";
+                from = "#000000";
                 relative-to = "window";
-                to = "test";
+                to = "#FFFFFF";
               };
               off = true;
               on = true;
               urgent-color = "#000000";
               urgent-gradient = {
+                "in" = "oklch longer hue";
                 angle = 8;
-                from = "test";
-                in_ = "test";
+                from = "#000000";
                 relative-to = "window";
-                to = "test";
+                to = "#FFFFFF";
               };
               width = 0.5;
             };
@@ -581,29 +581,29 @@
             focus-ring = {
               active-color = "#000000";
               active-gradient = {
+                "in" = "oklch longer hue";
                 angle = 8;
-                from = "test";
-                in_ = "test";
+                from = "#000000";
                 relative-to = "window";
-                to = "test";
+                to = "#FFFFFF";
               };
               inactive-color = "#000000";
               inactive-gradient = {
+                "in" = "oklch longer hue";
                 angle = 8;
-                from = "test";
-                in_ = "test";
+                from = "#000000";
                 relative-to = "window";
-                to = "test";
+                to = "#FFFFFF";
               };
               off = true;
               on = true;
               urgent-color = "#000000";
               urgent-gradient = {
+                "in" = "oklch longer hue";
                 angle = 8;
-                from = "test";
-                in_ = "test";
+                from = "#000000";
                 relative-to = "window";
-                to = "test";
+                to = "#FFFFFF";
               };
               width = 0.5;
             };
@@ -611,11 +611,11 @@
             insert-hint = {
               color = "#000000";
               gradient = {
+                "in" = "oklch longer hue";
                 angle = 8;
-                from = "test";
-                in_ = "test";
+                from = "#000000";
                 relative-to = "window";
-                to = "test";
+                to = "#FFFFFF";
               };
               off = true;
               on = true;
@@ -652,11 +652,11 @@
             tab-indicator = {
               active-color = "#000000";
               active-gradient = {
+                "in" = "oklch longer hue";
                 angle = 8;
-                from = "test";
-                in_ = "test";
+                from = "#000000";
                 relative-to = "window";
-                to = "test";
+                to = "#FFFFFF";
               };
               corner-radius = 0.5;
               gap = 0.5;
@@ -664,11 +664,11 @@
               hide-when-single-tab = true;
               inactive-color = "#000000";
               inactive-gradient = {
+                "in" = "oklch longer hue";
                 angle = 8;
-                from = "test";
-                in_ = "test";
+                from = "#000000";
                 relative-to = "window";
-                to = "test";
+                to = "#FFFFFF";
               };
               length = {
                 total-proportion = 0.5;
@@ -679,11 +679,11 @@
               position = "left";
               urgent-color = "#000000";
               urgent-gradient = {
+                "in" = "oklch longer hue";
                 angle = 8;
-                from = "test";
-                in_ = "test";
+                from = "#000000";
                 relative-to = "window";
-                to = "test";
+                to = "#FFFFFF";
               };
               width = 0.5;
             };
@@ -801,29 +801,29 @@
           border = {
             active-color = "#000000";
             active-gradient = {
+              "in" = "oklch longer hue";
               angle = 8;
-              from = "test";
-              in_ = "test";
+              from = "#000000";
               relative-to = "window";
-              to = "test";
+              to = "#FFFFFF";
             };
             inactive-color = "#000000";
             inactive-gradient = {
+              "in" = "oklch longer hue";
               angle = 8;
-              from = "test";
-              in_ = "test";
+              from = "#000000";
               relative-to = "window";
-              to = "test";
+              to = "#FFFFFF";
             };
             off = true;
             on = true;
             urgent-color = "#000000";
             urgent-gradient = {
+              "in" = "oklch longer hue";
               angle = 8;
-              from = "test";
-              in_ = "test";
+              from = "#000000";
               relative-to = "window";
-              to = "test";
+              to = "#FFFFFF";
             };
             width = 0.5;
           };
@@ -857,29 +857,29 @@
           focus-ring = {
             active-color = "#000000";
             active-gradient = {
+              "in" = "oklch longer hue";
               angle = 8;
-              from = "test";
-              in_ = "test";
+              from = "#000000";
               relative-to = "window";
-              to = "test";
+              to = "#FFFFFF";
             };
             inactive-color = "#000000";
             inactive-gradient = {
+              "in" = "oklch longer hue";
               angle = 8;
-              from = "test";
-              in_ = "test";
+              from = "#000000";
               relative-to = "window";
-              to = "test";
+              to = "#FFFFFF";
             };
             off = true;
             on = true;
             urgent-color = "#000000";
             urgent-gradient = {
+              "in" = "oklch longer hue";
               angle = 8;
-              from = "test";
-              in_ = "test";
+              from = "#000000";
               relative-to = "window";
-              to = "test";
+              to = "#FFFFFF";
             };
             width = 0.5;
           };
@@ -946,27 +946,27 @@
           tab-indicator = {
             active-color = "#000000";
             active-gradient = {
+              "in" = "oklch longer hue";
               angle = 8;
-              from = "test";
-              in_ = "test";
+              from = "#000000";
               relative-to = "window";
-              to = "test";
+              to = "#FFFFFF";
             };
             inactive-color = "#000000";
             inactive-gradient = {
+              "in" = "oklch longer hue";
               angle = 8;
-              from = "test";
-              in_ = "test";
+              from = "#000000";
               relative-to = "window";
-              to = "test";
+              to = "#FFFFFF";
             };
             urgent-color = "#000000";
             urgent-gradient = {
+              "in" = "oklch longer hue";
               angle = 8;
-              from = "test";
-              in_ = "test";
+              from = "#000000";
               relative-to = "window";
-              to = "test";
+              to = "#FFFFFF";
             };
           };
           tiled-state = true;
@@ -981,29 +981,29 @@
             border = {
               active-color = "#000000";
               active-gradient = {
+                "in" = "oklch longer hue";
                 angle = 8;
-                from = "test";
-                in_ = "test";
+                from = "#000000";
                 relative-to = "window";
-                to = "test";
+                to = "#FFFFFF";
               };
               inactive-color = "#000000";
               inactive-gradient = {
+                "in" = "oklch longer hue";
                 angle = 8;
-                from = "test";
-                in_ = "test";
+                from = "#000000";
                 relative-to = "window";
-                to = "test";
+                to = "#FFFFFF";
               };
               off = true;
               on = true;
               urgent-color = "#000000";
               urgent-gradient = {
+                "in" = "oklch longer hue";
                 angle = 8;
-                from = "test";
-                in_ = "test";
+                from = "#000000";
                 relative-to = "window";
-                to = "test";
+                to = "#FFFFFF";
               };
               width = 0.5;
             };
@@ -1016,29 +1016,29 @@
             focus-ring = {
               active-color = "#000000";
               active-gradient = {
+                "in" = "oklch longer hue";
                 angle = 8;
-                from = "test";
-                in_ = "test";
+                from = "#000000";
                 relative-to = "window";
-                to = "test";
+                to = "#FFFFFF";
               };
               inactive-color = "#000000";
               inactive-gradient = {
+                "in" = "oklch longer hue";
                 angle = 8;
-                from = "test";
-                in_ = "test";
+                from = "#000000";
                 relative-to = "window";
-                to = "test";
+                to = "#FFFFFF";
               };
               off = true;
               on = true;
               urgent-color = "#000000";
               urgent-gradient = {
+                "in" = "oklch longer hue";
                 angle = 8;
-                from = "test";
-                in_ = "test";
+                from = "#000000";
                 relative-to = "window";
-                to = "test";
+                to = "#FFFFFF";
               };
               width = 0.5;
             };
@@ -1046,11 +1046,11 @@
             insert-hint = {
               color = "#000000";
               gradient = {
+                "in" = "oklch longer hue";
                 angle = 8;
-                from = "test";
-                in_ = "test";
+                from = "#000000";
                 relative-to = "window";
-                to = "test";
+                to = "#FFFFFF";
               };
               off = true;
               on = true;
@@ -1087,11 +1087,11 @@
             tab-indicator = {
               active-color = "#000000";
               active-gradient = {
+                "in" = "oklch longer hue";
                 angle = 8;
-                from = "test";
-                in_ = "test";
+                from = "#000000";
                 relative-to = "window";
-                to = "test";
+                to = "#FFFFFF";
               };
               corner-radius = 0.5;
               gap = 0.5;
@@ -1099,11 +1099,11 @@
               hide-when-single-tab = true;
               inactive-color = "#000000";
               inactive-gradient = {
+                "in" = "oklch longer hue";
                 angle = 8;
-                from = "test";
-                in_ = "test";
+                from = "#000000";
                 relative-to = "window";
-                to = "test";
+                to = "#FFFFFF";
               };
               length = {
                 total-proportion = 0.5;
@@ -1114,11 +1114,11 @@
               position = "left";
               urgent-color = "#000000";
               urgent-gradient = {
+                "in" = "oklch longer hue";
                 angle = 8;
-                from = "test";
-                in_ = "test";
+                from = "#000000";
                 relative-to = "window";
-                to = "test";
+                to = "#FFFFFF";
               };
               width = 0.5;
             };

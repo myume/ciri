@@ -1,4 +1,15 @@
 {
+  "gradient": {
+    "from": {
+      "example": "#000000"
+    },
+    "to": {
+      "example": "#FFFFFF"
+    },
+    "\"in\"": {
+      "example": "oklch longer hue"
+    }
+  },
   "focus-follows-mouse": {
     "max-scroll-amount": {
       "example": "10%"

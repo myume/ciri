@@ -647,9 +647,11 @@ in
       options = {
         from = mkOption {
           type = str;
+          example = "#000000";
         };
         to = mkOption {
           type = str;
+          example = "#FFFFFF";
         };
         angle = mkOption {
           type = ints.s16;
@@ -657,8 +659,9 @@ in
         relative-to = mkOption {
           type = gradient-relative-to;
         };
-        in_ = mkOption {
+        "in" = mkOption {
           type = str;
+          example = "oklch longer hue";
         };
       };
     };

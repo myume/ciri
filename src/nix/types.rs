@@ -553,8 +553,11 @@ fn normalize_name(s: &str) -> String {
         .to_lowercase()
         .replace("_", "-");
 
-    if res.ends_with("-") {
-        res.replace_range(res.len() - 1.., "_")
+    res = res.trim_end_matches("-").to_string();
+
+    // keyword in nix need to be escaped
+    if res == "in" {
+        res = format!("{:?}", res);
     }
 
     res

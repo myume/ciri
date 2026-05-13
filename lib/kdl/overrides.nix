@@ -104,13 +104,14 @@
           else utils.primitiveToKDL {} key value
       )
       value);
+
   scrollFactorToKDL = name: value: "${name} ${
     if value.base != null
     then toKDLString value.base
     else concatStringsSep " " (flattenAttrEntries "=" value)
   }";
 
-  inlineProperties = name: value: "${name} ${head (flattenAttrEntries "=" value)}";
+  inlineProperties = name: value: "${name} ${concatStringsSep " " (flattenAttrEntries "=" value)}";
 
   background-effect = {
     blur = toBoolArg;
@@ -120,10 +121,30 @@
   geometry-corner-radius = cornerRadiusToKDL;
 
   shadow = {
-    offset = name: value: "${name} x=${toString value.x} y=${toString value.y}";
+    offset = inlineProperties;
     draw-behind-window = toBoolArg;
   };
-in {
+
+  gradient = {
+    active-gradient = inlineProperties;
+    inactive-gradient = inlineProperties;
+    urgent-gradient = inlineProperties;
+  };
+
+  border = {
+    inherit (gradient) active-gradient inactive-gradient urgent-gradient;
+  };
+
+  focus-ring = {
+    inherit (gradient) active-gradient inactive-gradient urgent-gradient;
+  };
+  tab-indicator = {
+    inherit (gradient) active-gradient inactive-gradient urgent-gradient;
+  };
+  insert-hint = {
+    gradient = inlineProperties;
+  };
+in rec {
   animations = {
     workspace-switch.kind = animationToKDL;
     window-open.anim = flattenAnim;
@@ -142,7 +163,7 @@ in {
   spawn-sh-at-startup = spawnAtStartupToKDL;
 
   window-rules.window-rule = {
-    inherit background-effect geometry-corner-radius shadow;
+    inherit background-effect geometry-corner-radius shadow border focus-ring tab-indicator insert-hint;
     clip-to-geometry = toBoolArg;
     matches = matchToKDL;
   };
@@ -158,8 +179,16 @@ in {
     matches = _: matchToKDL "match";
   };
 
+  workspaces.workspace = {
+    inherit layout;
+  };
+  outputs.output = {
+    inherit layout;
+  };
+
   layout = {
-    inherit shadow;
+    inherit shadow border focus-ring tab-indicator insert-hint;
+
     preset-column-widths = name: value: let
       sections = lib.flatten (
         map (flattenAttrEntries " ")
