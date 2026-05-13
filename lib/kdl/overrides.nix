@@ -60,12 +60,12 @@
     }
   '';
 
-  matchesToKDL = _: value: let
+  matchToKDL = name: value: let
     matches = lib.pipe value [
       (map (flattenAttrEntries "="))
       lib.flatten
       utils.filterEmpty
-      (map (s: "match ${s}"))
+      (map (s: "${name} ${s}"))
     ];
   in
     sectionsToString matches;
@@ -132,7 +132,7 @@ in {
     background-effect.xray = toBoolArg;
     clip-to-geometry = toBoolArg;
     geometry-corner-radius = cornerRadiusToKDL;
-    matches = matchesToKDL;
+    matches = matchToKDL;
   };
 
   layer-rules.layer-rule = {
@@ -140,7 +140,8 @@ in {
     place-within-backdrop = toBoolArg;
     background-effect.blur = toBoolArg;
     background-effect.xray = toBoolArg;
-    matches = matchesToKDL;
+    excludes = _: matchToKDL "exclude";
+    matches = _: matchToKDL "match";
   };
 
   layout = {
