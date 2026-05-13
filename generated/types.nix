@@ -688,6 +688,7 @@ in
         };
         color = mkOption {
           type = nullOr str;
+          example = "#000000";
         };
         inactive-color = mkOption {
           type = nullOr str;

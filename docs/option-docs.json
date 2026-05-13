@@ -1,4 +1,9 @@
 {
+  "shadow-rule": {
+    "color": {
+      "example": "#000000"
+    }
+  },
   "focus-follows-mouse": {
     "max-scroll-amount": {
       "example": "10%"

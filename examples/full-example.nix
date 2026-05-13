@@ -371,7 +371,7 @@
             opacity = 0.5;
           };
           shadow = {
-            color = "test";
+            color = "#000000";
             draw-behind-window = true;
             inactive-color = "test";
             off = true;
@@ -631,7 +631,7 @@
               }
             ];
             shadow = {
-              color = "test";
+              color = "#000000";
               draw-behind-window = true;
               inactive-color = "test";
               off = true;
@@ -931,7 +931,7 @@
           };
           scroll-factor = 0.5;
           shadow = {
-            color = "test";
+            color = "#000000";
             draw-behind-window = true;
             inactive-color = "test";
             off = true;
@@ -1066,7 +1066,7 @@
               }
             ];
             shadow = {
-              color = "test";
+              color = "#000000";
               draw-behind-window = true;
               inactive-color = "test";
               off = true;
