@@ -19,13 +19,12 @@ jobs:
     - name: Run tests
       run: cargo test --verbose
     - name: Check niri types
-      working-directory: ./generated
       run: | 
-        cargo run -- --clean -o ./generated.nix --docs-path ../docs/option-docs.json
-        diff ./types.nix ./generated.nix || {
-          echo "types.nix does not match generated file, is the file up to date?"
+        cargo run -- --clean
+        if ! git diff --exit-code --quiet; then
+          echo "inconsistencies in generated files have been detected"
           exit 1
-        }
+        fi
 
   lint:
     runs-on: ubuntu-latest
