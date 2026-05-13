@@ -109,6 +109,15 @@
     then toKDLString value.base
     else concatStringsSep " " (flattenAttrEntries "=" value)
   }";
+
+  inlineProperties = name: value: "${name} ${head (flattenAttrEntries "=" value)}";
+
+  background-effect = {
+    blur = toBoolArg;
+    xray = toBoolArg;
+  };
+
+  geometry-corner-radius = cornerRadiusToKDL;
 in {
   animations = {
     workspace-switch.kind = animationToKDL;
@@ -128,18 +137,18 @@ in {
   spawn-sh-at-startup = spawnAtStartupToKDL;
 
   window-rules.window-rule = {
-    background-effect.blur = toBoolArg;
-    background-effect.xray = toBoolArg;
+    inherit background-effect geometry-corner-radius;
     clip-to-geometry = toBoolArg;
-    geometry-corner-radius = cornerRadiusToKDL;
     matches = matchToKDL;
   };
 
   layer-rules.layer-rule = {
+    inherit background-effect geometry-corner-radius;
     baba-is-float = toBoolArg;
     place-within-backdrop = toBoolArg;
-    background-effect.blur = toBoolArg;
-    background-effect.xray = toBoolArg;
+    popups = {
+      inherit background-effect geometry-corner-radius;
+    };
     excludes = _: matchToKDL "exclude";
     matches = _: matchToKDL "match";
   };
@@ -161,7 +170,8 @@ in {
   binds = bindsToKDL;
 
   input = {
-    focus-follows-mouse = name: value: "${name} ${head (flattenAttrEntries "=" value)}";
+    warp-mouse-to-focus = inlineProperties;
+    focus-follows-mouse = inlineProperties;
     mouse.scroll-factor = scrollFactorToKDL;
     touchpad = {
       scroll-factor = scrollFactorToKDL;
