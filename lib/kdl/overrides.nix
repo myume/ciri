@@ -157,6 +157,21 @@
     }
   '';
 
+  workspaceToKDL = name: value: let
+    children =
+      lib.mapAttrsToList (utils.primitiveToKDL {
+        overrides = {inherit layout;};
+      })
+      ((builtins.removeAttrs value ["name"])
+        // {
+          layout = builtins.removeAttrs value.layout ["empty-workspace-above-first" "insert-hint"];
+        });
+  in ''
+    ${name} "${value.name}" {
+    ${sectionsToString (map indentSection children)}
+    }
+  '';
+
   background-effect = {
     blur = toBoolArg;
     xray = toBoolArg;
@@ -191,7 +206,13 @@
   };
 
   layout = {
-    inherit shadow border focus-ring tab-indicator insert-hint;
+    inherit
+      shadow
+      border
+      focus-ring
+      tab-indicator
+      insert-hint
+      ;
     preset-window-heights = presetSize;
     preset-column-widths = presetSize;
   };
@@ -199,7 +220,7 @@
   popups = {
     inherit background-effect geometry-corner-radius;
   };
-in rec {
+in {
   inherit layout;
 
   animations = {
@@ -258,9 +279,7 @@ in rec {
     matches = _: matchToKDL "match";
   };
 
-  workspaces.workspace = {
-    inherit layout;
-  };
+  workspaces.workspace = workspaceToKDL;
 
   outputs.output = outputToKDL;
   # outputs.output = {
