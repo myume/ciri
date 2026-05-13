@@ -14,6 +14,8 @@ use crate::{
     },
 };
 
+const ROOT_TYPE: &str = "Config";
+
 pub struct NixConfigTypes(NixDeclarations);
 
 impl NixConfigTypes {
@@ -167,7 +169,7 @@ impl NixTypeParser {
         let mut submodules = self.item_to_nix(
             &self
                 .structs
-                .get("Config")
+                .get(ROOT_TYPE)
                 .context("missing root config struct")?
                 .clone(),
         )?;

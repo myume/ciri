@@ -12,7 +12,7 @@ use std::{
 
 use crate::{
     crawler::{ItemMap, TraitsMap},
-    nix::{examples, types::NixTypeParser},
+    nix::{example, types::NixTypeParser},
 };
 
 mod crawler;
@@ -131,7 +131,7 @@ fn main() -> anyhow::Result<()> {
     }
 
     info!("Generating example config...");
-    let example = examples::generate_full_example(&nix_config_types, &args.example_path);
+    let example = example::generate_full_example(&nix_config_types);
     pretty_save(&args.example_path, example, args.dry_run)?;
     if !args.dry_run {
         info!("Saved example config to {}", args.example_path.display());

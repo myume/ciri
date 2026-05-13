@@ -4,11 +4,13 @@ use serde_json::Value;
 mod docs;
 mod overrides;
 
-pub mod examples;
+pub mod example;
 pub mod types;
 
 type NixDeclarations = IndexMap<String, NixType>;
 type OptionsMap = IndexMap<String, NixOption>;
+
+const NIX_CONFIG_TYPE_ROOT: &str = "config";
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum NixType {
