@@ -2,6 +2,48 @@
   programs.niri = {
     enable = true;
     settings = {
+      animations = {
+        config-notification-open-close = {
+          kind = {
+            easing = {
+              curve = {
+                linear = true;
+              };
+              duration-ms = 8;
+            };
+          };
+          off = true;
+        };
+
+        window-open = {
+          anim = {
+            kind = {
+              easing = {
+                curve = {
+                  cubic-bezier = [0.5 0.5 0.5 0.5];
+                };
+                duration-ms = 8;
+              };
+            };
+            off = true;
+          };
+          custom-shader = "test";
+        };
+
+        window-close = {
+          anim = {
+            kind = {
+              spring = {
+                damping-ratio = 1.0;
+                stiffness = 1000;
+                epsilon = 0.0001;
+              };
+            };
+            off = true;
+          };
+          custom-shader = "test";
+        };
+      };
       input = {
         keyboard = {
           xkb = {
