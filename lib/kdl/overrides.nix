@@ -148,7 +148,7 @@
       lib.mapAttrsToList (utils.primitiveToKDL {
         inherit overrides;
       })
-      value;
+      (builtins.removeAttrs value ["name"]);
   in ''
     ${name} "${value.name}" {
     ${sectionsToString (map indentSection children)}
