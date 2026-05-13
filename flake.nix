@@ -5,6 +5,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs?ref=nixos-unstable";
     home-manager.url = "github:nix-community/home-manager";
     ndg.url = "github:feel-co/ndg";
+    niri.url = "github:niri-wm/niri";
   };
 
   outputs = {
@@ -12,6 +13,7 @@
     nixpkgs,
     home-manager,
     ndg,
+    niri,
     ...
   }: let
     forAllSystems = function:
@@ -77,7 +79,9 @@
       ciri = import ./nix/home-manager;
     };
 
-    checks = forAllSystems (pkgs: {
+    checks = forAllSystems (pkgs: let
+      inherit (pkgs.stdenv.hostPlatform) system;
+    in {
       validate-types = let
         hm = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
@@ -100,10 +104,7 @@
       in
         pkgs.runCommand "validate-config"
         {
-          # technically this can break since we target niri main not unstable
-          # ...but it makes ci much fast since we don't have to build niri
-          # hopefully we don't run into any issues otherwise we'll need to pull the niri flake
-          nativeBuildInputs = [pkgs.niri];
+          nativeBuildInputs = [niri.packages.${system}.niri];
         } ''
           niri validate --config ${config-file}
           touch $out
