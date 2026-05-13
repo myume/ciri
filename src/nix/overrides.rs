@@ -5,7 +5,7 @@ use syn::Item;
 
 use crate::{
     crawler::{ItemMap, TraitsMap},
-    nix::{NixDeclarations, NixOption, NixType},
+    nix::{NixDeclarations, NixOption, NixType, OptionsMap, Submodule},
 };
 
 pub enum Filter {
@@ -20,6 +20,7 @@ pub struct Overrides {
 
     null_overrides: HashMap<String, Filter>,
     traits_map: TraitsMap,
+    renamed_types: HashMap<String, String>,
 }
 
 impl Overrides {
@@ -52,6 +53,14 @@ impl Overrides {
                 "WorkspaceReference".into(),
                 NixType::either(NixType::String, NixType::Unsigned),
             ),
+            (
+                "HSyncPolarity".into(),
+                NixType::Enum(vec!["+hsync".to_string(), "-hsync".to_string()]),
+            ),
+            (
+                "VSyncPolarity".into(),
+                NixType::Enum(vec!["+vsync".to_string(), "-vsync".to_string()]),
+            ),
         ]);
 
         Overrides {
@@ -61,6 +70,7 @@ impl Overrides {
                 Filter::Exclude(HashSet::from(["key".into(), "action".into()])),
             )]),
             type_overrides,
+            renamed_types: HashMap::from([]),
             option_overrides: IndexMap::from([
                 (
                     ("LayerRule".to_string(), "excludes".to_string()),
@@ -86,8 +96,78 @@ impl Overrides {
                         "window_rule_match".to_string(),
                     ))),
                 ),
+                (
+                    ("RecentWindows".to_string(), "binds".to_string()),
+                    NixOption::new(NixType::null(NixType::list(NixType::TypeReference(
+                        "MruBind".to_string(),
+                    )))),
+                ),
             ]),
         }
+    }
+
+    fn rename_type(&self, ty: NixType) -> NixType {
+        match ty {
+            NixType::List(nix_type) => NixType::list(self.rename_type(*nix_type)),
+            NixType::NullOr(nix_type) => NixType::null(self.rename_type(*nix_type)),
+            NixType::Either(left, right) => {
+                NixType::either(self.rename_type(*left), self.rename_type(*right))
+            }
+            NixType::OneOf(nix_types) => NixType::one_of(
+                nix_types
+                    .into_iter()
+                    .map(|ty| self.rename_type(ty))
+                    .collect(),
+            ),
+            NixType::AttrTag(index_map) => {
+                let mut options = OptionsMap::new();
+                for (mut k, mut opt) in index_map {
+                    opt.ty = self.rename_type(opt.ty);
+                    if let Some(new_name) = self.renamed_types.get(&k) {
+                        k = new_name.clone();
+                    }
+                    options.insert(k, opt);
+                }
+                NixType::AttrTag(options)
+            }
+            NixType::Submodule(submodule) => {
+                let mut options = OptionsMap::new();
+                for (mut k, mut opt) in submodule.options {
+                    opt.ty = self.rename_type(opt.ty);
+                    if let Some(new_name) = self.renamed_types.get(&k) {
+                        k = new_name.clone();
+                    }
+
+                    options.insert(k, opt);
+                }
+                NixType::Submodule(Submodule { options })
+            }
+            NixType::TypeReference(ty) => {
+                NixType::TypeReference(if let Some(new_name) = self.renamed_types.get(&ty) {
+                    new_name.clone()
+                } else {
+                    ty
+                })
+            }
+            ty => ty,
+        }
+    }
+
+    pub fn rename_types(&self, input: NixDeclarations) -> NixDeclarations {
+        if self.renamed_types.is_empty() {
+            return input;
+        }
+
+        input
+            .into_iter()
+            .map(|(mut k, v)| {
+                if let Some(new_name) = self.renamed_types.get(&k) {
+                    k = new_name.clone();
+                }
+
+                (k, self.rename_type(v))
+            })
+            .collect()
     }
 
     pub fn apply_nullable(&self, input: NixDeclarations) -> NixDeclarations {

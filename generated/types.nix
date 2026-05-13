@@ -406,6 +406,7 @@ in
       options = {
         max-scroll-amount = mkOption {
           type = nullOr str;
+          example = "10%";
         };
       };
     };
@@ -488,6 +489,7 @@ in
         };
         mode = mkOption {
           type = str;
+          example = "2560x1440@143.912";
         };
       };
     };
@@ -495,47 +497,56 @@ in
       options = {
         clock = mkOption {
           type = float;
+          example = 173.0;
         };
         hdisplay = mkOption {
           type = ints.u16;
+          example = 1920;
         };
         hsync-start = mkOption {
           type = ints.u16;
+          example = 2048;
         };
         hsync-end = mkOption {
           type = ints.u16;
+          example = 2248;
         };
         htotal = mkOption {
           type = ints.u16;
+          example = 2576;
         };
         vdisplay = mkOption {
           type = ints.u16;
+          example = 1080;
         };
         vsync-start = mkOption {
           type = ints.u16;
+          example = 1083;
         };
         vsync-end = mkOption {
           type = ints.u16;
+          example = 1088;
         };
         vtotal = mkOption {
           type = ints.u16;
+          example = 1120;
         };
         hsync-polarity = mkOption {
-          type = h-sync-polarity;
+          type = enum [
+            "+hsync"
+            "-hsync"
+          ];
+          example = "-hsync";
         };
         vsync-polarity = mkOption {
-          type = v-sync-polarity;
+          type = enum [
+            "+vsync"
+            "-vsync"
+          ];
+          example = "+vsync";
         };
       };
     };
-    h-sync-polarity = enum [
-      "p-h-sync"
-      "n-h-sync"
-    ];
-    v-sync-polarity = enum [
-      "p-v-sync"
-      "n-v-sync"
-    ];
     vrr = submodule {
       options = {
         on-demand = mkOption {
@@ -646,9 +657,11 @@ in
       options = {
         from = mkOption {
           type = str;
+          example = "#000000";
         };
         to = mkOption {
           type = str;
+          example = "#FFFFFF";
         };
         angle = mkOption {
           type = ints.s16;
@@ -656,8 +669,9 @@ in
         relative-to = mkOption {
           type = gradient-relative-to;
         };
-        in_ = mkOption {
+        "in" = mkOption {
           type = str;
+          example = "oklch longer hue";
         };
       };
     };
@@ -1562,6 +1576,7 @@ in
       options = {
         key = mkOption {
           type = str;
+          example = "Mod+J";
         };
         action = mkOption {
           type = action;
@@ -2222,8 +2237,7 @@ in
           type = nullOr mru-previews;
         };
         binds = mkOption {
-          type = listOf bind;
-          default = [];
+          type = nullOr (listOf mru-bind);
         };
       };
     };
@@ -2247,9 +2261,11 @@ in
       options = {
         max-height = mkOption {
           type = nullOr float;
+          example = 1080.0;
         };
         max-scale = mkOption {
           type = nullOr float;
+          example = 0.75;
         };
       };
     };
@@ -2303,4 +2319,56 @@ in
         };
       };
     };
+    mru-bind = submodule {
+      options = {
+        key = mkOption {
+          type = str;
+          example = "Alt+Tab";
+        };
+        action = mkOption {
+          type = mru-action;
+        };
+        allow-inhibiting = mkOption {
+          type = bool;
+        };
+        hotkey-overlay-title = mkOption {
+          type = nullOr (nullOr str);
+        };
+      };
+    };
+    mru-action = attrTag {
+      next-window = mkOption {
+        type = submodule {
+          options = {
+            scope = mkOption {
+              type = nullOr mru-scope;
+            };
+            filter = mkOption {
+              type = nullOr mru-filter;
+            };
+          };
+        };
+      };
+      previous-window = mkOption {
+        type = submodule {
+          options = {
+            scope = mkOption {
+              type = nullOr mru-scope;
+            };
+            filter = mkOption {
+              type = nullOr mru-filter;
+            };
+          };
+        };
+      };
+    };
+    mru-scope = enum [
+      "all"
+      "output"
+      "workspace"
+    ];
+    mru-filter = enum [
+      "all"
+      "app-id"
+    ];
   }

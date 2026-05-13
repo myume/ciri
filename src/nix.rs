@@ -1,12 +1,16 @@
 use indexmap::IndexMap;
+use serde_json::Value;
 
 mod docs;
 mod overrides;
 
+pub mod example;
 pub mod types;
 
-pub type NixDeclarations = IndexMap<String, NixType>;
+type NixDeclarations = IndexMap<String, NixType>;
 type OptionsMap = IndexMap<String, NixOption>;
+
+const NIX_CONFIG_TYPE_ROOT: &str = "config";
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum NixType {
@@ -35,7 +39,7 @@ pub struct NixOption {
     ty: NixType,
     desc: Option<String>,
     default: Option<String>,
-    example: Option<String>,
+    example: Option<serde_json::Value>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -79,5 +83,30 @@ impl NixOption {
             desc: None,
             example: None,
         }
+    }
+}
+
+fn json_to_nix(val: serde_json::Value) -> String {
+    match val {
+        Value::Null => "null".to_string(),
+        Value::Bool(v) => v.to_string(),
+        Value::Number(number) => number.to_string(),
+        Value::String(s) => format!("{:?}", s),
+        Value::Array(values) => format!(
+            "[{}]",
+            values
+                .into_iter()
+                .map(json_to_nix)
+                .collect::<Vec<String>>()
+                .join(" ")
+        ),
+        Value::Object(map) => format!(
+            "{{
+                {}
+            }}",
+            map.into_iter()
+                .map(|(key, value)| format!("{} = {};", key, json_to_nix(value)))
+                .collect::<String>()
+        ),
     }
 }

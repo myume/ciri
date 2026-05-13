@@ -9,9 +9,36 @@ use syn::{Attribute, GenericArgument, Item, ItemEnum, ItemStruct, Meta, PathArgu
 use crate::{
     crawler::{ItemMap, TraitsMap},
     nix::{
-        NixDeclarations, NixOption, NixType, Submodule, docs::DocInjector, overrides::Overrides,
+        NixDeclarations, NixOption, NixType, Submodule, docs::DocInjector, json_to_nix,
+        overrides::Overrides,
     },
 };
+
+const ROOT_TYPE: &str = "Config";
+
+pub struct NixConfigTypes(NixDeclarations);
+
+impl NixConfigTypes {
+    pub fn inner(&self) -> &NixDeclarations {
+        &self.0
+    }
+
+    pub fn as_file(&self) -> String {
+        format!(
+            "{{lib, ...}}:
+            let
+                inherit (lib.options) mkOption;
+            in
+            with lib.types; rec {{
+                {}
+            }}",
+            self.0
+                .iter()
+                .map(|(name, module)| format!("{} = {};\n", name, module))
+                .collect::<String>()
+        )
+    }
+}
 
 type NixTransformPass<'a> = Box<dyn Fn(NixDeclarations) -> NixDeclarations + 'a>;
 
@@ -86,7 +113,9 @@ impl Display for NixOption {
                 self.default
                     .clone()
                     .map(|default| format!("default = {};", default)),
-                self.example.clone().map(|ex| format!("example = {};", ex))
+                self.example
+                    .clone()
+                    .map(|ex| format!("example = {};", json_to_nix(ex)))
             ]
             .into_iter()
             .flatten()
@@ -134,13 +163,13 @@ impl NixTypeParser {
         })
     }
 
-    pub fn generate_config_type(&mut self) -> anyhow::Result<String> {
+    pub fn generate_types(&mut self) -> anyhow::Result<NixConfigTypes> {
         self.visited.clear();
 
         let mut submodules = self.item_to_nix(
             &self
                 .structs
-                .get("Config")
+                .get(ROOT_TYPE)
                 .context("missing root config struct")?
                 .clone(),
         )?;
@@ -175,25 +204,14 @@ impl NixTypeParser {
             Box::new(NixTypeParser::collapse_wrapped_types),
             Box::new(|input| self.overrides.apply_nullable(input)),
             Box::new(NixTypeParser::normalize_names),
+            Box::new(|input| self.overrides.rename_types(input)),
             Box::new(|input| self.docs.inject_docs(input)),
         ];
         for transform in transformations {
             submodules = transform(submodules);
         }
 
-        Ok(format!(
-            "{{lib, ...}}:
-            let
-                inherit (lib.options) mkOption;
-            in
-            with lib.types; rec {{
-                {}
-            }}",
-            submodules
-                .into_iter()
-                .map(|(name, module)| format!("{} = {};\n", name, module))
-                .collect::<String>()
-        ))
+        Ok(NixConfigTypes(submodules))
     }
 
     fn normalize_type(ty: NixType) -> NixType {
@@ -535,8 +553,11 @@ fn normalize_name(s: &str) -> String {
         .to_lowercase()
         .replace("_", "-");
 
-    if res.ends_with("-") {
-        res.replace_range(res.len() - 1.., "_")
+    res = res.trim_end_matches("-").to_string();
+
+    // keyword in nix need to be escaped
+    if res == "in" {
+        res = format!("{:?}", res);
     }
 
     res

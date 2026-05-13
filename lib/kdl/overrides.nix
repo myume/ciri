@@ -3,33 +3,74 @@
   utils,
 }: let
   inherit (utils) sectionsToString indentSection mapNull;
+  inherit (builtins) concatStringsSep head attrNames filter;
 
   toBoolArg = name: value: "${name} ${lib.boolToString value}";
 
   toKDLString = value:
     if builtins.isList value
-    then builtins.concatStringsSep " " (map toKDLString value)
+    then concatStringsSep " " (map toKDLString value)
     else if builtins.isBool value
     then lib.boolToString value
     else if builtins.isString value
     then "\"${value}\""
     else toString value;
 
-  flattenAttrEntries =
-    lib.mapAttrsToList (ele_name: ele_val: mapNull (val: "${ele_name} ${toKDLString val}") ele_val);
+  flattenAttrEntries = sep: attrset:
+    utils.filterEmpty (
+      lib.mapAttrsToList (ele_name: ele_val: mapNull (val: "${ele_name}${sep}${toKDLString val}") ele_val) attrset
+    );
 
-  matchesToKDL = _: value: let
+  bindsToKDL = name: value: let
+    formatActionArgs = action:
+      if !builtins.isAttrs action
+      then [(toKDLString action)]
+      else
+        lib.mapAttrsToList (
+          k: v:
+            if k == "args"
+            then
+              lib.concatMap (x:
+                if builtins.isAttrs x
+                then lib.attrValues x
+                else [(toKDLString x)]) (lib.toList v)
+            else if v != null
+            then "${k}=${toKDLString v}"
+            else ""
+        )
+        action;
+
+    binds =
+      map (
+        val: let
+          actionName = head (attrNames val.action);
+          actionData = val.action.${actionName};
+          args = lib.flatten (formatActionArgs actionData);
+          argsStr = lib.concatStringsSep " " (filter (s: s != "") args);
+        in ''"${val.key}" { ${actionName}${
+            if argsStr != ""
+            then " " + argsStr
+            else ""
+          }; }''
+      )
+      value;
+  in ''
+    ${name} {
+    ${sectionsToString (map indentSection binds)}
+    }
+  '';
+
+  matchToKDL = name: value: let
     matches = lib.pipe value [
-      (map flattenAttrEntries)
+      (map (flattenAttrEntries "="))
       lib.flatten
       utils.filterEmpty
-      (map (builtins.replaceStrings [" "] ["="]))
-      (map (s: "match ${s}"))
+      (map (s: "${name} ${s}"))
     ];
   in
     sectionsToString matches;
 
-  cornerRadiusToKDL = name: value: "${name} ${builtins.concatStringsSep " " (map toKDLString (builtins.attrValues value))}";
+  cornerRadiusToKDL = name: value: "${name} ${concatStringsSep " " (map toKDLString (builtins.attrValues value))}";
 
   spawnAtStartupToKDL = name: commands:
     sectionsToString (
@@ -37,79 +78,239 @@
       (commandSet: "${name} ${toKDLString commandSet.command}")
       commands
     );
+
+  animationToKDL = _: anim: let
+    vals =
+      if anim ? easing
+      then let
+        curve = head (attrNames anim.easing.curve);
+        args = map toKDLString (anim.easing.curve.cubic-bezier or []);
+        duration =
+          if anim.easing ? duration-ms
+          then ["duration-ms ${toKDLString anim.easing.duration-ms}"]
+          else [];
+      in
+        ["curve ${toKDLString curve} ${concatStringsSep " " args}"] ++ duration
+      else ["spring ${concatStringsSep " " (flattenAttrEntries "=" anim.spring)}"];
+  in
+    concatStringsSep "\n" (map lib.trim vals);
+
+  flattenAnim = _: value:
+    concatStringsSep "\n"
+    (lib.mapAttrsToList (
+        key: value:
+          if key == "kind"
+          then animationToKDL key value
+          else utils.primitiveToKDL {} key value
+      )
+      value);
+
+  scrollFactorToKDL = name: value: "${name} ${
+    if value.base != null
+    then toKDLString value.base
+    else concatStringsSep " " (flattenAttrEntries "=" value)
+  }";
+
+  inlineProperties = name: value: "${name} ${concatStringsSep " " (flattenAttrEntries "=" value)}";
+
+  presetSize = name: value: let
+    sections = lib.flatten (
+      map (flattenAttrEntries " ")
+      value
+    );
+  in ''
+    ${name} {
+    ${sectionsToString (map indentSection sections)}
+    }
+  '';
+
+  modelineToKDL = name: modeline: "${name} ${concatStringsSep " " (map toKDLString [
+    modeline.clock
+    modeline.hdisplay
+    modeline.hsync-start
+    modeline.hsync-end
+    modeline.htotal
+    modeline.vdisplay
+    modeline.vsync-start
+    modeline.vsync-end
+    modeline.vtotal
+    modeline.hsync-polarity
+    modeline.vsync-polarity
+  ])}";
+
+  outputToKDL = name: value: let
+    overrides = {
+      inherit layout;
+      mode = name: value: "${name} ${concatStringsSep " " ["custom=${toKDLString value.custom}" (toKDLString value.mode)]}";
+      modeline = modelineToKDL;
+      position = inlineProperties;
+      variable-refresh-rate = inlineProperties;
+    };
+    children =
+      lib.mapAttrsToList (utils.primitiveToKDL {
+        inherit overrides;
+      })
+      (builtins.removeAttrs value ["name"]);
+  in ''
+    ${name} "${value.name}" {
+    ${sectionsToString (map indentSection children)}
+    }
+  '';
+
+  workspaceToKDL = name: value: let
+    children =
+      lib.mapAttrsToList (utils.primitiveToKDL {
+        overrides = {inherit layout;};
+      })
+      ((builtins.removeAttrs value ["name"])
+        // {
+          layout = builtins.removeAttrs value.layout ["empty-workspace-above-first" "insert-hint"];
+        });
+  in ''
+    ${name} "${value.name}" {
+    ${sectionsToString (map indentSection children)}
+    }
+  '';
+
+  background-effect = {
+    blur = toBoolArg;
+    xray = toBoolArg;
+  };
+
+  geometry-corner-radius = cornerRadiusToKDL;
+
+  shadow = {
+    offset = inlineProperties;
+    draw-behind-window = toBoolArg;
+  };
+
+  gradient = {
+    active-gradient = inlineProperties;
+    inactive-gradient = inlineProperties;
+    urgent-gradient = inlineProperties;
+  };
+
+  border = {
+    inherit (gradient) active-gradient inactive-gradient urgent-gradient;
+  };
+
+  focus-ring = {
+    inherit (gradient) active-gradient inactive-gradient urgent-gradient;
+  };
+  tab-indicator = {
+    inherit (gradient) active-gradient inactive-gradient urgent-gradient;
+    length = inlineProperties;
+  };
+  insert-hint = {
+    gradient = inlineProperties;
+  };
+
+  layout = {
+    inherit
+      shadow
+      border
+      focus-ring
+      tab-indicator
+      insert-hint
+      ;
+    preset-window-heights = presetSize;
+    preset-column-widths = presetSize;
+  };
+
+  popups = {
+    inherit background-effect geometry-corner-radius;
+  };
 in {
+  inherit layout;
+
+  animations = {
+    workspace-switch.kind = animationToKDL;
+    window-open.anim = flattenAnim;
+    window-close.anim = flattenAnim;
+    horizontal-view-movement.kind = animationToKDL;
+    window-movement.kind = animationToKDL;
+    window-resize.anim = flattenAnim;
+    config-notification-open-close.kind = animationToKDL;
+    exit-confirmation-open-close.kind = animationToKDL;
+    screenshot-ui-open.kind = animationToKDL;
+    overview-open-close.kind = animationToKDL;
+    recent-windows-close.kind = animationToKDL;
+  };
+
   spawn-at-startup = spawnAtStartupToKDL;
   spawn-sh-at-startup = spawnAtStartupToKDL;
 
   window-rules.window-rule = {
-    background-effect.blur = toBoolArg;
-    background-effect.xray = toBoolArg;
+    inherit
+      background-effect
+      geometry-corner-radius
+      shadow
+      border
+      focus-ring
+      tab-indicator
+      insert-hint
+      popups
+      ;
+    baba-is-float = toBoolArg;
     clip-to-geometry = toBoolArg;
-    geometry-corner-radius = cornerRadiusToKDL;
-    matches = matchesToKDL;
+    excludes = _: matchToKDL "exclude";
+    matches = _: matchToKDL "match";
+    default-floating-position = inlineProperties;
+    draw-border-with-background = toBoolArg;
+    open-floating = toBoolArg;
+    open-focused = toBoolArg;
+    open-fullscreen = toBoolArg;
+    open-maximized = toBoolArg;
+    open-maximized-to-edges = toBoolArg;
+    tiled-state = toBoolArg;
+    variable-refresh-rate = toBoolArg;
   };
 
   layer-rules.layer-rule = {
+    inherit
+      background-effect
+      geometry-corner-radius
+      shadow
+      popups
+      ;
+    baba-is-float = toBoolArg;
     place-within-backdrop = toBoolArg;
-    background-effect.blur = toBoolArg;
-    background-effect.xray = toBoolArg;
-    matches = matchesToKDL;
+    excludes = _: matchToKDL "exclude";
+    matches = _: matchToKDL "match";
   };
 
-  layout = {
-    shadow.offset = name: value: "${name} x=${toString value.x} y=${toString value.y}";
-    preset-column-widths = name: value: let
-      sections = lib.flatten (
-        map flattenAttrEntries
-        value
+  workspaces.workspace = workspaceToKDL;
+
+  outputs.output = outputToKDL;
+  # outputs.output = {
+  #   inherit layout;
+  # };
+
+  binds = bindsToKDL;
+
+  input = {
+    warp-mouse-to-focus = inlineProperties;
+    focus-follows-mouse = inlineProperties;
+    mouse.scroll-factor = scrollFactorToKDL;
+    touchpad = {
+      scroll-factor = scrollFactorToKDL;
+      drag = toBoolArg;
+    };
+  };
+
+  debug = {
+    ignored-drm-devices = _: devices:
+      concatStringsSep "\n" (
+        map (dev: "ignore-drm-device ${toKDLString dev}")
+        devices
       );
-    in ''
-      ${name} {
-      ${sectionsToString (map indentSection sections)}
-      }
-    '';
   };
 
-  binds = name: value: let
-    binds = map (val: let
-      actionName = builtins.head (builtins.attrNames val.action);
-      action = val.action.${actionName};
-      values =
-        if builtins.isAttrs action
-        then
-          lib.lists.flatten (lib.mapAttrsToList (name: value:
-            if name == "args"
-            then
-              if builtins.isList value
-              then
-                map toKDLString (lib.flatten (map (val:
-                  if builtins.isAttrs val
-                  then lib.attrValues val
-                  else val)
-                value))
-              else
-                map toKDLString
-                value
-            else if value != null
-            then [
-              "${name}=${toKDLString value}"
-            ]
-            else [])
-          action)
-        else if builtins.isString action && action != ""
-        then [''"${action}"'']
-        else if builtins.isInt action || builtins.isFloat action
-        then [(toString action)]
-        else [];
-    in ''"${val.key}" { ${actionName}${
-        if values == []
-        then ""
-        else " " + builtins.concatStringsSep " " values
-      }; }'')
-    value;
-  in ''
-    ${name} {
-    ${sectionsToString (map indentSection binds)}
-    }
-  '';
+  overview = {
+    workspace-shadow.offset = inlineProperties;
+  };
+
+  recent-windows = {
+    binds = bindsToKDL;
+  };
 }
