@@ -2262,9 +2262,11 @@ in
       options = {
         max-height = mkOption {
           type = nullOr float;
+          example = 1080.0;
         };
         max-scale = mkOption {
           type = nullOr float;
+          example = 0.75;
         };
       };
     };

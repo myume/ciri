@@ -759,8 +759,8 @@
         on = true;
         open-delay-ms = 8;
         previews = {
-          max-height = 0.5;
-          max-scale = 0.5;
+          max-height = 1080.0;
+          max-scale = 0.75;
         };
       };
       screenshot-path = "test";

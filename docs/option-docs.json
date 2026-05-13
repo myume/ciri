@@ -59,5 +59,13 @@
     "key": {
       "example": "Mod+J"
     }
+  },
+  "mru-previews": {
+    "max-height": {
+      "example": 1080.0
+    },
+    "max-scale": {
+      "example": 0.75
+    }
   }
 }
