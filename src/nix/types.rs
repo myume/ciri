@@ -204,6 +204,7 @@ impl NixTypeParser {
             Box::new(NixTypeParser::collapse_wrapped_types),
             Box::new(|input| self.overrides.apply_nullable(input)),
             Box::new(NixTypeParser::normalize_names),
+            Box::new(|input| self.overrides.rename_types(input)),
             Box::new(|input| self.docs.inject_docs(input)),
         ];
         for transform in transformations {
