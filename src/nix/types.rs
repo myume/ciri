@@ -13,6 +13,30 @@ use crate::{
     },
 };
 
+pub struct NixConfigTypes(NixDeclarations);
+
+impl NixConfigTypes {
+    pub fn inner(&self) -> &NixDeclarations {
+        &self.0
+    }
+
+    pub fn as_file(&self) -> String {
+        format!(
+            "{{lib, ...}}:
+            let
+                inherit (lib.options) mkOption;
+            in
+            with lib.types; rec {{
+                {}
+            }}",
+            self.0
+                .iter()
+                .map(|(name, module)| format!("{} = {};\n", name, module))
+                .collect::<String>()
+        )
+    }
+}
+
 type NixTransformPass<'a> = Box<dyn Fn(NixDeclarations) -> NixDeclarations + 'a>;
 
 impl Display for NixType {
@@ -134,7 +158,7 @@ impl NixTypeParser {
         })
     }
 
-    pub fn generate_config_type(&mut self) -> anyhow::Result<String> {
+    pub fn generate_types(&mut self) -> anyhow::Result<NixConfigTypes> {
         self.visited.clear();
 
         let mut submodules = self.item_to_nix(
@@ -181,19 +205,7 @@ impl NixTypeParser {
             submodules = transform(submodules);
         }
 
-        Ok(format!(
-            "{{lib, ...}}:
-            let
-                inherit (lib.options) mkOption;
-            in
-            with lib.types; rec {{
-                {}
-            }}",
-            submodules
-                .into_iter()
-                .map(|(name, module)| format!("{} = {};\n", name, module))
-                .collect::<String>()
-        ))
+        Ok(NixConfigTypes(submodules))
     }
 
     fn normalize_type(ty: NixType) -> NixType {

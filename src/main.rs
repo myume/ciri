@@ -116,16 +116,18 @@ fn main() -> anyhow::Result<()> {
         }
     }
 
-    let nix_config_type =
-        NixTypeParser::new(&args.docs_path, structs, &traits_map)?.generate_config_type()?;
+    let nix_config_types =
+        NixTypeParser::new(&args.docs_path, structs, &traits_map)?.generate_types()?;
 
     info!("Outputting types...");
     let mut type_file = File::create(&args.output_path)?;
-    let (status, nix_config_type) =
-        alejandra::format::in_memory(args.output_path.display().to_string(), nix_config_type);
+    let (status, config_content) = alejandra::format::in_memory(
+        args.output_path.display().to_string(),
+        nix_config_types.as_file(),
+    );
 
     if !args.dry_run {
-        type_file.write_all(nix_config_type.as_bytes())?;
+        type_file.write_all(config_content.as_bytes())?;
         info!("Saved types to {}", args.output_path.display());
     }
 

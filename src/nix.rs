@@ -5,7 +5,7 @@ mod overrides;
 
 pub mod types;
 
-pub type NixDeclarations = IndexMap<String, NixType>;
+type NixDeclarations = IndexMap<String, NixType>;
 type OptionsMap = IndexMap<String, NixOption>;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
