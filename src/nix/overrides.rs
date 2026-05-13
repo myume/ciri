@@ -53,6 +53,14 @@ impl Overrides {
                 "WorkspaceReference".into(),
                 NixType::either(NixType::String, NixType::Unsigned),
             ),
+            (
+                "HSyncPolarity".into(),
+                NixType::Enum(vec!["+hsync".to_string(), "-hsync".to_string()]),
+            ),
+            (
+                "VSyncPolarity".into(),
+                NixType::Enum(vec!["+vsync".to_string(), "-vsync".to_string()]),
+            ),
         ]);
 
         Overrides {

@@ -1,4 +1,39 @@
 {
+  "modeline": {
+    "clock": {
+      "example": 173.0
+    },
+    "hdisplay": {
+      "example": 1920
+    },
+    "hsync-start": {
+      "example": 2048
+    },
+    "hsync-end": {
+      "example": 2248
+    },
+    "htotal": {
+      "example": 2576
+    },
+    "vdisplay": {
+      "example": 1080
+    },
+    "vsync-start": {
+      "example": 1083
+    },
+    "vsync-end": {
+      "example": 1088
+    },
+    "vtotal": {
+      "example": 1120
+    },
+    "hsync-polarity": {
+      "example": "-hsync"
+    },
+    "vsync-polarity": {
+      "example": "+vsync"
+    }
+  },
   "mode": {
     "mode": {
       "example": "2560x1440@143.912"

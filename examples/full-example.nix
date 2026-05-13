@@ -693,17 +693,17 @@
             mode = "2560x1440@143.912";
           };
           modeline = {
-            clock = 0.5;
-            hdisplay = 8;
-            hsync-end = 8;
-            hsync-polarity = "p-h-sync";
-            hsync-start = 8;
-            htotal = 8;
-            vdisplay = 8;
-            vsync-end = 8;
-            vsync-polarity = "p-v-sync";
-            vsync-start = 8;
-            vtotal = 8;
+            clock = 173.0;
+            hdisplay = 1920;
+            hsync-end = 2248;
+            hsync-polarity = "-hsync";
+            hsync-start = 2048;
+            htotal = 2576;
+            vdisplay = 1080;
+            vsync-end = 1088;
+            vsync-polarity = "+vsync";
+            vsync-start = 1083;
+            vtotal = 1120;
           };
           name = "test";
           off = true;

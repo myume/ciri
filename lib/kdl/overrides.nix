@@ -124,10 +124,25 @@
     }
   '';
 
+  modelineToKDL = name: modeline: "${name} ${concatStringsSep " " (map toKDLString [
+    modeline.clock
+    modeline.hdisplay
+    modeline.hsync-start
+    modeline.hsync-end
+    modeline.htotal
+    modeline.vdisplay
+    modeline.vsync-start
+    modeline.vsync-end
+    modeline.vtotal
+    modeline.hsync-polarity
+    modeline.vsync-polarity
+  ])}";
+
   outputToKDL = name: value: let
     overrides = {
       inherit layout;
       mode = name: value: "${name} ${concatStringsSep " " ["custom=${toKDLString value.custom}" (toKDLString value.mode)]}";
+      modeline = modelineToKDL;
     };
     children =
       lib.mapAttrsToList (utils.primitiveToKDL {

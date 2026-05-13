@@ -497,47 +497,56 @@ in
       options = {
         clock = mkOption {
           type = float;
+          example = 173.0;
         };
         hdisplay = mkOption {
           type = ints.u16;
+          example = 1920;
         };
         hsync-start = mkOption {
           type = ints.u16;
+          example = 2048;
         };
         hsync-end = mkOption {
           type = ints.u16;
+          example = 2248;
         };
         htotal = mkOption {
           type = ints.u16;
+          example = 2576;
         };
         vdisplay = mkOption {
           type = ints.u16;
+          example = 1080;
         };
         vsync-start = mkOption {
           type = ints.u16;
+          example = 1083;
         };
         vsync-end = mkOption {
           type = ints.u16;
+          example = 1088;
         };
         vtotal = mkOption {
           type = ints.u16;
+          example = 1120;
         };
         hsync-polarity = mkOption {
-          type = h-sync-polarity;
+          type = enum [
+            "+hsync"
+            "-hsync"
+          ];
+          example = "-hsync";
         };
         vsync-polarity = mkOption {
-          type = v-sync-polarity;
+          type = enum [
+            "+vsync"
+            "-vsync"
+          ];
+          example = "+vsync";
         };
       };
     };
-    h-sync-polarity = enum [
-      "p-h-sync"
-      "n-h-sync"
-    ];
-    v-sync-polarity = enum [
-      "p-v-sync"
-      "n-v-sync"
-    ];
     vrr = submodule {
       options = {
         on-demand = mkOption {
