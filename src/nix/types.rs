@@ -9,7 +9,8 @@ use syn::{Attribute, GenericArgument, Item, ItemEnum, ItemStruct, Meta, PathArgu
 use crate::{
     crawler::{ItemMap, TraitsMap},
     nix::{
-        NixDeclarations, NixOption, NixType, Submodule, docs::DocInjector, overrides::Overrides,
+        NixDeclarations, NixOption, NixType, Submodule, docs::DocInjector, json_to_nix,
+        overrides::Overrides,
     },
 };
 
@@ -110,7 +111,9 @@ impl Display for NixOption {
                 self.default
                     .clone()
                     .map(|default| format!("default = {};", default)),
-                self.example.clone().map(|ex| format!("example = {};", ex))
+                self.example
+                    .clone()
+                    .map(|ex| format!("example = {};", json_to_nix(ex)))
             ]
             .into_iter()
             .flatten()

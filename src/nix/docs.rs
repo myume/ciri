@@ -67,7 +67,7 @@ impl DocInjector {
 
     fn inject_into_option(docs: &OptionDocs, opt: &mut NixOption) {
         opt.desc = docs.description.clone();
-        opt.example = docs.example.clone().map(json_to_nix);
+        opt.example = docs.example.clone();
     }
 
     pub fn inject_docs(&self, decls: NixDeclarations) -> NixDeclarations {
@@ -98,30 +98,5 @@ impl DocInjector {
                 (name, decl)
             })
             .collect()
-    }
-}
-
-fn json_to_nix(val: serde_json::Value) -> String {
-    match val {
-        Value::Null => "null".to_string(),
-        Value::Bool(v) => v.to_string(),
-        Value::Number(number) => number.to_string(),
-        Value::String(s) => format!("{:?}", s),
-        Value::Array(values) => format!(
-            "[{}]",
-            values
-                .into_iter()
-                .map(json_to_nix)
-                .collect::<Vec<String>>()
-                .join(" ")
-        ),
-        Value::Object(map) => format!(
-            "{{
-                {}
-            }}",
-            map.into_iter()
-                .map(|(key, value)| format!("{} = {};", key, json_to_nix(value)))
-                .collect::<String>()
-        ),
     }
 }

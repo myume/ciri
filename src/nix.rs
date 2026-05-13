@@ -37,7 +37,7 @@ pub struct NixOption {
     ty: NixType,
     desc: Option<String>,
     default: Option<String>,
-    example: Option<String>,
+    example: Option<serde_json::Value>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
