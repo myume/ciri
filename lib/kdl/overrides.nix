@@ -16,8 +16,10 @@
     then "\"${value}\""
     else toString value;
 
-  flattenAttrEntries = sep:
-    lib.mapAttrsToList (ele_name: ele_val: mapNull (val: "${ele_name}${sep}${toKDLString val}") ele_val);
+  flattenAttrEntries = sep: attrset:
+    utils.filterEmpty (
+      lib.mapAttrsToList (ele_name: ele_val: mapNull (val: "${ele_name}${sep}${toKDLString val}") ele_val) attrset
+    );
 
   bindsToKDL = name: value: let
     formatActionArgs = action:
@@ -102,6 +104,11 @@
           else utils.primitiveToKDL {} key value
       )
       value);
+  scrollFactorToKDL = name: value: "${name} ${
+    if value.base != null
+    then toKDLString value.base
+    else concatStringsSep " " (flattenAttrEntries "=" value)
+  }";
 in {
   animations = {
     workspace-switch.kind = animationToKDL;
@@ -153,6 +160,8 @@ in {
 
   input = {
     focus-follows-mouse = name: value: "${name} ${head (flattenAttrEntries "=" value)}";
+    mouse.scroll-factor = scrollFactorToKDL;
+    touchpad.scroll-factor = scrollFactorToKDL;
   };
 
   debug = {
