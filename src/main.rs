@@ -6,13 +6,13 @@ use std::{
     env::temp_dir,
     fs::{File, remove_dir_all},
     io::Write,
-    path::PathBuf,
+    path::{Path, PathBuf},
     process::Command,
 };
 
 use crate::{
     crawler::{ItemMap, TraitsMap},
-    nix::types::NixTypeParser,
+    nix::{examples, types::NixTypeParser},
 };
 
 mod crawler;
@@ -48,8 +48,13 @@ struct Cli {
     #[arg(short, long, default_value = "main")]
     branch: String,
 
+    /// Path to option-docs.json
     #[arg(long, default_value = "./docs/option-docs.json")]
     docs_path: PathBuf,
+
+    /// Path to save example config
+    #[arg(short, long, default_value = "examples/full-example.nix")]
+    example_path: PathBuf,
 }
 
 fn main() -> anyhow::Result<()> {
@@ -120,28 +125,41 @@ fn main() -> anyhow::Result<()> {
         NixTypeParser::new(&args.docs_path, structs, &traits_map)?.generate_types()?;
 
     info!("Outputting types...");
-    let mut type_file = File::create(&args.output_path)?;
-    let (status, config_content) = alejandra::format::in_memory(
-        args.output_path.display().to_string(),
-        nix_config_types.as_file(),
-    );
-
+    pretty_save(&args.output_path, nix_config_types.as_file(), args.dry_run)?;
     if !args.dry_run {
-        type_file.write_all(config_content.as_bytes())?;
         info!("Saved types to {}", args.output_path.display());
     }
 
-    if let alejandra::format::Status::Error(err) = status {
-        return Err(anyhow!(
-            "Failed to format {}: {}",
-            args.output_path.display(),
-            err
-        ));
+    info!("Generating example config...");
+    let example = examples::generate_full_example(&nix_config_types, &args.example_path);
+    pretty_save(&args.example_path, example, args.dry_run)?;
+    if !args.dry_run {
+        info!("Saved example config to {}", args.example_path.display());
     }
 
     if args.cleanup {
         info!("Cleaning up niri repo at {}", niri_dir.display());
         remove_dir_all(&niri_dir)?;
+    }
+
+    Ok(())
+}
+
+fn pretty_save(output_path: &Path, content: String, dry_run: bool) -> anyhow::Result<()> {
+    let (status, config_content) =
+        alejandra::format::in_memory(output_path.display().to_string(), content);
+
+    if !dry_run {
+        let mut output_file = File::create(output_path)?;
+        output_file.write_all(config_content.as_bytes())?;
+    }
+
+    if let alejandra::format::Status::Error(err) = status {
+        return Err(anyhow!(
+            "Failed to format {}: {}",
+            output_path.display(),
+            err
+        ));
     }
 
     Ok(())
