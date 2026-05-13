@@ -136,6 +136,7 @@ in {
   };
 
   layer-rules.layer-rule = {
+    baba-is-float = toBoolArg;
     place-within-backdrop = toBoolArg;
     background-effect.blur = toBoolArg;
     background-effect.xray = toBoolArg;
@@ -161,7 +162,10 @@ in {
   input = {
     focus-follows-mouse = name: value: "${name} ${head (flattenAttrEntries "=" value)}";
     mouse.scroll-factor = scrollFactorToKDL;
-    touchpad.scroll-factor = scrollFactorToKDL;
+    touchpad = {
+      scroll-factor = scrollFactorToKDL;
+      drag = toBoolArg;
+    };
   };
 
   debug = {
