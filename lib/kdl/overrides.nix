@@ -113,6 +113,33 @@
 
   inlineProperties = name: value: "${name} ${concatStringsSep " " (flattenAttrEntries "=" value)}";
 
+  presetSize = name: value: let
+    sections = lib.flatten (
+      map (flattenAttrEntries " ")
+      value
+    );
+  in ''
+    ${name} {
+    ${sectionsToString (map indentSection sections)}
+    }
+  '';
+
+  outputToKDL = name: value: let
+    children =
+      lib.mapAttrsToList (
+        utils.primitiveToKDL {
+          overrides = {
+            inherit layout;
+          };
+        }
+      )
+      value;
+  in ''
+    ${name} "${value.name}" {
+    ${sectionsToString (map indentSection children)}
+    }
+  '';
+
   background-effect = {
     blur = toBoolArg;
     xray = toBoolArg;
@@ -140,11 +167,20 @@
   };
   tab-indicator = {
     inherit (gradient) active-gradient inactive-gradient urgent-gradient;
+    length = inlineProperties;
   };
   insert-hint = {
     gradient = inlineProperties;
   };
+
+  layout = {
+    inherit shadow border focus-ring tab-indicator insert-hint;
+    preset-window-heights = presetSize;
+    preset-column-widths = presetSize;
+  };
 in rec {
+  inherit layout;
+
   animations = {
     workspace-switch.kind = animationToKDL;
     window-open.anim = flattenAnim;
@@ -182,24 +218,11 @@ in rec {
   workspaces.workspace = {
     inherit layout;
   };
-  outputs.output = {
-    inherit layout;
-  };
 
-  layout = {
-    inherit shadow border focus-ring tab-indicator insert-hint;
-
-    preset-column-widths = name: value: let
-      sections = lib.flatten (
-        map (flattenAttrEntries " ")
-        value
-      );
-    in ''
-      ${name} {
-      ${sectionsToString (map indentSection sections)}
-      }
-    '';
-  };
+  outputs.output = outputToKDL;
+  # outputs.output = {
+  #   inherit layout;
+  # };
 
   binds = bindsToKDL;
 
