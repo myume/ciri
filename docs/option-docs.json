@@ -1,1 +1,7 @@
-{}
+{
+  "bind": {
+    "key": {
+      "example": "Mod+J"
+    }
+  }
+}

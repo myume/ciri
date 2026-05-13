@@ -147,7 +147,7 @@
           allow-when-locked = true;
           cooldown = 8;
           hotkey-overlay-title = "test";
-          key = "test";
+          key = "Mod+J";
           repeat = true;
         }
       ];
@@ -745,7 +745,7 @@
             allow-when-locked = true;
             cooldown = 8;
             hotkey-overlay-title = "test";
-            key = "test";
+            key = "Mod+J";
             repeat = true;
           }
         ];

@@ -1562,6 +1562,7 @@ in
       options = {
         key = mkOption {
           type = str;
+          example = "Mod+J";
         };
         action = mkOption {
           type = action;
