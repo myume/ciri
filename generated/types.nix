@@ -489,6 +489,7 @@ in
         };
         mode = mkOption {
           type = str;
+          example = "2560x1440@143.912";
         };
       };
     };

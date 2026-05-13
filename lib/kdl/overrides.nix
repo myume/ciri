@@ -125,14 +125,14 @@
   '';
 
   outputToKDL = name: value: let
+    overrides = {
+      inherit layout;
+      mode = name: value: "${name} ${concatStringsSep " " ["custom=${toKDLString value.custom}" (toKDLString value.mode)]}";
+    };
     children =
-      lib.mapAttrsToList (
-        utils.primitiveToKDL {
-          overrides = {
-            inherit layout;
-          };
-        }
-      )
+      lib.mapAttrsToList (utils.primitiveToKDL {
+        inherit overrides;
+      })
       value;
   in ''
     ${name} "${value.name}" {

@@ -1,4 +1,9 @@
 {
+  "mode": {
+    "mode": {
+      "example": "2560x1440@143.912"
+    }
+  },
   "gradient": {
     "from": {
       "example": "#000000"

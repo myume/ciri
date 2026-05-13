@@ -690,7 +690,7 @@
           };
           mode = {
             custom = true;
-            mode = "test";
+            mode = "2560x1440@143.912";
           };
           modeline = {
             clock = 0.5;
