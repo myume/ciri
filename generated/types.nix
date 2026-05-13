@@ -406,6 +406,7 @@ in
       options = {
         max-scroll-amount = mkOption {
           type = nullOr str;
+          example = "10%";
         };
       };
     };

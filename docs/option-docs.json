@@ -1,4 +1,9 @@
 {
+  "focus-follows-mouse": {
+    "max-scroll-amount": {
+      "example": "10%"
+    }
+  },
   "bind": {
     "key": {
       "example": "Mod+J"

@@ -225,7 +225,7 @@
       input = {
         disable-power-key-handling = true;
         focus-follows-mouse = {
-          max-scroll-amount = "test";
+          max-scroll-amount = "10%";
         };
         keyboard = {
           numlock = true;

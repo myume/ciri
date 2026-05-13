@@ -151,6 +151,10 @@ in {
 
   binds = bindsToKDL;
 
+  input = {
+    focus-follows-mouse = name: value: "${name} ${head (flattenAttrEntries "=" value)}";
+  };
+
   debug = {
     ignored-drm-devices = _: devices:
       concatStringsSep "\n" (
