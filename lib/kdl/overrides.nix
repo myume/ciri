@@ -143,6 +143,8 @@
       inherit layout;
       mode = name: value: "${name} ${concatStringsSep " " ["custom=${toKDLString value.custom}" (toKDLString value.mode)]}";
       modeline = modelineToKDL;
+      position = inlineProperties;
+      variable-refresh-rate = inlineProperties;
     };
     children =
       lib.mapAttrsToList (utils.primitiveToKDL {
@@ -215,6 +217,7 @@ in rec {
 
   window-rules.window-rule = {
     inherit background-effect geometry-corner-radius shadow border focus-ring tab-indicator insert-hint;
+    baba-is-float = toBoolArg;
     clip-to-geometry = toBoolArg;
     matches = matchToKDL;
   };
@@ -257,5 +260,9 @@ in rec {
         map (dev: "ignore-drm-device ${toKDLString dev}")
         devices
       );
+  };
+
+  overview = {
+    workspace-shadow.offset = inlineProperties;
   };
 }
