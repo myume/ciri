@@ -19,9 +19,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+      - uses: cachix/install-nix-action@v31
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
 
       - name: Generate types
         run: cargo run -- --clean
+
+      - name: Bump flake
+        run: nix flake update
 
       - name: Get external hash
         id: niri_hash
@@ -35,10 +41,10 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v8
         with:
-            commit-message: "chore(types): update niri types"
+            commit-message: "chore(types): update niri types and bump flake"
             branch: update-niri-types
             delete-branch: true
-            title: "chore(types): update niri types"
+            title: "chore(types): update niri types and bump flake"
             body: |
               Generated niri types based on the latest commit: [${{  steps.niri_hash.outputs.hash  }}](https://github.com/niri-wm/niri/tree/${{  steps.niri_hash.outputs.hash  }}/niri-config).
             labels: |
@@ -51,7 +57,7 @@ jobs:
         with:
           token: ${{ secrets.AUTO_APPROVE_PAT }}
 
-      - name: Trigger checks
+      - name: 
         if: steps.cpr.outputs.pull-request-operation == 'created' || steps.cpr.outputs.pull-request-operation == 'updated'
         run: |
           git config user.email "myume@users.noreply.github.com"
