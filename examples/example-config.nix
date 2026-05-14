@@ -138,6 +138,11 @@
             key = "Mod+P";
             action.screenshot = {};
           }
+
+          {
+            key = "Mod+H";
+            action.focus-column-or-monitor-left = true;
+          }
         ];
 
       layer-rules = [

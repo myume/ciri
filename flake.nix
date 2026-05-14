@@ -81,14 +81,13 @@
 
     checks = forAllSystems (pkgs: let
       inherit (pkgs.stdenv.hostPlatform) system;
-    in {
-      validate-types = let
+
+      validate-types = config: let
         hm = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           modules = [
             self.homeManagerModules.default
-            # ./examples/example-config.nix
-            ./examples/full-example.nix
+            config
             {
               home = {
                 username = "test";
@@ -109,6 +108,9 @@
           niri validate --config ${config-file}
           touch $out
         '';
+    in {
+      validate-types-example = validate-types ./examples/example-config.nix;
+      validate-types-full = validate-types ./examples/full-example.nix;
     });
   };
 }

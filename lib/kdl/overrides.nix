@@ -23,31 +23,35 @@
 
   bindsToKDL = name: value: let
     formatActionArgs = action:
-      if !builtins.isAttrs action
-      then [(toKDLString action)]
-      else
+      if builtins.isAttrs action
+      then
         lib.mapAttrsToList (
-          k: v:
-            if k == "args"
+          field: val:
+            if field == "args"
             then
-              lib.concatMap (x:
+              map toKDLString
+              (lib.concatMap (x:
                 if builtins.isAttrs x
                 then lib.attrValues x
-                else [(toKDLString x)]) (lib.toList v)
-            else if v != null
-            then "${k}=${toKDLString v}"
+                else [x])
+              val)
+            else if val != null
+            then "${field}=${toKDLString val}"
             else ""
         )
-        action;
+        action
+      else if builtins.isBool action
+      then []
+      else [(toKDLString action)];
 
     binds =
       map (
-        val: let
-          actionName = head (attrNames val.action);
-          actionData = val.action.${actionName};
+        bind: let
+          actionName = head (attrNames bind.action);
+          actionData = bind.action.${actionName};
           args = lib.flatten (formatActionArgs actionData);
           argsStr = lib.concatStringsSep " " (filter (s: s != "") args);
-        in ''"${val.key}" { ${actionName}${
+        in ''"${bind.key}" { ${actionName}${
             if argsStr != ""
             then " " + argsStr
             else ""
