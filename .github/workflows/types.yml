@@ -1,0 +1,77 @@
+name: Update Niri Types
+
+on:
+ workflow_dispatch:
+
+ schedule:
+   - cron: "0 0 * * 0" # every sunday
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  updateTypes:
+    name: update niri types
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v6
+      - uses: cachix/install-nix-action@v31
+
+      - name: Generate types
+        run: cargo run -- --clean
+
+      - name: Bump flake
+        run: nix flake update
+
+      - name: Get external hash
+        id: niri_hash
+        run: |
+          HASH=$(gh api repos/niri-wm/niri/commits/main --template '{{.sha}}')
+          echo "hash=$HASH" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create PR
+        id: cpr
+        uses: peter-evans/create-pull-request@v8
+        with:
+            commit-message: "chore(types): update niri types and bump flake"
+            branch: update-niri-types
+            delete-branch: true
+            title: "chore(types): update niri types and bump flake"
+            body: |
+              Generated niri types based on the latest commit: [${{  steps.niri_hash.outputs.hash  }}](https://github.com/niri-wm/niri/tree/${{  steps.niri_hash.outputs.hash  }}/niri-config).
+            labels: |
+              niri-type-update
+            assignees: myume
+
+      - name: Checkout as real user
+        if: steps.cpr.outputs.pull-request-operation == 'created' || steps.cpr.outputs.pull-request-operation == 'updated'
+        uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.AUTO_APPROVE_PAT }}
+          ref: 'update-niri-types'
+
+      - name: 
+        if: steps.cpr.outputs.pull-request-operation == 'created' || steps.cpr.outputs.pull-request-operation == 'updated'
+        run: |
+          git config user.email "myume@users.noreply.github.com"
+          git config user.name "myume"
+          git commit --amend --no-edit
+          git push --force origin update-niri-types
+
+      - name: Enable Auto-Merge
+        if: steps.cpr.outputs.pull-request-operation == 'created'
+        run: gh pr merge "${{ steps.cpr.outputs.pull-request-number }}" --auto --squash --delete-branch
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Auto-Approve
+        if: steps.cpr.outputs.pull-request-operation == 'created'
+        run: gh pr review "${{ steps.cpr.outputs.pull-request-number }}" --approve
+        env:
+          GH_TOKEN: ${{ secrets.AUTO_APPROVE_PAT }}
