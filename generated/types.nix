@@ -436,6 +436,9 @@ in
         position = mkOption {
           type = nullOr position;
         };
+        max-bpc = mkOption {
+          type = nullOr str;
+        };
         mode = mkOption {
           type = nullOr mode;
         };
@@ -2150,9 +2153,6 @@ in
           type = nullOr bool;
         };
         disable-direct-scanout = mkOption {
-          type = nullOr bool;
-        };
-        keep-max-bpc-unchanged = mkOption {
           type = nullOr bool;
         };
         restrict-primary-scanout-to-matching-format = mkOption {
