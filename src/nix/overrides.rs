@@ -61,6 +61,7 @@ impl Overrides {
                 "VSyncPolarity".into(),
                 NixType::Enum(vec!["+vsync".to_string(), "-vsync".to_string()]),
             ),
+            ("MaxBpc".into(), NixType::Int),
         ]);
 
         Overrides {

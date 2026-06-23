@@ -185,7 +185,6 @@
         honor-xdg-activation-with-invalid-serial = true;
         ignored-drm-devices = ["test"];
         keep-laptop-panel-on-when-lid-is-closed = true;
-        keep-max-bpc-unchanged = true;
         preview-render = "screencast";
         render-drm-device = "test";
         restrict-primary-scanout-to-matching-format = true;
@@ -688,6 +687,7 @@
               width = 0.5;
             };
           };
+          max-bpc = 8;
           mode = {
             custom = true;
             mode = "2560x1440@143.912";

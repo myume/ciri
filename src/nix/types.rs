@@ -458,7 +458,7 @@ impl NixTypeParser {
         let ty_ident = head.ident.to_string();
 
         if let Some(val) = self.overrides.type_overrides.get(&ty_ident) {
-            trace!("applying overrides for {}", &ty_ident);
+            trace!("applying overrides for {}", ty_ident);
             return (val.clone(), deps);
         }
 
