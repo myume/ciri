@@ -437,7 +437,7 @@ in
           type = nullOr position;
         };
         max-bpc = mkOption {
-          type = nullOr str;
+          type = nullOr int;
         };
         mode = mkOption {
           type = nullOr mode;

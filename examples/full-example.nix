@@ -687,7 +687,7 @@
               width = 0.5;
             };
           };
-          max-bpc = "test";
+          max-bpc = 8;
           mode = {
             custom = true;
             mode = "2560x1440@143.912";
