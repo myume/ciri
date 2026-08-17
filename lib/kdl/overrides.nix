@@ -268,6 +268,7 @@ in {
     open-maximized-to-edges = toBoolArg;
     tiled-state = toBoolArg;
     variable-refresh-rate = toBoolArg;
+    focus-on-xdg-activate = toBoolArg;
   };
 
   layer-rules.layer-rule = {
