@@ -173,6 +173,7 @@
       debug = {
         dbus-interfaces-in-non-session-instances = true;
         deactivate-unfocused-windows = true;
+        disable-10bit-output = true;
         disable-cursor-plane = true;
         disable-direct-scanout = true;
         disable-monitor-names = true;
@@ -852,6 +853,7 @@
               title = "test";
             }
           ];
+          focus-on-xdg-activate = true;
           focus-ring = {
             active-color = "#000000";
             active-gradient = {

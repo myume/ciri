@@ -1379,6 +1379,9 @@ in
         open-focused = mkOption {
           type = nullOr bool;
         };
+        focus-on-xdg-activate = mkOption {
+          type = nullOr bool;
+        };
         min-width = mkOption {
           type = nullOr (ints.u16);
         };
@@ -2196,6 +2199,9 @@ in
           type = nullOr bool;
         };
         skip-cursor-only-updates-during-vrr = mkOption {
+          type = nullOr bool;
+        };
+        disable-10bit-output = mkOption {
           type = nullOr bool;
         };
       };
