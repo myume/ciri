@@ -1379,8 +1379,8 @@ in
         open-focused = mkOption {
           type = nullOr bool;
         };
-        focus-on-xdg-activate = mkOption {
-          type = nullOr bool;
+        on-xdg-activate = mkOption {
+          type = nullOr on-xdg-activate;
         };
         min-width = mkOption {
           type = nullOr (ints.u16);
@@ -1447,6 +1447,11 @@ in
         };
       };
     };
+    on-xdg-activate = enum [
+      "ignore"
+      "set-urgent"
+      "focus"
+    ];
     tab-indicator-rule = submodule {
       options = {
         active-color = mkOption {
