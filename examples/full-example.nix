@@ -853,7 +853,6 @@
               title = "test";
             }
           ];
-          focus-on-xdg-activate = true;
           focus-ring = {
             active-color = "#000000";
             active-gradient = {
@@ -906,6 +905,7 @@
           max-width = 8;
           min-height = 8;
           min-width = 8;
+          on-xdg-activate = "ignore";
           opacity = 0.5;
           open-floating = true;
           open-focused = true;
