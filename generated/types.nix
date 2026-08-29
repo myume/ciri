@@ -1591,6 +1591,9 @@ in
         };
         action = mkOption {
           type = action;
+          example = {
+            spawn-sh = "kitty";
+          };
         };
         repeat = mkOption {
           type = nullOr bool;

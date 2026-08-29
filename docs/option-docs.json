@@ -63,6 +63,11 @@
   "bind": {
     "key": {
       "example": "Mod+J"
+    },
+    "action": {
+      "example": {
+        "spawn-sh": "kitty"
+      }
     }
   },
   "mru-previews": {

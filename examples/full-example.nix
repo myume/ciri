@@ -139,9 +139,7 @@
       binds = [
         {
           action = {
-            quit = {
-              skip-confirmation = true;
-            };
+            spawn-sh = "kitty";
           };
           allow-inhibiting = true;
           allow-when-locked = true;

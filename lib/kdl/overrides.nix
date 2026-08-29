@@ -51,7 +51,11 @@
           actionData = bind.action.${actionName};
           args = lib.flatten (formatActionArgs actionData);
           argsStr = lib.concatStringsSep " " (filter (s: s != "") args);
-        in ''"${bind.key}" { ${actionName}${
+        in ''"${bind.key}"${
+            if (bind.allow-when-locked or false) == true
+            then " allow-when-locked=true"
+            else ""
+          } { ${actionName}${
             if argsStr != ""
             then " " + argsStr
             else ""
