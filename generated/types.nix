@@ -227,6 +227,9 @@ in
         scroll-factor = mkOption {
           type = nullOr scroll-factor;
         };
+        pinch-sensitivity = mkOption {
+          type = nullOr (either float int);
+        };
       };
     };
     click-method = enum [
@@ -1436,6 +1439,9 @@ in
         scroll-factor = mkOption {
           type = nullOr (either float int);
         };
+        pinch-sensitivity = mkOption {
+          type = nullOr (either float int);
+        };
         tiled-state = mkOption {
           type = nullOr bool;
         };
@@ -2180,6 +2186,9 @@ in
           default = [];
         };
         force-pipewire-invalid-modifier = mkOption {
+          type = nullOr bool;
+        };
+        disable-pipewire-dmabuf = mkOption {
           type = nullOr bool;
         };
         emulate-zero-presentation-time = mkOption {
