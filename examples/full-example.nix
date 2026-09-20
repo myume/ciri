@@ -175,6 +175,7 @@
         disable-cursor-plane = true;
         disable-direct-scanout = true;
         disable-monitor-names = true;
+        disable-pipewire-dmabuf = true;
         disable-resize-throttling = true;
         disable-transactions = true;
         emulate-zero-presentation-time = true;
@@ -283,6 +284,7 @@
           middle-emulation = true;
           natural-scroll = true;
           off = true;
+          pinch-sensitivity = 0.5;
           scroll-button = 8;
           scroll-button-lock = true;
           scroll-factor = {
@@ -912,6 +914,7 @@
           open-maximized-to-edges = true;
           open-on-output = "test";
           open-on-workspace = "test";
+          pinch-sensitivity = 0.5;
           popups = {
             background-effect = {
               blur = true;
