@@ -2233,7 +2233,8 @@ in
           type = workspace-name;
         };
         open-on-output = mkOption {
-          type = nullOr str;
+          type = listOf str;
+          default = [];
         };
         layout = mkOption {
           type = nullOr workspace-layout-part;

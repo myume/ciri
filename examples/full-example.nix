@@ -1125,7 +1125,7 @@
             };
           };
           name = "test";
-          open-on-output = "test";
+          open-on-output = ["test"];
         }
       ];
       xwayland-satellite = {
