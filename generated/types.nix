@@ -1646,6 +1646,9 @@ in
       debug-toggle-damage = mkOption {
         type = bool;
       };
+      toggle-touchpad = mkOption {
+        type = bool;
+      };
       spawn = mkOption {
         type = listOf str;
         default = [];
