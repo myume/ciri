@@ -79,6 +79,11 @@
       ciri = import ./nix/home-manager;
     };
 
+    nixosModules = {
+      default = self.nixosModules.ciri;
+      ciri = import ./nix/nixos-modules {inherit niri;};
+    };
+
     checks = forAllSystems (pkgs: let
       inherit (pkgs.stdenv.hostPlatform) system;
 
