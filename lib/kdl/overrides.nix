@@ -155,10 +155,11 @@
       variable-refresh-rate = inlineProperties;
     };
     children =
-      lib.mapAttrsToList (utils.primitiveToKDL {
-        inherit overrides;
-      })
-      (builtins.removeAttrs value ["name"]);
+      builtins.filter (c: c != null)
+      (lib.mapAttrsToList (utils.primitiveToKDL {
+          inherit overrides;
+        })
+        (builtins.removeAttrs value ["name"]));
   in ''
     ${name} "${value.name}" {
     ${sectionsToString (map indentSection children)}

@@ -60,6 +60,13 @@
         };
       };
 
+      outputs = [
+        {
+          name = "DP-2";
+          max-bpc = 10;
+        }
+      ];
+
       screenshot-path = "~/Pictures/Screenshots/%Y-%m-%dT%H:%M:%S.png";
       prefer-no-csd = true;
 
