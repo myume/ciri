@@ -626,6 +626,9 @@ in
         background-color = mkOption {
           type = nullOr str;
         };
+        fullscreen-backdrop-color = mkOption {
+          type = nullOr str;
+        };
       };
     };
     border-rule = submodule {
@@ -901,6 +904,9 @@ in
           type = nullOr struts;
         };
         background-color = mkOption {
+          type = nullOr str;
+        };
+        fullscreen-backdrop-color = mkOption {
           type = nullOr str;
         };
       };
@@ -1428,7 +1434,7 @@ in
           type = nullOr block-out-from;
         };
         variable-refresh-rate = mkOption {
-          type = nullOr bool;
+          type = nullOr vrr-rule;
         };
         default-column-display = mkOption {
           type = nullOr column-display;
@@ -1499,6 +1505,11 @@ in
     block-out-from = enum [
       "screencast"
       "screen-capture"
+    ];
+    vrr-rule = enum [
+      "off"
+      "on"
+      "fullscreen-only"
     ];
     floating-position = submodule {
       options = {
