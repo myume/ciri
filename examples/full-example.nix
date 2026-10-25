@@ -450,6 +450,7 @@
           };
           width = 0.5;
         };
+        fullscreen-backdrop-color = "#000000";
         gaps = 0.5;
         insert-hint = {
           color = "#000000";
@@ -607,6 +608,7 @@
               };
               width = 0.5;
             };
+            fullscreen-backdrop-color = "#000000";
             gaps = 0.5;
             insert-hint = {
               color = "#000000";
@@ -971,7 +973,7 @@
             };
           };
           tiled-state = true;
-          variable-refresh-rate = true;
+          variable-refresh-rate = "off";
         }
       ];
       workspaces = [
@@ -1043,6 +1045,7 @@
               };
               width = 0.5;
             };
+            fullscreen-backdrop-color = "#000000";
             gaps = 0.5;
             insert-hint = {
               color = "#000000";
