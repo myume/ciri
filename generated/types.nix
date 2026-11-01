@@ -592,7 +592,7 @@ in
           example = "Mod+J";
         };
         action = mkOption {
-          type = either action bound-action;
+          type = action;
           example = {
             spawn-sh = "kitty";
           };
