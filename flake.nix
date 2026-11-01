@@ -5,7 +5,6 @@
     nixpkgs.url = "github:NixOS/nixpkgs?ref=nixos-unstable";
     home-manager.url = "github:nix-community/home-manager";
     ndg.url = "github:feel-co/ndg";
-    niri.url = "github:niri-wm/niri";
   };
 
   outputs = {
@@ -13,7 +12,6 @@
     nixpkgs,
     home-manager,
     ndg,
-    niri,
     ...
   }: let
     forAllSystems = function:
@@ -79,14 +77,7 @@
       ciri = import ./nix/home-manager;
     };
 
-    nixosModules = {
-      default = self.nixosModules.ciri;
-      ciri = import ./nix/nixos-modules {inherit niri;};
-    };
-
     checks = forAllSystems (pkgs: let
-      inherit (pkgs.stdenv.hostPlatform) system;
-
       validate-types = config: let
         hm = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
@@ -108,7 +99,7 @@
       in
         pkgs.runCommand "validate-config"
         {
-          nativeBuildInputs = [niri.packages.${system}.niri];
+          nativeBuildInputs = [pkgs.niri];
         } ''
           niri validate --config ${config-file}
           touch $out
