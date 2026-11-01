@@ -146,7 +146,6 @@
           cooldown = 8;
           hotkey-overlay-title = "test";
           key = "Mod+J";
-          pass-through = true;
           repeat = true;
         }
       ];
@@ -172,11 +171,9 @@
       debug = {
         dbus-interfaces-in-non-session-instances = true;
         deactivate-unfocused-windows = true;
-        disable-10bit-output = true;
         disable-cursor-plane = true;
         disable-direct-scanout = true;
         disable-monitor-names = true;
-        disable-pipewire-dmabuf = true;
         disable-resize-throttling = true;
         disable-transactions = true;
         emulate-zero-presentation-time = true;
@@ -186,7 +183,7 @@
         honor-xdg-activation-with-invalid-serial = true;
         ignored-drm-devices = ["test"];
         keep-laptop-panel-on-when-lid-is-closed = true;
-        nested-show-host-cursor = true;
+        keep-max-bpc-unchanged = true;
         preview-render = "screencast";
         render-drm-device = "test";
         restrict-primary-scanout-to-matching-format = true;
@@ -264,7 +261,6 @@
           calibration-matrix = [0.5];
           left-handed = true;
           map-to-focused-output = true;
-          map-to-focused-window = true;
           map-to-output = "test";
           off = true;
         };
@@ -286,7 +282,6 @@
           middle-emulation = true;
           natural-scroll = true;
           off = true;
-          pinch-sensitivity = 0.5;
           scroll-button = 8;
           scroll-button-lock = true;
           scroll-factor = {
@@ -452,7 +447,6 @@
           };
           width = 0.5;
         };
-        fullscreen-backdrop-color = "#000000";
         gaps = 0.5;
         insert-hint = {
           color = "#000000";
@@ -610,7 +604,6 @@
               };
               width = 0.5;
             };
-            fullscreen-backdrop-color = "#000000";
             gaps = 0.5;
             insert-hint = {
               color = "#000000";
@@ -692,7 +685,6 @@
               width = 0.5;
             };
           };
-          max-bpc = 8;
           mode = {
             custom = true;
             mode = "2560x1440@143.912";
@@ -909,7 +901,6 @@
           max-width = 8;
           min-height = 8;
           min-width = 8;
-          on-xdg-activate = "ignore";
           opacity = 0.5;
           open-floating = true;
           open-focused = true;
@@ -918,7 +909,6 @@
           open-maximized-to-edges = true;
           open-on-output = "test";
           open-on-workspace = "test";
-          pinch-sensitivity = 0.5;
           popups = {
             background-effect = {
               blur = true;
@@ -1047,7 +1037,6 @@
               };
               width = 0.5;
             };
-            fullscreen-backdrop-color = "#000000";
             gaps = 0.5;
             insert-hint = {
               color = "#000000";
@@ -1130,7 +1119,7 @@
             };
           };
           name = "test";
-          open-on-output = ["test"];
+          open-on-output = "test";
         }
       ];
       xwayland-satellite = {
