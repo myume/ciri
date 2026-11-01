@@ -1608,7 +1608,7 @@ in
           example = "Mod+J";
         };
         action = mkOption {
-          type = bound-action;
+          type = either action bound-action;
           example = {
             spawn-sh = "kitty";
           };
@@ -1633,21 +1633,276 @@ in
         };
       };
     };
-    bound-action = attrTag {
-      press = mkOption {
-        type = action;
-      };
-      release = mkOption {
-        type = action;
-      };
-      both = mkOption {
-        type = listOf (oneOf [
-          action
-          action
-        ]);
-        default = [];
+    switch-binds = submodule {
+      options = {
+        lid-open = mkOption {
+          type = nullOr switch-action;
+        };
+        lid-close = mkOption {
+          type = nullOr switch-action;
+        };
+        tablet-mode-on = mkOption {
+          type = nullOr switch-action;
+        };
+        tablet-mode-off = mkOption {
+          type = nullOr switch-action;
+        };
       };
     };
+    switch-action = submodule {
+      options = {
+        spawn = mkOption {
+          type = listOf str;
+          default = [];
+        };
+      };
+    };
+    debug = submodule {
+      options = {
+        preview-render = mkOption {
+          type = nullOr preview-render;
+        };
+        dbus-interfaces-in-non-session-instances = mkOption {
+          type = nullOr bool;
+        };
+        wait-for-frame-completion-before-queueing = mkOption {
+          type = nullOr bool;
+        };
+        enable-overlay-planes = mkOption {
+          type = nullOr bool;
+        };
+        disable-cursor-plane = mkOption {
+          type = nullOr bool;
+        };
+        disable-direct-scanout = mkOption {
+          type = nullOr bool;
+        };
+        restrict-primary-scanout-to-matching-format = mkOption {
+          type = nullOr bool;
+        };
+        force-disable-connectors-on-resume = mkOption {
+          type = nullOr bool;
+        };
+        render-drm-device = mkOption {
+          type = nullOr str;
+        };
+        ignored-drm-devices = mkOption {
+          type = listOf str;
+          default = [];
+        };
+        force-pipewire-invalid-modifier = mkOption {
+          type = nullOr bool;
+        };
+        disable-pipewire-dmabuf = mkOption {
+          type = nullOr bool;
+        };
+        emulate-zero-presentation-time = mkOption {
+          type = nullOr bool;
+        };
+        disable-resize-throttling = mkOption {
+          type = nullOr bool;
+        };
+        disable-transactions = mkOption {
+          type = nullOr bool;
+        };
+        keep-laptop-panel-on-when-lid-is-closed = mkOption {
+          type = nullOr bool;
+        };
+        disable-monitor-names = mkOption {
+          type = nullOr bool;
+        };
+        strict-new-window-focus-policy = mkOption {
+          type = nullOr bool;
+        };
+        honor-xdg-activation-with-invalid-serial = mkOption {
+          type = nullOr bool;
+        };
+        deactivate-unfocused-windows = mkOption {
+          type = nullOr bool;
+        };
+        skip-cursor-only-updates-during-vrr = mkOption {
+          type = nullOr bool;
+        };
+        disable-10bit-output = mkOption {
+          type = nullOr bool;
+        };
+        nested-show-host-cursor = mkOption {
+          type = nullOr bool;
+        };
+      };
+    };
+    preview-render = enum [
+      "screencast"
+      "screen-capture"
+    ];
+    workspace = submodule {
+      options = {
+        name = mkOption {
+          type = workspace-name;
+        };
+        open-on-output = mkOption {
+          type = listOf str;
+          default = [];
+        };
+        layout = mkOption {
+          type = nullOr workspace-layout-part;
+        };
+      };
+    };
+    workspace-name = str;
+    workspace-layout-part = layout-part;
+    recent-windows = submodule {
+      options = {
+        on = mkOption {
+          type = nullOr bool;
+        };
+        debounce-ms = mkOption {
+          type = nullOr (ints.u16);
+        };
+        open-delay-ms = mkOption {
+          type = nullOr (ints.u16);
+        };
+        highlight = mkOption {
+          type = nullOr mru-highlight;
+        };
+        previews = mkOption {
+          type = nullOr mru-previews;
+        };
+        binds = mkOption {
+          type = nullOr (listOf mru-bind);
+        };
+      };
+    };
+    mru-highlight = submodule {
+      options = {
+        active-color = mkOption {
+          type = nullOr str;
+        };
+        urgent-color = mkOption {
+          type = nullOr str;
+        };
+        padding = mkOption {
+          type = nullOr float;
+        };
+        corner-radius = mkOption {
+          type = nullOr float;
+        };
+      };
+    };
+    mru-previews = submodule {
+      options = {
+        max-height = mkOption {
+          type = nullOr float;
+          example = 1080.0;
+        };
+        max-scale = mkOption {
+          type = nullOr float;
+          example = 0.75;
+        };
+      };
+    };
+    layer-rule-match = submodule {
+      options = {
+        namespace = mkOption {
+          type = nullOr str;
+        };
+        at-startup = mkOption {
+          type = nullOr bool;
+        };
+        layer = mkOption {
+          type = nullOr layer;
+        };
+      };
+    };
+    layer = enum [
+      "background"
+      "bottom"
+      "top"
+      "overlay"
+    ];
+    window-rule-match = submodule {
+      options = {
+        app-id = mkOption {
+          type = nullOr str;
+        };
+        title = mkOption {
+          type = nullOr str;
+        };
+        is-active = mkOption {
+          type = nullOr bool;
+        };
+        is-focused = mkOption {
+          type = nullOr bool;
+        };
+        is-active-in-column = mkOption {
+          type = nullOr bool;
+        };
+        is-floating = mkOption {
+          type = nullOr bool;
+        };
+        is-window-cast-target = mkOption {
+          type = nullOr bool;
+        };
+        is-urgent = mkOption {
+          type = nullOr bool;
+        };
+        at-startup = mkOption {
+          type = nullOr bool;
+        };
+      };
+    };
+    mru-bind = submodule {
+      options = {
+        key = mkOption {
+          type = str;
+          example = "Alt+Tab";
+        };
+        action = mkOption {
+          type = mru-action;
+        };
+        allow-inhibiting = mkOption {
+          type = bool;
+        };
+        hotkey-overlay-title = mkOption {
+          type = nullOr (nullOr str);
+        };
+      };
+    };
+    mru-action = attrTag {
+      next-window = mkOption {
+        type = submodule {
+          options = {
+            scope = mkOption {
+              type = nullOr mru-scope;
+            };
+            filter = mkOption {
+              type = nullOr mru-filter;
+            };
+          };
+        };
+      };
+      previous-window = mkOption {
+        type = submodule {
+          options = {
+            scope = mkOption {
+              type = nullOr mru-scope;
+            };
+            filter = mkOption {
+              type = nullOr mru-filter;
+            };
+          };
+        };
+      };
+    };
+    mru-scope = enum [
+      "all"
+      "output"
+      "workspace"
+    ];
+    mru-filter = enum [
+      "all"
+      "app-id"
+    ];
     action = attrTag {
       quit = mkOption {
         type = submodule {
@@ -2164,274 +2419,19 @@ in
         type = bool;
       };
     };
-    switch-binds = submodule {
-      options = {
-        lid-open = mkOption {
-          type = nullOr switch-action;
-        };
-        lid-close = mkOption {
-          type = nullOr switch-action;
-        };
-        tablet-mode-on = mkOption {
-          type = nullOr switch-action;
-        };
-        tablet-mode-off = mkOption {
-          type = nullOr switch-action;
-        };
+    bound-action = attrTag {
+      press = mkOption {
+        type = action;
+      };
+      release = mkOption {
+        type = action;
+      };
+      both = mkOption {
+        type = listOf (oneOf [
+          action
+          action
+        ]);
+        default = [];
       };
     };
-    switch-action = submodule {
-      options = {
-        spawn = mkOption {
-          type = listOf str;
-          default = [];
-        };
-      };
-    };
-    debug = submodule {
-      options = {
-        preview-render = mkOption {
-          type = nullOr preview-render;
-        };
-        dbus-interfaces-in-non-session-instances = mkOption {
-          type = nullOr bool;
-        };
-        wait-for-frame-completion-before-queueing = mkOption {
-          type = nullOr bool;
-        };
-        enable-overlay-planes = mkOption {
-          type = nullOr bool;
-        };
-        disable-cursor-plane = mkOption {
-          type = nullOr bool;
-        };
-        disable-direct-scanout = mkOption {
-          type = nullOr bool;
-        };
-        restrict-primary-scanout-to-matching-format = mkOption {
-          type = nullOr bool;
-        };
-        force-disable-connectors-on-resume = mkOption {
-          type = nullOr bool;
-        };
-        render-drm-device = mkOption {
-          type = nullOr str;
-        };
-        ignored-drm-devices = mkOption {
-          type = listOf str;
-          default = [];
-        };
-        force-pipewire-invalid-modifier = mkOption {
-          type = nullOr bool;
-        };
-        disable-pipewire-dmabuf = mkOption {
-          type = nullOr bool;
-        };
-        emulate-zero-presentation-time = mkOption {
-          type = nullOr bool;
-        };
-        disable-resize-throttling = mkOption {
-          type = nullOr bool;
-        };
-        disable-transactions = mkOption {
-          type = nullOr bool;
-        };
-        keep-laptop-panel-on-when-lid-is-closed = mkOption {
-          type = nullOr bool;
-        };
-        disable-monitor-names = mkOption {
-          type = nullOr bool;
-        };
-        strict-new-window-focus-policy = mkOption {
-          type = nullOr bool;
-        };
-        honor-xdg-activation-with-invalid-serial = mkOption {
-          type = nullOr bool;
-        };
-        deactivate-unfocused-windows = mkOption {
-          type = nullOr bool;
-        };
-        skip-cursor-only-updates-during-vrr = mkOption {
-          type = nullOr bool;
-        };
-        disable-10bit-output = mkOption {
-          type = nullOr bool;
-        };
-        nested-show-host-cursor = mkOption {
-          type = nullOr bool;
-        };
-      };
-    };
-    preview-render = enum [
-      "screencast"
-      "screen-capture"
-    ];
-    workspace = submodule {
-      options = {
-        name = mkOption {
-          type = workspace-name;
-        };
-        open-on-output = mkOption {
-          type = listOf str;
-          default = [];
-        };
-        layout = mkOption {
-          type = nullOr workspace-layout-part;
-        };
-      };
-    };
-    workspace-name = str;
-    workspace-layout-part = layout-part;
-    recent-windows = submodule {
-      options = {
-        on = mkOption {
-          type = nullOr bool;
-        };
-        debounce-ms = mkOption {
-          type = nullOr (ints.u16);
-        };
-        open-delay-ms = mkOption {
-          type = nullOr (ints.u16);
-        };
-        highlight = mkOption {
-          type = nullOr mru-highlight;
-        };
-        previews = mkOption {
-          type = nullOr mru-previews;
-        };
-        binds = mkOption {
-          type = nullOr (listOf mru-bind);
-        };
-      };
-    };
-    mru-highlight = submodule {
-      options = {
-        active-color = mkOption {
-          type = nullOr str;
-        };
-        urgent-color = mkOption {
-          type = nullOr str;
-        };
-        padding = mkOption {
-          type = nullOr float;
-        };
-        corner-radius = mkOption {
-          type = nullOr float;
-        };
-      };
-    };
-    mru-previews = submodule {
-      options = {
-        max-height = mkOption {
-          type = nullOr float;
-          example = 1080.0;
-        };
-        max-scale = mkOption {
-          type = nullOr float;
-          example = 0.75;
-        };
-      };
-    };
-    layer-rule-match = submodule {
-      options = {
-        namespace = mkOption {
-          type = nullOr str;
-        };
-        at-startup = mkOption {
-          type = nullOr bool;
-        };
-        layer = mkOption {
-          type = nullOr layer;
-        };
-      };
-    };
-    layer = enum [
-      "background"
-      "bottom"
-      "top"
-      "overlay"
-    ];
-    window-rule-match = submodule {
-      options = {
-        app-id = mkOption {
-          type = nullOr str;
-        };
-        title = mkOption {
-          type = nullOr str;
-        };
-        is-active = mkOption {
-          type = nullOr bool;
-        };
-        is-focused = mkOption {
-          type = nullOr bool;
-        };
-        is-active-in-column = mkOption {
-          type = nullOr bool;
-        };
-        is-floating = mkOption {
-          type = nullOr bool;
-        };
-        is-window-cast-target = mkOption {
-          type = nullOr bool;
-        };
-        is-urgent = mkOption {
-          type = nullOr bool;
-        };
-        at-startup = mkOption {
-          type = nullOr bool;
-        };
-      };
-    };
-    mru-bind = submodule {
-      options = {
-        key = mkOption {
-          type = str;
-          example = "Alt+Tab";
-        };
-        action = mkOption {
-          type = mru-action;
-        };
-        allow-inhibiting = mkOption {
-          type = bool;
-        };
-        hotkey-overlay-title = mkOption {
-          type = nullOr (nullOr str);
-        };
-      };
-    };
-    mru-action = attrTag {
-      next-window = mkOption {
-        type = submodule {
-          options = {
-            scope = mkOption {
-              type = nullOr mru-scope;
-            };
-            filter = mkOption {
-              type = nullOr mru-filter;
-            };
-          };
-        };
-      };
-      previous-window = mkOption {
-        type = submodule {
-          options = {
-            scope = mkOption {
-              type = nullOr mru-scope;
-            };
-            filter = mkOption {
-              type = nullOr mru-filter;
-            };
-          };
-        };
-      };
-    };
-    mru-scope = enum [
-      "all"
-      "output"
-      "workspace"
-    ];
-    mru-filter = enum [
-      "all"
-      "app-id"
-    ];
   }

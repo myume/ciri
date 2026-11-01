@@ -103,6 +103,13 @@ impl Overrides {
                         "MruBind".to_string(),
                     )))),
                 ),
+                (
+                    ("Bind".to_string(), "action".to_string()),
+                    NixOption::new(NixType::either(
+                        NixType::TypeReference("Action".to_string()),
+                        NixType::TypeReference("BoundAction".to_string()),
+                    )),
+                ),
             ]),
         }
     }

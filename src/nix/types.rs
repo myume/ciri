@@ -178,13 +178,7 @@ impl NixTypeParser {
             .overrides
             .option_overrides
             .values()
-            .map(|op| op.ty.innermost_type())
-            .filter_map(|ty| {
-                let NixType::TypeReference(ty) = ty else {
-                    return None;
-                };
-                Some(ty)
-            })
+            .flat_map(|op| op.ty.references())
             .collect();
 
         for dep in extra_deps {

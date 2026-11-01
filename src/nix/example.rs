@@ -62,7 +62,7 @@ fn visit_options(root: &NixType, types: &NixDeclarations) -> Value {
         NixType::TypeReference(key) => visit_options(
             types
                 .get(key)
-                .unwrap_or_else(|| panic!("missing type in reference {}", key)),
+                .unwrap_or_else(|| panic!("type reference '{}' not found", key)),
             types,
         ),
     }

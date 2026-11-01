@@ -48,11 +48,30 @@ pub struct Submodule {
 }
 
 impl NixType {
-    pub fn innermost_type(&self) -> NixType {
+    fn _references(&self, refs: &mut Vec<String>) {
         match self {
-            NixType::List(nix_type) | NixType::NullOr(nix_type) => nix_type.innermost_type(),
-            _ => self.clone(),
+            NixType::TypeReference(ty) => refs.push(ty.to_owned()),
+            NixType::List(nix_type) => nix_type._references(refs),
+            NixType::NullOr(nix_type) => nix_type._references(refs),
+            NixType::Either(left, right) => {
+                left._references(refs);
+                right._references(refs);
+            }
+            NixType::OneOf(nix_types) => {
+                for ty in nix_types {
+                    ty._references(refs);
+                }
+            }
+            // NixType::AttrTag(index_map) => todo!(),
+            // NixType::Submodule(submodule) => todo!(),
+            _ => {}
         }
+    }
+
+    pub fn references(&self) -> Vec<String> {
+        let mut refs = Vec::new();
+        self._references(&mut refs);
+        refs
     }
 
     pub fn null(inner: NixType) -> NixType {
