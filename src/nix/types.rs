@@ -205,6 +205,8 @@ impl NixTypeParser {
             submodules = transform(submodules);
         }
 
+        submodules.sort_keys();
+
         Ok(NixConfigTypes(submodules))
     }
 

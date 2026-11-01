@@ -62,8 +62,6 @@ impl NixType {
                     ty._references(refs);
                 }
             }
-            // NixType::AttrTag(index_map) => todo!(),
-            // NixType::Submodule(submodule) => todo!(),
             _ => {}
         }
     }
