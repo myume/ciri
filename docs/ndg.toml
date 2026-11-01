@@ -4,8 +4,6 @@ output_dir = "build"
 
 generate_anchors = true
 
-options_toc_depth = 2
-
 highlight_code = true
 tab_style = "none"
 revision = "main"
