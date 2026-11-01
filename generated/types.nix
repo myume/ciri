@@ -16,9 +16,6 @@ in
           };
         };
       };
-      change-vt = mkOption {
-        type = ints.u8;
-      };
       suspend = mkOption {
         type = bool;
       };
@@ -35,9 +32,6 @@ in
         type = bool;
       };
       debug-toggle-damage = mkOption {
-        type = bool;
-      };
-      toggle-touchpad = mkOption {
         type = bool;
       };
       spawn = mkOption {
@@ -598,15 +592,12 @@ in
           example = "Mod+J";
         };
         action = mkOption {
-          type = either action bound-action;
+          type = action;
           example = {
             spawn-sh = "kitty";
           };
         };
         repeat = mkOption {
-          type = nullOr bool;
-        };
-        pass-through = mkOption {
           type = nullOr bool;
         };
         cooldown = mkOption {
@@ -704,21 +695,6 @@ in
         urgent-gradient = mkOption {
           type = nullOr gradient;
         };
-      };
-    };
-    bound-action = attrTag {
-      press = mkOption {
-        type = action;
-      };
-      release = mkOption {
-        type = action;
-      };
-      both = mkOption {
-        type = listOf (oneOf [
-          action
-          action
-        ]);
-        default = [];
       };
     };
     center-focused-column = enum [
@@ -905,6 +881,9 @@ in
         disable-direct-scanout = mkOption {
           type = nullOr bool;
         };
+        keep-max-bpc-unchanged = mkOption {
+          type = nullOr bool;
+        };
         restrict-primary-scanout-to-matching-format = mkOption {
           type = nullOr bool;
         };
@@ -919,9 +898,6 @@ in
           default = [];
         };
         force-pipewire-invalid-modifier = mkOption {
-          type = nullOr bool;
-        };
-        disable-pipewire-dmabuf = mkOption {
           type = nullOr bool;
         };
         emulate-zero-presentation-time = mkOption {
@@ -949,12 +925,6 @@ in
           type = nullOr bool;
         };
         skip-cursor-only-updates-during-vrr = mkOption {
-          type = nullOr bool;
-        };
-        disable-10bit-output = mkOption {
-          type = nullOr bool;
-        };
-        nested-show-host-cursor = mkOption {
           type = nullOr bool;
         };
       };
@@ -1330,9 +1300,6 @@ in
         background-color = mkOption {
           type = nullOr str;
         };
-        fullscreen-backdrop-color = mkOption {
-          type = nullOr str;
-        };
       };
     };
     layout-part = submodule {
@@ -1380,9 +1347,6 @@ in
           type = nullOr struts;
         };
         background-color = mkOption {
-          type = nullOr str;
-        };
-        fullscreen-backdrop-color = mkOption {
           type = nullOr str;
         };
       };
@@ -1574,11 +1538,6 @@ in
       "output"
       "workspace"
     ];
-    on-xdg-activate = enum [
-      "ignore"
-      "set-urgent"
-      "focus"
-    ];
     output = submodule {
       options = {
         off = mkOption {
@@ -1595,9 +1554,6 @@ in
         };
         position = mkOption {
           type = nullOr position;
-        };
-        max-bpc = mkOption {
-          type = nullOr int;
         };
         mode = mkOption {
           type = nullOr mode;
@@ -2010,9 +1966,6 @@ in
         map-to-focused-output = mkOption {
           type = nullOr bool;
         };
-        map-to-focused-window = mkOption {
-          type = nullOr bool;
-        };
         left-handed = mkOption {
           type = nullOr bool;
         };
@@ -2090,9 +2043,6 @@ in
         };
         scroll-factor = mkOption {
           type = nullOr scroll-factor;
-        };
-        pinch-sensitivity = mkOption {
-          type = nullOr (either float int);
         };
       };
     };
@@ -2258,9 +2208,6 @@ in
         open-focused = mkOption {
           type = nullOr bool;
         };
-        on-xdg-activate = mkOption {
-          type = nullOr on-xdg-activate;
-        };
         min-width = mkOption {
           type = nullOr (ints.u16);
         };
@@ -2304,10 +2251,7 @@ in
           type = nullOr block-out-from;
         };
         variable-refresh-rate = mkOption {
-          type = nullOr (oneOf [
-            bool
-            (enum ["fullscreen-only"])
-          ]);
+          type = nullOr bool;
         };
         default-column-display = mkOption {
           type = nullOr column-display;
@@ -2316,9 +2260,6 @@ in
           type = nullOr floating-position;
         };
         scroll-factor = mkOption {
-          type = nullOr (either float int);
-        };
-        pinch-sensitivity = mkOption {
           type = nullOr (either float int);
         };
         tiled-state = mkOption {
@@ -2369,8 +2310,7 @@ in
           type = workspace-name;
         };
         open-on-output = mkOption {
-          type = listOf str;
-          default = [];
+          type = nullOr str;
         };
         layout = mkOption {
           type = nullOr workspace-layout-part;
@@ -2417,11 +2357,10 @@ in
           type = nullOr str;
         };
         file = mkOption {
-          type = nullOr xkb-file;
+          type = nullOr str;
         };
       };
     };
-    xkb-file = nullOr str;
     xwayland-satellite = submodule {
       options = {
         off = mkOption {
