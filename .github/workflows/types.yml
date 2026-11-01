@@ -58,7 +58,7 @@ jobs:
             delete-branch: true
             title: "chore(types): update niri types and bump flake"
             body: |
-              Generated niri types based on the latest commit: [${{  steps.niri_hash.outputs.hash  }}](https://github.com/niri-wm/niri/tree/${{  steps.niri_hash.outputs.hash  }}/niri-config).
+              Generated niri types from [${{ steps.niri.outputs.tag }}](https://github.com/niri-wm/niri/tree/${{ steps.niri.outputs.tag }}/niri-config), the niri version in nixpkgs.
             labels: |
               niri-type-update
             assignees: myume
@@ -69,7 +69,7 @@ jobs:
         with:
           token: ${{ secrets.AUTO_APPROVE_PAT }}
 
-      - name: 
+      - name: Trigger CI
         if: steps.cpr.outputs.pull-request-operation == 'created' || steps.cpr.outputs.pull-request-operation == 'updated'
         run: |
           git config user.email "myume@users.noreply.github.com"
