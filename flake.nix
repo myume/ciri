@@ -4,14 +4,12 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs?ref=nixos-unstable";
     home-manager.url = "github:nix-community/home-manager";
-    ndg.url = "github:feel-co/ndg";
   };
 
   outputs = {
     self,
     nixpkgs,
     home-manager,
-    ndg,
     ...
   }: let
     forAllSystems = function:
@@ -48,11 +46,7 @@
         };
       in
         pkgs.runCommandLocal "project-docs" {
-          nativeBuildInputs = [
-            (ndg.packages.${system}.ndg. overrideAttrs {
-              doCheck = false;
-            })
-          ];
+          nativeBuildInputs = [pkgs.ndg];
         } ''
           mkdir -p $out
           ndg \

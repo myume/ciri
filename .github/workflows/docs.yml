@@ -3,6 +3,12 @@ name: Deploy docs
 on:
   push:
     branches: ["main"]
+  paths:
+    - "docs/**"
+    - "nix/**"
+    - "generated/**"
+    - "flake.nix"
+    - "flake.lock"
 
   workflow_dispatch:
 
