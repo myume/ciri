@@ -146,6 +146,7 @@
           cooldown = 8;
           hotkey-overlay-title = "test";
           key = "Mod+J";
+          pass-through = true;
           repeat = true;
         }
       ];
@@ -185,6 +186,7 @@
         honor-xdg-activation-with-invalid-serial = true;
         ignored-drm-devices = ["test"];
         keep-laptop-panel-on-when-lid-is-closed = true;
+        nested-show-host-cursor = true;
         preview-render = "screencast";
         render-drm-device = "test";
         restrict-primary-scanout-to-matching-format = true;
@@ -450,6 +452,7 @@
           };
           width = 0.5;
         };
+        fullscreen-backdrop-color = "#000000";
         gaps = 0.5;
         insert-hint = {
           color = "#000000";
@@ -607,6 +610,7 @@
               };
               width = 0.5;
             };
+            fullscreen-backdrop-color = "#000000";
             gaps = 0.5;
             insert-hint = {
               color = "#000000";
@@ -971,7 +975,7 @@
             };
           };
           tiled-state = true;
-          variable-refresh-rate = true;
+          variable-refresh-rate = "off";
         }
       ];
       workspaces = [
@@ -1043,6 +1047,7 @@
               };
               width = 0.5;
             };
+            fullscreen-backdrop-color = "#000000";
             gaps = 0.5;
             insert-hint = {
               color = "#000000";

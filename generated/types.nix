@@ -163,10 +163,11 @@ in
           type = nullOr str;
         };
         file = mkOption {
-          type = nullOr str;
+          type = nullOr xkb-file;
         };
       };
     };
+    xkb-file = nullOr str;
     track-layout = enum [
       "global"
       "window"
@@ -626,6 +627,9 @@ in
         background-color = mkOption {
           type = nullOr str;
         };
+        fullscreen-backdrop-color = mkOption {
+          type = nullOr str;
+        };
       };
     };
     border-rule = submodule {
@@ -901,6 +905,9 @@ in
           type = nullOr struts;
         };
         background-color = mkOption {
+          type = nullOr str;
+        };
+        fullscreen-backdrop-color = mkOption {
           type = nullOr str;
         };
       };
@@ -1428,7 +1435,7 @@ in
           type = nullOr block-out-from;
         };
         variable-refresh-rate = mkOption {
-          type = nullOr bool;
+          type = nullOr vrr-rule;
         };
         default-column-display = mkOption {
           type = nullOr column-display;
@@ -1499,6 +1506,11 @@ in
     block-out-from = enum [
       "screencast"
       "screen-capture"
+    ];
+    vrr-rule = enum [
+      "off"
+      "on"
+      "fullscreen-only"
     ];
     floating-position = submodule {
       options = {
@@ -1596,12 +1608,15 @@ in
           example = "Mod+J";
         };
         action = mkOption {
-          type = action;
+          type = bound-action;
           example = {
             spawn-sh = "kitty";
           };
         };
         repeat = mkOption {
+          type = nullOr bool;
+        };
+        pass-through = mkOption {
           type = nullOr bool;
         };
         cooldown = mkOption {
@@ -1618,6 +1633,21 @@ in
         };
       };
     };
+    bound-action = attrTag {
+      press = mkOption {
+        type = action;
+      };
+      release = mkOption {
+        type = action;
+      };
+      both = mkOption {
+        type = listOf (oneOf [
+          action
+          action
+        ]);
+        default = [];
+      };
+    };
     action = attrTag {
       quit = mkOption {
         type = submodule {
@@ -1627,6 +1657,9 @@ in
             };
           };
         };
+      };
+      change-vt = mkOption {
+        type = ints.u8;
       };
       suspend = mkOption {
         type = bool;
@@ -2222,6 +2255,9 @@ in
           type = nullOr bool;
         };
         disable-10bit-output = mkOption {
+          type = nullOr bool;
+        };
+        nested-show-host-cursor = mkOption {
           type = nullOr bool;
         };
       };
