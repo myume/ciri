@@ -62,6 +62,13 @@ impl Overrides {
                 NixType::Enum(vec!["+vsync".to_string(), "-vsync".to_string()]),
             ),
             ("MaxBpc".into(), NixType::Int),
+            (
+                "VrrRule".into(),
+                NixType::one_of(vec![
+                    NixType::Bool,
+                    NixType::Enum(vec!["fullscreen-only".to_string()]),
+                ]),
+            ),
         ]);
 
         Overrides {
@@ -102,6 +109,13 @@ impl Overrides {
                     NixOption::new(NixType::null(NixType::list(NixType::TypeReference(
                         "MruBind".to_string(),
                     )))),
+                ),
+                (
+                    ("Bind".to_string(), "action".to_string()),
+                    NixOption::new(NixType::either(
+                        NixType::TypeReference("Action".to_string()),
+                        NixType::TypeReference("BoundAction".to_string()),
+                    )),
                 ),
             ]),
         }
