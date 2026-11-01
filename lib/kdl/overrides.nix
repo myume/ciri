@@ -272,7 +272,6 @@ in {
     open-maximized = toBoolArg;
     open-maximized-to-edges = toBoolArg;
     tiled-state = toBoolArg;
-    variable-refresh-rate = toBoolArg;
     focus-on-xdg-activate = toBoolArg;
   };
 
