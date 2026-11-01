@@ -975,7 +975,7 @@
             };
           };
           tiled-state = true;
-          variable-refresh-rate = "off";
+          variable-refresh-rate = true;
         }
       ];
       workspaces = [

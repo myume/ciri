@@ -271,6 +271,10 @@ in {
     open-fullscreen = toBoolArg;
     open-maximized = toBoolArg;
     open-maximized-to-edges = toBoolArg;
+    variable-refresh-rate = name: value:
+      if lib.typeOf value == "bool"
+      then toBoolArg name value
+      else "${name} ${value}";
     tiled-state = toBoolArg;
     focus-on-xdg-activate = toBoolArg;
   };

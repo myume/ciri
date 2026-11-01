@@ -2179,11 +2179,6 @@ in
         };
       };
     };
-    vrr-rule = enum [
-      "off"
-      "on"
-      "fullscreen-only"
-    ];
     warp-mouse-to-focus = submodule {
       options = {
         mode = mkOption {
@@ -2309,7 +2304,10 @@ in
           type = nullOr block-out-from;
         };
         variable-refresh-rate = mkOption {
-          type = nullOr vrr-rule;
+          type = nullOr (oneOf [
+            bool
+            (enum ["fullscreen-only"])
+          ]);
         };
         default-column-display = mkOption {
           type = nullOr column-display;

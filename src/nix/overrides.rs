@@ -62,6 +62,13 @@ impl Overrides {
                 NixType::Enum(vec!["+vsync".to_string(), "-vsync".to_string()]),
             ),
             ("MaxBpc".into(), NixType::Int),
+            (
+                "VrrRule".into(),
+                NixType::one_of(vec![
+                    NixType::Bool,
+                    NixType::Enum(vec!["fullscreen-only".to_string()]),
+                ]),
+            ),
         ]);
 
         Overrides {
