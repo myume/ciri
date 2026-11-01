@@ -182,15 +182,9 @@ impl NixTypeParser {
             .collect();
 
         for dep in extra_deps {
-            submodules.extend(
-                self.item_to_nix(
-                    &self
-                        .structs
-                        .get(&dep)
-                        .context(format!("missing struct {} from niri config", dep))?
-                        .clone(),
-                )?,
-            );
+            if let Some(dep) = self.structs.get(&dep).cloned() {
+                submodules.extend(self.item_to_nix(&dep)?);
+            }
         }
 
         // the order of these matter

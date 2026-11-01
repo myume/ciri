@@ -23,11 +23,23 @@ jobs:
         with:
           nix_path: nixpkgs=channel:nixos-unstable
 
-      - name: Generate types
-        run: cargo run -- --clean
 
       - name: Bump flake
         run: nix flake update
+
+      - name: Resolve niri version from nixpkgs
+        id: niri
+        run: |
+          VERSION=$(nix eval --raw --inputs-from . nixpkgs#niri.version)
+          TAG="v$VERSION"
+          git ls-remote --exit-code --tags https://github.com/niri-wm/niri.git "refs/tags/$TAG" \
+            || { echo "tag $TAG not found"; exit 1; }
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Generate types
+        run: cargo run -- --clean --branch "$NIRI_TAG"
+        env:
+          NIRI_TAG: ${{ steps.niri.outputs.tag }}
 
       - name: Get external hash
         id: niri_hash
