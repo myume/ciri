@@ -33,9 +33,8 @@ polling for updates any quicker will just be wasting compute. The job can be
 triggered manually, so if you desperately need the updates feel free to create
 an issue.
 
-The options on the main branch currently targets the main branch of niri. Ciri
-is capable of targetting stable releases as well, but there are some
-[known limitations](#known-limitations) that make this suboptimal for now.
+The options on the main branch currently targets the version of niri on
+nixos-unstable.
 
 ## Known limitations
 
