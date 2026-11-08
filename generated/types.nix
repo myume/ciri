@@ -1550,7 +1550,15 @@ in
           type = nullOr (either float int);
         };
         transform = mkOption {
-          type = nullOr transform;
+          type = nullOr (enum [
+            "normal"
+            "90"
+            "180"
+            "270"
+            "flipped-90"
+            "flipped-180"
+            "flipped-270"
+          ]);
         };
         position = mkOption {
           type = nullOr position;
@@ -2112,16 +2120,6 @@ in
         };
       };
     };
-    transform = enum [
-      "normal"
-      "-90"
-      "-180"
-      "-270"
-      "flipped"
-      "flipped90"
-      "flipped180"
-      "flipped270"
-    ];
     vrr = submodule {
       options = {
         on-demand = mkOption {

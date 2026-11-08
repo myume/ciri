@@ -63,6 +63,23 @@ impl Overrides {
             ),
             ("MaxBpc".into(), NixType::Int),
             (
+                "Transform".into(),
+                NixType::Enum(
+                    [
+                        "normal",
+                        "90",
+                        "180",
+                        "270",
+                        "flipped-90",
+                        "flipped-180",
+                        "flipped-270",
+                    ]
+                    .iter()
+                    .map(|val| val.to_string())
+                    .collect(),
+                ),
+            ),
+            (
                 "VrrRule".into(),
                 NixType::one_of(vec![
                     NixType::Bool,
