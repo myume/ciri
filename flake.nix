@@ -66,8 +66,8 @@
       default = pkgs.callPackage ./nix/shell.nix {};
     });
 
-    homeManagerModules = {
-      default = self.homeManagerModules.ciri;
+    homeModules = {
+      default = self.homeModules.ciri;
       ciri = import ./nix/home-manager;
     };
 
@@ -76,7 +76,7 @@
         hm = home-manager.lib.homeManagerConfiguration {
           inherit pkgs;
           modules = [
-            self.homeManagerModules.default
+            self.homeModules.default
             config
             {
               home = {

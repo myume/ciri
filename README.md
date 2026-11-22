@@ -16,7 +16,7 @@ ciri.url = "github:myume/ciri";
 Make sure to import the home manager modules in your config:
 
 ```nix
-imports = [ inputs.ciri.homeManagerModules.default ];
+imports = [ inputs.ciri.homeModules.default ];
 ```
 
 and set up your Niri config in the settings

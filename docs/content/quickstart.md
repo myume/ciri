@@ -25,7 +25,7 @@ can use the options. You can do that by importing the following module somewhere
 in your configuration.
 
 ```nix
-imports = [ inputs.ciri.homeManagerModules.default ]; # this imports the options
+imports = [ inputs.ciri.homeModules.default ]; # this imports the options
 ```
 
 Now all the nix options should be available to you.
